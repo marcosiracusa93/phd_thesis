@@ -1,0 +1,62 @@
+\begin{table}[htbp!]
+\centering
+\footnotesize
+\caption{Minimum, average, and maximum compute and bandwidth utilization (\%) on A64FX and Graviton~3.}
+\label{tab:utilization}
+
+%==================== SpMV ====================
+\begin{subtable}{\linewidth}
+\centering
+\caption{SpMV}
+\begin{tabular}{c|ccc|ccc}
+\toprule
+& \multicolumn{3}{c|}{\textbf{Compute}} & \multicolumn{3}{c}{\textbf{Bandwidth}} \\
+& Min & Avg & Max & Min & Avg & Max \\
+\midrule
+
+\textbf{A64FX} & 3.2e-7 & 9.0e-5 & 9.5e-4 & 1.2e-3 & 2.8e-1 & 1.7 \\
+\textbf{Graviton~3} & 1.1e-6 & 2.5e-4 & 4.6e-3 & 1.8e-1 & 2.3 & 2.1e1 \\
+
+\bottomrule
+\end{tabular}
+\end{subtable}
+
+\vspace{0.5em}
+
+%==================== SpMSpM ====================
+\begin{subtable}{\linewidth}
+\centering
+\caption{SpMSpM}
+\begin{tabular}{c|ccc|ccc}
+\toprule
+& \multicolumn{3}{c|}{\textbf{Compute}} & \multicolumn{3}{c}{\textbf{Bandwidth}} \\
+& Min & Avg & Max & Min & Avg & Max \\
+\midrule
+
+\textbf{A64FX} & 2.9e-5 & 4.9e-3 & 1.8e-2 & 7.4e-5 & 7.5e-2 & 4.0e-1 \\
+\textbf{Graviton~3} & 2.4e-10 & 9.8e-3 & 5.7e-2 & 2.1e-2 & 9.8 & 5.6e1 \\
+
+\bottomrule
+\end{tabular}
+\end{subtable}
+
+\vspace{0.5em}
+
+%==================== SpAdd ====================
+\begin{subtable}{\linewidth}
+\centering
+\caption{SpAdd}
+\begin{tabular}{c|ccc|ccc}
+\toprule
+& \multicolumn{3}{c|}{\textbf{Compute}} & \multicolumn{3}{c}{\textbf{Bandwidth}} \\
+& Min & Avg & Max & Min & Avg & Max \\
+\midrule
+
+\textbf{A64FX} & 5.9e-9 & 1.5e-3 & 5.3e-3 & 1.4e-4 & 4.6e-2 & 2.2e-1 \\
+\textbf{Graviton~3} & 5.0e-8 & 4.5e-3 & 2.2e-2 & 5.8e-1 & 5.8 & 2.5e1 \\
+
+\bottomrule
+\end{tabular}
+\end{subtable}
+
+\end{table}

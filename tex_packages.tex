@@ -1,0 +1,110 @@
+\usepackage{amsmath,amssymb,amsfonts}
+%\usepackage{algorithmic}
+\usepackage{multirow}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+%\usepackage{textcomp}
+%\usepackage{xcolor}
+%\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+%    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage[]{hyperref}
+\usepackage{xcolor,colortbl,xcolor-solarized}
+\usepackage{cleveref}
+\usepackage{listings}
+\usepackage{subcaption}
+\usepackage{soul}
+
+\usepackage[figuresright]{rotating}
+
+\usepackage{enumitem}
+
+%\usepackage[switch]{lineno} % 'switch' puts numbers on both margins
+% Enable line numbers only in draft mode
+%\linenumbers
+
+\usepackage{inconsolata}
+
+\newcommand{\hlc}[2][yellow]{{%
+    \colorlet{foo}{#1}%
+    \sethlcolor{foo}\hl{#2}}%
+}
+\newcommand{\hlnone}{\hlc[white!0]}
+\newcommand{\hlloop}{\hlc[green!20]}
+\newcommand{\hlmem}{\hlc[blue!20]}
+\newcommand{\hlcompute}{\hlc[red!20]}
+\colorlet{lightgray}{gray!50}
+\newcommand{\unchanged}{\textcolor{gray!50}}
+
+\lstdefinestyle{base}{
+    xleftmargin=3em,
+    columns=fullflexible,
+    numbers=left,         % Enable line numbers on the left
+    numberstyle=\small,   % Line number font size
+    numbersep=2pt,        % Distance between numbers and code (reduce this)
+    % keywordsprefix=\%,alsoletter=\%,
+    keywordstyle=\color{solarized-magenta},
+    commentstyle=\color{solarized-blue},
+    stringstyle=\color{solarized-orange},
+    numberstyle=\color{solarized-base0},
+    emphstyle=[1]\color{solarized-red},
+    emphstyle=[2]\color{solarized-green},
+    %basicstyle={\scriptsize\linespread{0.8}\color{solarized-base03}\textls[90]{\ttfamily}} smaller horizontally
+    basicstyle={\small\linespread{0.8}\color{solarized-base03}\ttfamily},
+    showstringspaces=false,
+    escapeinside={(*}{*)},
+  }
+%\lstdefinestyle{tight}{
+%    basicstyle={\footnotesize\linespread{0.8}\color{solarized-base03}\ttfamily},
+%  }
+\lstdefinestyle{cppstyle}{
+  style=base,
+  language=C++,
+  emph=[1]{memref,index,idx,i32,f32,mref,stream,str,vec,vector,tu},
+  emph=[2]{from,to,step,for,dae,dlc,dlcv,mem_str,alu_str,fwd_str,to_val,callback,done,pop_token,configure_tmu,pop_data,tkn,pop,push,buf_str},
+}
+\lstset{
+style=cppstyle,
+float=t,
+}
+
+% Commands for language
+\newcommand{\bnfdef}{\mathrel{::=}}
+\newcommand{\bnfalt}{\mathrel{\mid}}
+\newcommand{\mT}{\mathcal{T}}
+\newcommand{\mI}{\mathcal{I}}
+\newcommand{\pluseq}{\mathrel{+}=}
+\newcommand{\asteq}{\mathrel{*}=}
+\newcommand{\iterFn}{lowerIter}
+\newcommand{\rasep}{{\hskip-1ex$\rightarrow$}}
+
+% Commands for multirow cells in tables
+\usepackage{makecell}
+
+%To make sure images in tables are centered
+%\usepackage{adjustbox}
+\newcommand{\vcentered}[1]{\begingroup
+\setbox0=\hbox{#1}\parbox{\dimexpr\ht0+\dp0}{\box0}\endgroup}
+
+%\usepackage{float}
+%\restylefloat{figure}
+
+%%%%%%%%%%%---Internal Use---%%%%%%%%%%%%%%%
+\newcommand{\diff}[1]{{\color{blue}#1}}
+\newcommand{\todo}[1]{{\color{red}TODO: #1}}
+%\newcommand{\ohsu}[1]{{\color{blue}oh: #1}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\vm}{\ding{51}}%checkmark
+\newcommand{\xm}{\ding{55}}%xmark
+
+% line break in a table cell
+% source: https://tex.stackexchange.com/questions/2441/how-to-add-a-forced-line-break-inside-a-table-cell
+\newcommand{\specialcell}[2][c]{%
+  \begin{tabular}[#1]{@{}c@{}}#2\end{tabular}}
+% usage: \specialcell{Foo\\bar}
+\newcommand{\specialcellL}[2][c]{%
+  \begin{tabular}[#1]{@{}l@{}}#2\end{tabular}}

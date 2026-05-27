@@ -1,0 +1,47 @@
+\chapter{Conclusions} \label{sec:conclusions}
+
+This chapter summarizes the contributions of this thesis, and its impact in the research community, including papers and patents, awards, spinoff projects, and collaborations.
+
+\section{Summary of Key Contributions}
+In this thesis, we proposed a hardware--software co-design for efficient sparse tensor algebra. The main contributions are summarized as follows:
+\begin{itemize}
+    \item In \Cref{sec:architectural-implications-of-sparsity}, we first demonstrated that \emph{sparse tensor traversal} and \emph{sparse tensor merging} constitute the two primary bottlenecks of sparse tensor algebra on traditional architectures. Specifically, we showed that existing systems lack sufficient memory-level parallelism (MLP) to handle the irregular memory accesses generated during sparse tensor traversal, and that speculative mechanisms tuned for dense workloads are ineffective for the irregular control-flow patterns required by sparse tensor merging. We further showed that increasing MLP on conventional architectures---for example, by scaling the reorder buffer, load--store queues, or miss-status handling registers---yields diminishing performance returns while incurring exponential growth in area and power. Finally, we developed an analytical model demonstrating that the level of MLP required to sustain full-core throughput is fundamentally infeasible on architectures that tightly couple memory access and computation within the same compute unit.
+    
+    \item In \Cref{sec:the-tmu}, we demonstrated that \emph{decoupling} sparse tensor traversal and merging from computation, and offloading them to a specialized unit such as the Tensor Marshaling Unit (TMU), enables efficient scaling of these operations and significantly improves performance and efficiency. Owing to its multidimensional design, the TMU can perform parallel data loading and merging for all sparse tensor algebra operations while fully utilizing the SIMD capabilities of the compute core. For machine learning workloads, the TMU efficiently performs high-MLP embedding lookups; for scientific workloads, which primarily require scalar lookups or merges, it efficiently packs scalars into vector operands for the compute core. As a result, a TMU--CPU Decoupled Access--Execute (DAE) processor can outperform both traditional CPUs and GPUs in performance and energy efficiency across scientific and machine learning applications.
+    
+    \item \Cref{sec:dae-compilation} presented the programmability challenges inherent to decoupling tensor traversal and merging from computation, and introduced the \emph{Ember} compiler as a solution. Ember employs multiple intermediate representations (IRs) designed specifically for DAE compilation. Our low-level IR, the Decoupled Lookup--Compute (DLC) IR, abstracts general DAE programs into access code for the access unit, compute code for the compute unit, and marshaling code for (de)serializing data between them. Since such an abstraction cannot optimize across the access and execute units once decoupled, we introduced a higher-level IR, the Structured Lookup--Compute (SLC) IR, which wraps access, execute, and marshaling code within a structured loop hierarchy. This preserves both data flow and control flow, enabling global DAE optimizations, code motion across units, and marshaling refinements. Using this IR stack, Ember can generate highly optimized DAE code from PyTorch and TensorFlow, achieving performance on par with hand-optimized implementations.
+\end{itemize}
+
+\section{Research Output and Awards}
+
+\subsection{Papers and Patents}
+
+This thesis has produced the following research outputs:
+\begin{itemize}
+\item The architectural analysis of sparse tensor algebra for scientific computation presented in \Cref{sec:architectural-implications-of-sparsity-scientific-computing} formed the basis of SpChar, published in the \textit{Journal of Parallel and Distributed Computing}~\cite{spchar2024jpdc}.
+\item The architectural analysis of sparse tensor algebra for machine learning presented in \Cref{sec:architectural-implications-of-sparsity-in-machine-learning} is currently under submission.
+\item The TMU design described in \Cref{sec:the-tmu} was published at the \textit{56th IEEE/ACM International Symposium on Microarchitecture (MICRO)}~\cite{tmu2023micro}.
+\item The TMU design presented in \Cref{sec:the-tmu} has also been patented~\cite{siracusa2025dsmu}.
+\item The Ember compiler presented in \Cref{sec:dae-compilation}, developed in collaboration with researchers at Stanford University, appeared at the \textit{24th IEEE/ACM International Symposium on Code Generation and Optimization (CGO)}~\cite{ember2026cgo}.
+\end{itemize}
+
+\subsection{Awards}
+
+Through this work, Marco received the following awards:
+\begin{itemize}
+\item 2025 Machine Learning and Systems Rising Star Award by MLCommons.
+\item A scholarship from the government of Catalonia (AGAUR FI grant).
+\end{itemize}
+
+\subsection{Research Spinoffs}
+This work also catalyzed the following projects:
+\begin{itemize}
+\item Xicu Mari’s Master Thesis, which proposes the first RTL implementation and integration of a Tensor Marshaling Unit (TMU) in a System on Chip. The obtained results demonstrated the feasibility of the TMU in a real SoC and established the first milestone of a larger effort towards enabling the TMU in production systems.
+\item A collaboration between the Barcelona Supercomputing Center and UC Santa Barbara to integrate the TMU into an OpenPiton-based SoC with the CVA6 RISC-V core, and suggest optimizations for the OpenPiton framework.
+\item Diego Gorfini’s Master Thesis, which optimizes the integration of the TMU in BSC cores.
+\end{itemize}
+
+\subsection{Visiting Research Appointments and Other Contributions}
+During his PhD, Marco spent substantial time at the Barcelona Supercomputing Center, Arm, and Stanford University. During his research appointment at the Barcelona Supercomputing Center, he co-authored Hades, a network-on-chip accelerator for data movement primitives. During his visiting appointments at Stanford University, he co-authored FuseFlow, a fusion-centric compilation framework for sparse deep learning~\cite{lacouture2025fuseflow}.
+
+In the final year of his PhD, Marco joined Samsung Semiconductor USA as a Staff Engineer and Tech Lead for AI supercomputer design. He is currently a Principal AI Performance Engineer at Arm USA.

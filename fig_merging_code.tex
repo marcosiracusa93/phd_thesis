@@ -1,0 +1,127 @@
+
+\begin{figure}[]
+    \centering
+
+    %-------------------- Addition --------------------%
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+\begin{lstlisting}[]
+CSR csr_add(const CSR& A,
+    const CSR& B,
+    CSR& C, // already allocated
+    int m) {
+  C.rowptr.resize(m + 1);
+  C.rowptr[0] = 0;
+  
+  // For each row
+  for (int i = 0; i < m; ++i) {
+    int p = A.rowptr[i];
+    int p_end = A.rowptr[i + 1];
+    int q = B.rowptr[i];
+    int q_end = B.rowptr[i + 1];
+
+    // Until both rows have values
+    while (p < p_end && q < q_end) {
+      int ca = A.col[p];
+      int cb = B.col[q];
+
+      // Check column indices
+      if (ca == cb) {
+        // If they match, add them
+        // and increment both pointers
+        double v = A.val[p] + B.val[q];
+        C.col.push_back(ca);
+        C.val.push_back(v);
+        ++p; ++q;
+      } else if (ca < cb) {
+        // If first is smaller
+        // push it and increment
+        // its pointer
+        C.col.push_back(ca);
+        C.val.push_back(A.val[p]);
+        ++p;
+      } else {
+        // If first is smaller
+        // push it and increment
+        // its pointer
+        C.col.push_back(cb);
+        C.val.push_back(B.val[q]);
+        ++q;
+      }
+    } // end co-iteration
+
+    // Consume all other elements
+    while (p < p_end) {
+      C.col.push_back(A.col[p]);
+      C.val.push_back(A.val[p]);
+      ++p;
+    }
+    while (q < q_end) {
+      C.col.push_back(B.col[q]);
+      C.val.push_back(B.val[q]);
+      ++q;
+    }
+
+    C.rowptr[i + 1] = C.col.size();
+  } // end for-each row loop
+}
+\end{lstlisting}
+        \caption{Elementwise CSR matrix addition.}
+        \label{fig:csr-addition}
+    \end{subfigure}
+    \hfill
+    %-------------------- Multiplication --------------------%
+    \begin{subfigure}[t]{0.48\linewidth}
+        \centering
+\begin{lstlisting}[]
+CSR csr_mul(const CSR& A,
+    const CSR& B,
+    CSR& C, // already allocated
+    int m) {
+  C.rowptr.resize(m + 1);
+  C.rowptr[0] = 0;
+
+  // For each row
+  for (int i = 0; i < m; ++i) {
+    int p = A.rowptr[i];
+    int p_end = A.rowptr[i + 1];
+    int q = B.rowptr[i];
+    int q_end = B.rowptr[i + 1];
+
+    // Until both rows have values
+    while (p < p_end && q < q_end) {
+      int ca = A.col[p];
+      int cb = B.col[q];
+
+      // Check column indices
+      if (ca == cb) {
+        // If they match, multiply them
+        // and increment both pointers
+        double v = A.val[p] * B.val[q];
+        if (v != 0.0) {
+          C.col.push_back(ca);
+          C.val.push_back(v);
+        }
+        ++p; ++q;
+      } else if (ca < cb) {
+        // If first is smaller,
+        // increment its pointer
+        ++p;
+      } else {
+        // If second is smaller,
+        // increment its pointer
+        ++q;
+      }
+    } // End co-iteration
+
+    C.rowptr[i + 1] = C.col.size();
+  } // End for-each row loop
+}
+\end{lstlisting}
+        \caption{Elementwise CSR matrix multiplication.}
+        \label{fig:csr-multiplication}
+    \end{subfigure}
+
+    \caption[Code for elementwise addition and multiplication of two sparse matrices.]{Code for elementwise addition and multiplication of two CSR matrices.}
+    \label{fig:csr-elementwise}
+\end{figure}

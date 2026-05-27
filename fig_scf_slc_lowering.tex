@@ -1,0 +1,51 @@
+\begin{figure}
+    \noindent
+    \begin{subfigure}[]{1\columnwidth}
+        \begin{subfigure}[t]{0.47\columnwidth} %47
+            \begin{lstlisting}[xleftmargin=1.5em]
+void eb(idxs: mref<? x idx>,
+         ptrs: mref<? x idx>,
+         vals: mref<? x f32>,
+         out: mref<? x ? x f32>){
+ (*\hlloop{for(idx b=0; b<n\_batches; b++)}*){
+  (*\hlmem{idx beg=ptrs[b]}*);
+  (*\hlmem{idx end=ptrs[b+1]}*);
+  (*\hlloop{for(idx p=beg; p<end; p++)}*){
+   (*\hlmem{idx i=idxs[ptr]}*);
+   (*\hlloop{for(idx e=0; e<emb\_len; e++)}*){
+    (*\hlmem{f32 val=vals[i,e]}*);
+    (*\hlcompute{f32 acc=out[b,e]}*);
+    (*\hlcompute{out[b,e]=acc+val}*); }}}}
+            \end{lstlisting}
+            \vspace{3.2em}
+            \caption{SCF IR}
+            \label{fig:lowering-scf}
+        \end{subfigure}
+        \begin{subfigure}[t]{0.635\columnwidth} % 55
+            \begin{lstlisting}[xleftmargin=1.5em]
+void eb(idxs: mref<? x idx>,
+         ptrs: mref<? x idx>,
+         vals: mref<? x f32>,
+         out: mref<? x ? x f32>){
+ (*\hlloop{slc.for(str b from 0 to n\_batches)}*){
+  (*\hlmem{str beg=slc.mem\_str(ptrs[b])}*);
+  (*\hlmem{str end=slc.mem\_str(ptrs[b+1])}*);
+  (*\hlloop{slc.for(str p from beg to end)}*){
+   (*\hlmem{str i=slc.mem\_str(idxs[p])}*);
+   (*\hlloop{slc.for(str es from 0 to emb\_len)}*){
+    (*\hlmem{str vals=slc.mem\_str(vals[i,e])}*);
+   (*\hlnone{ }*)slc.callback{
+    (*\hlnone{ }*)idx bv=slc.to_val(b);
+    (*\hlnone{ }*)idx ev=slc.to_val(e);
+    (*\hlnone{ }*)f32 val=slc.to_val(vals);
+     (*\hlcompute{f32 acc=out[bv,ev]}*);
+     (*\hlcompute{out[bv,ev]=acc+val}*); }}}}}
+            \end{lstlisting}
+            \caption{SLC IR}
+            \label{fig:lowering-slc}
+        \end{subfigure}
+    \end{subfigure}
+    %\vspace{-1em}
+    \caption[Lowering from SCF to Ember SLC IR.]{Lowering from SCF to our SLC IR. Ember converts SCF \hlloop{for-loops} into SLC for-loops and SCF \hlmem{memory accesses} into SLC streams. Ember wraps \hlcompute{computation} into SLC callbacks that can access SLC streams with stream-to-value operations.}
+    \label{fig:lowering}
+\end{figure}

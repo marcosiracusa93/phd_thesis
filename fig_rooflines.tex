@@ -1,0 +1,41 @@
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img_roofline_all.pdf}
+        \vspace{-0.5cm}
+        \caption{Geomean}
+        \label{fig:roofline-geomean}
+    \end{subfigure}
+    %\hfill
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img_roofline_spmv.pdf}
+        \vspace{-0.5cm}
+        \caption{SpMV}
+        \label{fig:roofline-spmv}
+    \end{subfigure}
+    %\hfill
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img_roofline_spgemm.pdf}
+        \vspace{-0.5cm}
+        \caption{SpMSpM}
+        \label{fig:roofline-spmspm}
+    \end{subfigure}
+    %\hfill
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{img_roofline_spkadd.pdf}
+        \vspace{-0.5cm}
+        \caption{SpKAdd}
+        \label{fig:roofline-spkadd}
+    \end{subfigure}
+    %\vspace{-1em}
+    \caption[Roofline models of a CPU and DAE processor on scientific kernels.]{Roofline models of traditional CPU and DAE processor for sparse kernels. The different plots show: (a) the geometric mean of all inputs considered for each workload (a), and all inputs for SpMV (a), SpMSpM (b), and SpKAdd (c). Overall, while the TMU does not improve operational intensity, it pushes performance closer to the architectural limit.}
+    \label{fig:rooflines}
+\end{figure}

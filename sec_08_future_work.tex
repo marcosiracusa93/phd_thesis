@@ -1,0 +1,14 @@
+\chapter{Future Work} \label{sec:future-work}
+
+This section outlines several promising directions for future research:
+\begin{itemize}
+    \item A key extension of our performance modeling and characterization effort is to broaden the scope of evaluated workloads, input datasets, and target architectures. Doing so will deepen our understanding of the diverse behaviors of sparse tensor applications and further validate the generality of our findings.
+
+    \item The TMU is currently being implemented and integrated into a system-on-chip developed at the Barcelona Supercomputing Center: an OpenPiton-based SoC featuring the CVA6 RISC-V core. Our first implementation consists of a single Traversal Unit (TU) capable of executing scalar SpMV in COO format. This prototype has already enabled us to: (1)~investigate system-level integration, (2)~develop software optimization techniques such as batching strategies and queue optimizations, and (3)~perform a comprehensive characterization of the system, revealing important insights into the TMU’s design trade-offs. These results demonstrate the feasibility of the TMU in a real SoC and mark the first milestone toward integrating a more sophisticated, multi-layer, multi-lane TMU into an HPC-oriented many-core system. Supporting multiple layers will enable nested-loop traversal needed for scalar SpMV in CSR format, while multiple lanes will enable vectorization.
+
+    \item Another direction on the architectural side is to optimize the TMU ISA and microarchitecture to also accelerate dense tensor algebra, similar in spirit to NVIDIA’s Tensor Memory Accelerators (TMAs). This would enable unified and efficient support for both sparse and dense tensor workloads within a single system.
+
+    \item A further architectural avenue is to explore the potential of the TMU to fetch data across multiple nodes and accelerate collective operations such as \texttt{allreduce}, which are central to the performance of modern distributed machine learning systems.
+
+    \item From the compiler perspective, we aim to extend Ember to support full sparse tensor algebra compilation, beyond sparse--dense tensor multiplications. The primary challenge is that the structured representation of merging involves \texttt{while} loops and \texttt{if--then--else} constructs, which do not map cleanly onto the SLC IR. Addressing this limitation may require introducing a custom structured operation for merging or initiating the lowering from a higher-level IR such as \texttt{LinAlg}.
+\end{itemize}

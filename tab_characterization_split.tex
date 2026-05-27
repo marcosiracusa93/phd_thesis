@@ -1,0 +1,99 @@
+\begin{table}[]
+    \centering
+    %\footnotesize
+    \caption[Algorithmic characterization of some popular embedding operations.]{Algorithmic characterization of the embedding operations in \Cref{sec:characterization-and-implications}. The compute-per-lookup ratio captures code complexity. Code with low compute-per-lookup ratio performs worse on massively-parallel architectures like GPU that hide embedding lookups with compute instructions.}
+    %\resizebox{\columnwidth}{!}{%
+    \begin{tabular}{clc}
+        \toprule
+            \makecell[c]{\textbf{Op}} & 
+            \makecell[l]{\textbf{Loop hierarchy}} & 
+            $\frac{\textbf{N}_\textbf{compute}}{\textbf{N}_\textbf{lookups}}$\\
+        \toprule
+            \makecell[c]{SpMM \\(GNNs)} &% \\ (\Cref{sec:characterization-and-implications-graph-learning})} &
+            \makecell[l]{$\forall$ vertex in graph\\
+                        \hspace{0.5em}$\forall$ neighbor of vertex\\
+                            \hspace{1em}\textbf{lookup} vector\\
+                            \hspace{1em}\textbf{rescale} vector\\
+                            \hspace{1em}\textbf{accumulate} vector} &
+            $\frac{2}{1}$\\
+        \hline
+            \makecell[c]{MP} &% \\ (\Cref{sec:characterization-and-implications-graph-learning})} &
+            \makecell[l]{$\forall$ vertex in graph\\
+                        \hspace{0.5em}\textbf{lookup} vertex vector\\
+                        \hspace{0.5em}$\forall$ neighbor of vertex\\
+                            \hspace{1em}\textbf{lookup} neighbor vector\\
+                            \hspace{1em}\textbf{multiply} vert-neigh vecs\\
+                            \hspace{1em}\textbf{scale} and \textbf{accumulate} vec\\
+                        \hspace{0.5em}\textbf{multiply-accumulate} vec} &
+            $\leq\frac{5}{2}$\\
+        \hline
+            \makecell[c]{KGs} &% \\ (\Cref{sec:characterization-and-implications-graph-learning})} &
+            \makecell[l]{$\forall$ sample in batch\\
+                            \hspace{0.5em}\textbf{lookup} vector\\
+                            \hspace{0.5em}\textbf{compute} h-r-l norm} &
+            $\frac{4}{3}$\\
+        \hline
+            \makecell[c]{EB \\ (DLRMs)} &% \\ (\Cref{sec:characterization-and-implications-dlrms})} &
+            \makecell[l]{$\forall$ segment in batch\\
+                            \hspace{0.5em}$\forall$ category in segment\\
+                                \hspace{1.0em}\textbf{lookup} vector\\
+                                \hspace{1.0em}\textbf{accumulate} vector} &
+            $\frac{1}{1}$\\
+        \hline
+            \makecell[c]{SpAttn \\ (LLMs)} &% \\ (\Cref{sec:characterization-and-implications-llms})} &
+            \makecell[l]{$\forall$ block in Q input\\
+                        \hspace{0.5em}$\forall$ block in K input\\
+                            \hspace{1.0em}$\forall$ token in K block\\
+                                \hspace{1.5em}\textbf{lookup} K vector\\
+                                \hspace{1.5em}$\forall$ token in Q block\\
+                                    \hspace{2em}\textbf{copy} K vector} &
+            $0$\\
+        \bottomrule
+    \end{tabular}
+    %}
+    \label{tab:characterization-code}
+    %\vspace{-2em}
+\end{table}
+
+\begin{table}[]
+    \centering
+    %\footnotesize
+    \caption[Memory characterization of some popular embedding operations.]{Memory characterization of the embedding operations in \Cref{sec:characterization-and-implications}. The memory footprint defines storage requirements for all embedding vectors. The temporal locality proxies cache efficiency through the Cumulative Distribution Function ($CDF$) of the vector reuse distance. The spatial locality proxies prefetcher efficiency through the number of embedding elements in each vector.}
+    %\resizebox{\columnwidth}{!}{%
+    \begin{tabular}{ccccc}
+        \toprule
+            \makecell[c]{\textbf{Op}} & 
+            \makecell[c]{\textbf{Memory} \\ \textbf{footprint}} &
+            \makecell[c]{\textbf{Temporal locality} \\ \textbf{(reuse distance CDF)}} &
+            \makecell[c]{\textbf{Spatial locality} \\ \textbf{(vector dim.)}}\\
+        \toprule
+            \makecell[c]{SpMM \\(GNNs)} &% \\ (\Cref{sec:characterization-and-implications-graph-learning})} &
+            \makecell{Single embedding \\ table GBs large} &
+            \vcentered{\includegraphics[width=.35\linewidth]{img_cdf_gnn.pdf}} &
+            8-349\\ 
+        \hline
+            \makecell[c]{MP} &% \\ (\Cref{sec:characterization-and-implications-graph-learning})} &
+            \makecell{Two embedding tables, \\ each GBs large} &
+            \vcentered{\includegraphics[width=.35\linewidth]{img_cdf_mp.pdf}} &
+            128\\
+        \hline
+            \makecell[c]{KGs} &% \\ (\Cref{sec:characterization-and-implications-graph-learning})} &
+            \makecell{Single embedding \\ table GBs large} &
+            \vcentered{\includegraphics[width=.35\linewidth]{img_cdf_kg.pdf}} &
+            512\\
+        \hline
+            \makecell[c]{EB \\ (DLRMs)} &% \\ (\Cref{sec:characterization-and-implications-dlrms})} &
+            \makecell{All embedding tables \\ require GBs~\cite{dlrm2020hpca}\\ to TBs~\cite{caches2022memsys}} &
+            \vcentered{\includegraphics[width=.35\linewidth]{img_cdf_dlrm.pdf}} &
+            32-256\\
+        \hline
+            \makecell[c]{SpAttn \\ (LLMs)} &% \\ (\Cref{sec:characterization-and-implications-llms})} &
+            \makecell{K-V tensors are MBs \\ Out tensor is MB-GB} &
+            \vcentered{\includegraphics[width=.35\linewidth]{img_cdf_llm.pdf}} &
+            $\leq$ 8x8x512\\
+        \bottomrule
+    \end{tabular}
+    %}
+    \label{tab:characterization-embedding}
+    %\vspace{-2em}
+\end{table}

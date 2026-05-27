@@ -1,0 +1,45 @@
+\begin{table}[htbp!]
+\centering
+\caption[Summary of stall cycles for different processors and kernels.]
+{Minimum, average, and maximum frontend and backend stalls on A64FX and Graviton 3 for SpMV, SpMSpM, SpAdd.}
+\label{tab:stalls}
+
+\begin{tabular}{cc|rrr|rrr|rrr}
+\toprule
+& &
+\multicolumn{3}{c|}{\textbf{SpMV}} &
+\multicolumn{3}{c|}{\textbf{SpMSpM}} &
+\multicolumn{3}{c}{\textbf{SpAdd}} \\
+& &
+\textbf{Min} & \textbf{Avg} & \textbf{Max} &
+\textbf{Min} & \textbf{Avg} & \textbf{Max} &
+\textbf{Min} & \textbf{Avg} & \textbf{Max} \\
+\midrule
+
+\multirow{2}{*}{\textbf{A64FX}}
+& \textbf{F-end stalls}
+& 0\% & 33\% & 78\%
+& 0\% & 28\% & 37\%
+& 16\% & 42\% & 54\% \\
+
+& \textbf{B-end stalls}
+& 2\% & 63\% & 99\%
+& 3\% & 21\% & 61\%
+& 0\% & 6\% & 8\% \\
+
+\midrule
+
+\multirow{2}{*}{\textbf{Graviton 3}}
+& \textbf{F-end stalls}
+& 0\% & 58\% & 98\%
+& 0\% & 7\% & 18\%
+& 0\% & 21\% & 29\% \\
+
+& \textbf{B-end stalls}
+& 1\% & 28\% & 86\%
+& 14\% & 38\% & 79\%
+& 4\% & 14\% & 26\% \\
+
+\bottomrule
+\end{tabular}
+\end{table}

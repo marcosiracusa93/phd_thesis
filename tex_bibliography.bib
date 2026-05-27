@@ -1,0 +1,2356 @@
+@inproceedings{dlrm2022mudigere,
+author = {Mudigere, Dheevatsa and Hao, Yuchen and Huang, Jianyu and Jia, Zhihao and Tulloch, Andrew and Sridharan, Srinivas and Liu, Xing and Ozdal, Mustafa and Nie, Jade and Park, Jongsoo and Luo, Liang and Yang, Jie (Amy) and Gao, Leon and Ivchenko, Dmytro and Basant, Aarti and Hu, Yuxi and Yang, Jiyan and Ardestani, Ehsan K. and Wang, Xiaodong and Komuravelli, Rakesh and Chu, Ching-Hsiang and Yilmaz, Serhat and Li, Huayu and Qian, Jiyuan and Feng, Zhuobo and Ma, Yinbin and Yang, Junjie and Wen, Ellie and Li, Hong and Yang, Lin and Sun, Chonglin and Zhao, Whitney and Melts, Dimitry and Dhulipala, Krishna and Kishore, KR and Graf, Tyler and Eisenman, Assaf and Matam, Kiran Kumar and Gangidi, Adi and Chen, Guoqiang Jerry and Krishnan, Manoj and Nayak, Avinash and Nair, Krishnakumar and Muthiah, Bharath and khorashadi, Mahmoud and Bhattacharya, Pallab and Lapukhov, Petr and Naumov, Maxim and Mathews, Ajit and Qiao, Lin and Smelyanskiy, Mikhail and Jia, Bill and Rao, Vijay},
+title = {Software-hardware co-design for fast and scalable training of deep learning recommendation models},
+year = {2022},
+isbn = {9781450386104},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3470496.3533727},
+doi = {10.1145/3470496.3533727},
+abstract = {Deep learning recommendation models (DLRMs) have been used across many business-critical services at Meta and are the single largest AI application in terms of infrastructure demand in its data-centers. In this paper, we present Neo, a software-hardware co-designed system for high-performance distributed training of large-scale DLRMs. Neo employs a novel 4D parallelism strategy that combines table-wise, row-wise, column-wise, and data parallelism for training massive embedding operators in DLRMs. In addition, Neo enables extremely high-performance and memory-efficient embedding computations using a variety of critical systems optimizations, including hybrid kernel fusion, software-managed caching, and quality-preserving compression. Finally, Neo is paired with ZionEX, a new hardware platform co-designed with Neo's 4D parallelism for optimizing communications for large-scale DLRM training. Our evaluation on 128 GPUs using 16 ZionEX nodes shows that Neo outperforms existing systems by up to 40\texttimes{} for training 12-trillion-parameter DLRM models deployed in production.},
+booktitle = {Proceedings of the 49th Annual International Symposium on Computer Architecture},
+pages = {993–1011},
+numpages = {19},
+location = {New York, New York},
+series = {ISCA '22}
+}
+
+@inproceedings{reuse2003pldi,
+author = {Ding, Chen and Zhong, Yutao},
+title = {Predicting whole-program locality through reuse distance analysis},
+year = {2003},
+isbn = {1581136625},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/781131.781159},
+doi = {10.1145/781131.781159},
+abstract = {Profiling can accurately analyze program behavior for select data inputs. We show that profiling can also predict program locality for inputs other than profiled ones. Here locality is defined by the distance of data reuse. Studying whole-program data reuse may reveal global patterns not apparent in short-distance reuses or local control flow. However, the analysis must meet two requirements to be useful. The first is efficiency. It needs to analyze all accesses to all data elements in full-size benchmarks and to measure distance of any length and in any required precision. The second is predication. Based on a few training runs, it needs to classify patterns as regular and irregular and, for regular ones, it should predict their (changing) behavior for other inputs. In this paper, we show that these goals are attainable through three techniques: approximate analysis of reuse distance (originally called LRU stack distance), pattern recognition, and distance-based sampling. When tested on 15 integer and floating-point programs from SPEC and other benchmark suites, our techniques predict with on average 94\% accuracy for data inputs up to hundreds times larger than the training inputs. Based on these results, the paper discusses possible uses of this analysis.},
+booktitle = {Proceedings of the ACM SIGPLAN 2003 Conference on Programming Language Design and Implementation},
+pages = {245–257},
+numpages = {13},
+keywords = {data locality, pattern recognition, prediction, profiling, program locality, reuse distance, sampling, stack distance, training},
+location = {San Diego, California, USA},
+series = {PLDI '03}
+}
+
+@INPROCEEDINGS{cabezas2014iisw,
+  author={Cabezas, Victoria Caparrós and Püschel, Markus},
+  booktitle={2014 IEEE International Symposium on Workload Characterization (IISWC)}, 
+  title={Extending the roofline model: Bottleneck analysis with microarchitectural constraints}, 
+  year={2014},
+  volume={},
+  number={},
+  pages={222-231},
+  keywords={Computational modeling;Microarchitecture;Throughput;Analytical models;Bandwidth;Hardware;Data models},
+  doi={10.1109/IISWC.2014.6983061}}
+
+@article{gao2023spgemm_survey,
+author = {Gao, Jianhua and Ji, Weixing and Chang, Fangli and Han, Shiyu and Wei, Bingxin and Liu, Zeming and Wang, Yizhuo},
+title = {A Systematic Survey of General Sparse Matrix-Matrix Multiplication},
+year = {2023},
+issue_date = {December 2023},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {55},
+number = {12},
+issn = {0360-0300},
+url = {https://doi.org/10.1145/3571157},
+doi = {10.1145/3571157},
+journal = {ACM Comput. Surv.},
+month = {mar},
+articleno = {244},
+numpages = {36},
+keywords = {parallel architecture, sparse matrix, parallel computing, SpGEMM}
+}
+
+@misc{lacouture2025fuseflow,
+      title={FuseFlow: A Fusion-Centric Compilation Framework for Sparse Deep Learning on Streaming Dataflow}, 
+      author={Rubens Lacouture and Nathan Zhang and Ritvik Sharma and Marco Siracusa and Fredrik Kjolstad and Kunle Olukotun and Olivia Hsu},
+      year={2025},
+      eprint={2511.04768},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2511.04768}, 
+}
+
+@INPROCEEDINGS {hussain2022spkadd,
+author = {M. Hussain and G. Abhishek and A. Buluc and A. Azad},
+booktitle = {2022 IEEE International Parallel and Distributed Processing Symposium Workshops (IPDPSW)},
+title = {Parallel Algorithms for Adding a Collection of Sparse Matrices},
+year = {2022},
+volume = {},
+issn = {},
+pages = {285-294},
+keywords = {deep learning;distributed processing;instruction sets;merging;memory management;data structures;libraries},
+doi = {10.1109/IPDPSW55747.2022.00058},
+url = {https://doi.ieeecomputersociety.org/10.1109/IPDPSW55747.2022.00058},
+publisher = {IEEE Computer Society},
+address = {Los Alamitos, CA, USA},
+month = {jun}
+}
+
+@inproceedings{liu2021sparta,
+author = {Liu, Jiawen and Ren, Jie and Gioiosa, Roberto and Li, Dong and Li, Jiajia},
+title = {Sparta: High-Performance, Element-Wise Sparse Tensor Contraction on Heterogeneous Memory},
+year = {2021},
+isbn = {9781450382946},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3437801.3441581},
+doi = {10.1145/3437801.3441581},
+booktitle = {Proceedings of the 26th ACM SIGPLAN Symposium on Principles and Practice of Parallel Programming},
+pages = {318–333},
+numpages = {16},
+keywords = {non-volatile memory, sparse tensor contraction, heterogeneous memory, multicore CPU, tensor product},
+location = {Virtual Event, Republic of Korea},
+series = {PPoPP '21}
+}
+
+@inproceedings{hegde2019extensor,
+author = {Hegde, Kartik and Asghari-Moghaddam, Hadi and Pellauer, Michael and Crago, Neal and Jaleel, Aamer and Solomonik, Edgar and Emer, Joel and Fletcher, Christopher W.},
+title = {ExTensor: An Accelerator for Sparse Tensor Algebra},
+year = {2019},
+isbn = {9781450369381},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3352460.3358275},
+doi = {10.1145/3352460.3358275},
+booktitle = {Proceedings of the 52nd Annual IEEE/ACM International Symposium on Microarchitecture},
+pages = {319–333},
+numpages = {15},
+keywords = {Tensor Algebra, Hardware Acceleration, Sparse Computation},
+location = {Columbus, OH, USA},
+series = {MICRO '52}
+}
+
+@INPROCEEDINGS{hwang2020centaur,
+  author={Hwang, Ranggi and Kim, Taehun and Kwon, Youngeun and Rhu, Minsoo},
+  booktitle={2020 ACM/IEEE 47th Annual International Symposium on Computer Architecture (ISCA)}, 
+  title={Centaur: A Chiplet-based, Hybrid Sparse-Dense Accelerator for Personalized Recommendations}, 
+  year={2020},
+  volume={},
+  number={},
+  pages={968-981},
+  keywords={Performance evaluation;Deep learning;Machine learning algorithms;Neural networks;Prototypes;Computer architecture;Throughput;Proposals;Electronic commerce;Field programmable gate arrays;Accelerator;processor architecture;FPGA;machine learning;neural network;deep learning},
+  doi={10.1109/ISCA45697.2020.00083}}
+
+@INPROCEEDINGS{mishra2017sparse,
+  author={Mishra, Asit K. and Nurvitadhi, Eriko and Venkatesh, Ganesh and Pearce, Jonathan and Marr, Debbie},
+  booktitle={2017 22nd Asia and South Pacific Design Automation Conference (ASP-DAC)}, 
+  title={Fine-grained accelerators for sparse machine learning workloads}, 
+  year={2017},
+  volume={},
+  number={},
+  pages={635-640},
+  keywords={Engines;Support vector machines;Data structures;Sparse matrices;Kernel;System-on-chip;Data models},
+  doi={10.1109/ASPDAC.2017.7858395}}
+
+@INPROCEEDINGS{nurvitadhi2016sparse,
+  author={Nurvitadhi, Eriko and Mishra, Asit and Wang, Yu and Venkatesh, Ganesh and Marr, Debbie},
+  booktitle={2016 Design, Automation \& Test in Europe Conference \& Exhibition (DATE)}, 
+  title={Hardware accelerator for analytics of sparse data}, 
+  year={2016},
+  volume={},
+  number={},
+  pages={1616-1621},
+  keywords={Sparse matrices;Hardware;Servers;Uniform resource locators;Algorithm design and analysis;Runtime;Program processors;Hardware accelerator;analytics;machine learning},
+  doi={}}
+
+
+@inproceedings{smith2015csf,
+author = {Smith, Shaden and Karypis, George},
+title = {Tensor-Matrix Products with a Compressed Sparse Tensor},
+year = {2015},
+isbn = {9781450340014},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2833179.2833183},
+doi = {10.1145/2833179.2833183},
+booktitle = {Proceedings of the 5th Workshop on Irregular Applications: Architectures and Algorithms},
+articleno = {5},
+numpages = {7},
+location = {Austin, Texas},
+series = {IA<sup>3</sup> '15}
+}
+
+@article{chou2018abstraction,
+author = {Chou, Stephen and Kjolstad, Fredrik and Amarasinghe, Saman},
+title = {Format Abstraction for Sparse Tensor Algebra Compilers},
+year = {2018},
+issue_date = {November 2018},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {2},
+number = {OOPSLA},
+url = {https://doi.org/10.1145/3276493},
+doi = {10.1145/3276493},
+journal = {Proc. ACM Program. Lang.},
+month = {oct},
+articleno = {123},
+numpages = {30},
+keywords = {modular code generation, sparse tensor algebra compilation, tensor formats}
+}
+
+@article{suitesparse2011acm,
+author = {Davis, Timothy A. and Hu, Yifan},
+title = {The university of Florida sparse matrix collection},
+year = {2011},
+issue_date = {November 2011},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {38},
+number = {1},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/2049662.2049663},
+doi = {10.1145/2049662.2049663},
+abstract = {We describe the University of Florida Sparse Matrix Collection, a large and actively growing set of sparse matrices that arise in real applications. The Collection is widely used by the numerical linear algebra community for the development and performance evaluation of sparse matrix algorithms. It allows for robust and repeatable experiments: robust because performance results with artificially generated matrices can be misleading, and repeatable because matrices are curated and made publicly available in many formats. Its matrices cover a wide spectrum of domains, include those arising from problems with underlying 2D or 3D geometry (as structural engineering, computational fluid dynamics, model reduction, electromagnetics, semiconductor devices, thermodynamics, materials, acoustics, computer graphics/vision, robotics/kinematics, and other discretizations) and those that typically do not have such geometry (optimization, circuit simulation, economic and financial modeling, theoretical and quantum chemistry, chemical process simulation, mathematics and statistics, power networks, and other networks and graphs). We provide software for accessing and managing the Collection, from MATLAB™, Mathematica™, Fortran, and C, as well as an online search capability. Graph visualization of the matrices is provided, and a new multilevel coarsening scheme is proposed to facilitate this task.},
+journal = {ACM Trans. Math. Softw.},
+month = dec,
+articleno = {1},
+numpages = {25},
+keywords = {Graph drawing, multilevel algorithms, performance evaluation, sparse matrices}
+}
+
+@inproceedings{fireman2007alignment,
+author = {Fireman, Liza and Petrank, Erez and Zaks, Ayal},
+title = {New algorithms for SIMD alignment},
+year = {2007},
+isbn = {9783540712282},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg},
+abstract = {Optimizing programs for modern multiprocessor or vector platforms is a major important challenge for compilers today. In this work, we focus on one challenging aspect: the SIMD ALIGNMENT problem. Previously, only heuristics were used to solve this problem, without guarantees on the number of shifts in the obtained solution.We study two interesting and realistic special cases of the SIMD ALIGNMENT problem and present two novel and efficient algorithms that provide optimal solutions for these two cases. The new algorithms employ dynamic programming and a MIN-CUT/MAX-FLOWalgorithm as subroutines.We also discuss the relation between the SIMD ALIGNMENT problem and the MULTIWAY CUT and NODE MULTIWAY CUT problems; and we show how to derive an approximated solution to the SIMD ALIGNMENT problem based on approximation algorithms to these two known problems.},
+booktitle = {Proceedings of the 16th International Conference on Compiler Construction},
+pages = {1–15},
+numpages = {15},
+location = {Braga, Portugal},
+series = {CC'07}
+}
+@inproceedings{eichenberger2004alignment,
+author = {Eichenberger, Alexandre E. and Wu, Peng and O'Brien, Kevin},
+title = {Vectorization for SIMD architectures with alignment constraints},
+year = {2004},
+isbn = {1581138075},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/996841.996853},
+doi = {10.1145/996841.996853},
+abstract = {When vectorizing for SIMD architectures that are commonly employed by today's multimedia extensions, one of the new challenges that arise is the handling of memory alignment. Prior research has focused primarily on vectorizing loops where all memory references are properly aligned. An important aspect of this problem, namely, how to vectorize misaligned memory references, still remains unaddressed.This paper presents a compilation scheme that systematically vectorizes loops in the presence of misaligned memory references. The core of our technique is to automatically reorganize data in registers to satisfy the alignment requirement imposed by the hardware. To reduce the data reorganization overhead, we propose several techniques to minimize the number of data reorganization operations generated. During the code generation, our algorithm also exploits temporal reuse when aligning references that access contiguous memory across loop iterations. Our code generation scheme guarantees to never load the same data associated with a single static access twice. Experimental results indicate near peak speedup factors, e.g., 3.71 for 4 data per vector and 6.06 for 8 data per vector, respectively, for a set of loops where 75\% or more of the static memory references are misaligned.},
+booktitle = {Proceedings of the ACM SIGPLAN 2004 Conference on Programming Language Design and Implementation},
+pages = {82–93},
+numpages = {12},
+keywords = {vectorization, simdization, multimedia extensions, compiler, alignment, SIMD},
+location = {Washington DC, USA},
+series = {PLDI '04}
+}
+
+@ARTICLE{cong2011autoesl,
+  author={Cong, Jason and Liu, Bin and Neuendorffer, Stephen and Noguera, Juanjo and Vissers, Kees and Zhang, Zhiru},
+  journal={IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems}, 
+  title={High-Level Synthesis for FPGAs: From Prototyping to Deployment}, 
+  year={2011},
+  volume={30},
+  number={4},
+  pages={473-491},
+  keywords={Field programmable gate arrays;Hardware;Algorithm design and analysis;Program processors;Optimization;System-on-a-chip;Domain-specific design;field-programmable gate array (FPGA);high-level synthesis (HLS);quality of results (QoR)},
+  doi={10.1109/TCAD.2011.2110592}}
+
+
+@inproceedings{tmu2023micro,
+author = {Siracusa, Marco and Soria-Pardos, V\'{\i}ctor and Sgherzi, Francesco and Randall, Joshua and Joseph, Douglas J. and Moret\'{o} Planas, Miquel and Armejach, Adri\`{a}},
+title = {A Tensor Marshaling Unit for Sparse Tensor Algebra on General-Purpose Processors},
+year = {2023},
+isbn = {9798400703294},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3613424.3614284},
+doi = {10.1145/3613424.3614284},
+abstract = {This paper proposes the Tensor Marshaling Unit (TMU), a near-core programmable dataflow engine for multicore architectures that accelerates tensor traversals and merging, the most critical operations of sparse tensor workloads running on today’s computing infrastructures. The TMU leverages a novel multi-lane design that enables parallel tensor loading and merging, which naturally produces vector operands that are marshaled into the core for efficient SIMD computation. The TMU supports all the necessary primitives to be tensor-format and tensor-algebra complete. We evaluate the TMU on a simulated multicore system using a broad set of tensor algebra workloads, achieving 3.6 \texttimes{}, 2.8 \texttimes{}, and 4.9 \texttimes{} speedups over memory-intensive, compute-intensive, and merge-intensive vectorized software implementations, respectively.},
+booktitle = {Proceedings of the 56th Annual IEEE/ACM International Symposium on Microarchitecture},
+pages = {1332–1346},
+numpages = {15},
+keywords = {vectorization, tensor merging, sparse tensor algebra, parallel tensor traversal, Dataflow accelerator},
+location = {<conf-loc>, <city>Toronto</city>, <state>ON</state>, <country>Canada</country>, </conf-loc>},
+series = {MICRO '23}
+}
+
+@article{spchar2024jpdc,
+title = {SpChar: Characterizing the sparse puzzle via decision trees},
+journal = {Journal of Parallel and Distributed Computing},
+volume = {192},
+pages = {104941},
+year = {2024},
+issn = {0743-7315},
+doi = {https://doi.org/10.1016/j.jpdc.2024.104941},
+url = {https://www.sciencedirect.com/science/article/pii/S0743731524001059},
+author = {Francesco Sgherzi and Marco Siracusa and Ivan Fernandez and Adrià Armejach and Miquel Moretó},
+keywords = {Sparse computation, Workload characterization, Arm, Simulation, Decision trees},
+abstract = {Sparse matrix computation is crucial in various modern applications, including large-scale graph analytics, deep learning, and recommender systems. The performance of sparse kernels varies greatly depending on the structure of the input matrix, making it difficult to gain a comprehensive understanding of sparse computation and its relationship to inputs, algorithms, and target machine architecture. Despite extensive research on certain sparse kernels, such as Sparse Matrix-Vector Multiplication (SpMV), the overall family of sparse algorithms has yet to be investigated as a whole. This paper introduces SpChar, a workload characterization methodology for general sparse computation. SpChar employs tree-based models to identify the most relevant hardware and input characteristics, starting from hardware and input-related metrics gathered from Performance Monitoring Counters (PMCs) and matrices. Our analysis enables the creation of a characterization loop that facilitates the optimization of sparse computation by mapping the impact of architectural features to inputs and algorithmic choices. We apply SpChar to more than 600 matrices from the SuiteSparse Matrix collection and three state-of-the-art Arm Central Processing Units (CPUs) to determine the critical hardware and software characteristics that affect sparse computation. In our analysis, we determine that the biggest limiting factors for high-performance sparse computation are (1) the latency of the memory system, (2) the pipeline flush overhead resulting from branch misprediction, and (3) the poor reuse of cached elements. Additionally, we propose software and hardware optimizations that designers can implement to create a platform suitable for sparse computation. We then investigate these optimizations using the gem5 simulator to achieve a significant speedup of up to 2.63× compared to a CPU where the optimizations are not applied.}
+}
+
+@ARTICLE{panda2020tcad,
+  author={Siracusa, Marco and Ferrandi, Fabrizio},
+  journal={IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems}, 
+  title={Tensor Optimization for High-Level Synthesis Design Flows}, 
+  year={2020},
+  volume={39},
+  number={11},
+  pages={4217-4228},
+  keywords={Optimization;Resource management;Field programmable gate arrays;Tensors;Arrays;Benchmark testing;Tools;Design optimization;field programmable gate arrays;high-level synthesis;memory management},
+  doi={10.1109/TCAD.2020.3012318}}
+
+@ARTICLE{cad2022tc,
+  author={Siracusa, Marco and Del Sozzo, Emanuele and Rabozzi, Marco and Di Tucci, Lorenzo and Williams, Samuel and Sciuto, Donatella and Santambrogio, Marco Domenico},
+  journal={IEEE Transactions on Computers}, 
+  title={A Comprehensive Methodology to Optimize FPGA Designs via the Roofline Model}, 
+  year={2022},
+  volume={71},
+  number={8},
+  pages={1903-1915},
+  keywords={Field programmable gate arrays;Optimization;Computational modeling;Analytical models;Estimation;Engines;Data models;Roofline performance model;FPGA;high-performance computing;hardware accelerator design},
+  doi={10.1109/TC.2021.3111761}}
+
+@article{fpga2022ccpe,
+	title        = {{FPGA-based HPC accelerators: An evaluation on performance and energy efficiency}},
+	author       = {Nguyen, Tan and MacLean, Colin and Siracusa, Marco and Doerfler, Douglas and Wright, Nicholas J. and Williams, Samuel},
+	year         = 2022,
+	journal      = {Concurrency and Computation: Practice and Experience},
+	volume       = 34,
+	number       = 20,
+	pages        = {e6570},
+	doi          = {https://doi.org/10.1002/cpe.6570},
+	url          = {https://onlinelibrary.wiley.com/doi/abs/10.1002/cpe.6570},
+	eprint       = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/cpe.6570}
+}
+
+@inproceedings{topk2021dac,
+	title        = {{Scaling up HBM efficiency of Top-K SpMV for approximate embedding similarity on FPGAs}},
+	author       = {Parravicini, Alberto and Cellamare, Luca Giuseppe and Siracusa, Marco and Santambrogio, Marco D},
+	year         = 2021,
+	booktitle    = {2021 58th ACM/IEEE Design Automation Conference (DAC)},
+	pages        = {799--804},
+	organization = {IEEE}
+}
+
+@inproceedings{fpga2021iwocl,
+author = {Doerfler, Douglas and Fatollahi-Fard, Farzad and MacLean, Colin and Nguyen, Tan and Williams, Samuel and Wright, Nicholas and Siracusa, Marco},
+title = {Experiences Porting the SU3\_Bench Microbenchmark to the Intel Arria 10 and Xilinx Alveo U280 FPGAs},
+year = {2021},
+isbn = {9781450390330},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3456669.3456671},
+doi = {10.1145/3456669.3456671},
+booktitle = {Proceedings of the 9th International Workshop on OpenCL},
+articleno = {1},
+numpages = {9},
+keywords = {FPGA, Lattice Quantum Chromodynamics, OpenCL, Performance, Portability},
+location = {Munich, Germany},
+series = {IWOCL '21}
+}
+
+@inproceedings{eigen2021fccm,
+  author={Sgherzi, Francesco and Parravicini, Alberto and Siracusa, Marco and Santambrogio, Marco D.},
+  booktitle={2021 IEEE 29th Annual International Symposium on Field-Programmable Custom Computing Machines (FCCM)}, 
+  title={Solving Large Top-K Graph Eigenproblems with a Memory and Compute-optimized FPGA Design}, 
+  year={2021},
+  volume={},
+  number={},
+  pages={78-87},
+  keywords={Jacobian matrices;Machine learning algorithms;Computer architecture;Bandwidth;Feature extraction;Eigenvalues and eigenfunctions;Hardware;Eigenvectors;FPGA;SpMV;Sparse Linear Algebra;Hardware Acceleration;Approximate Computing},
+  doi={10.1109/FCCM51124.2021.00017}}
+
+@INPROCEEDINGS{williams2007spmv,
+  author={Williams, Samuel and Oliker, Leonid and Vuduc, Richard and Shalf, John and Yelick, Katherine and Demmel, James},
+  booktitle={SC '07: Proceedings of the 2007 ACM/IEEE Conference on Supercomputing}, 
+  title={Optimization of sparse matrix-vector multiplication on emerging multicore platforms}, 
+  year={2007},
+  volume={},
+  number={},
+  pages={1-12},
+  doi={10.1145/1362622.1362674}}
+
+@article{roofline2009acm,
+author = {Williams, Samuel and Waterman, Andrew and Patterson, David},
+title = {Roofline: an insightful visual performance model for multicore architectures},
+year = {2009},
+issue_date = {April 2009},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {52},
+number = {4},
+issn = {0001-0782},
+url = {https://doi.org/10.1145/1498765.1498785},
+doi = {10.1145/1498765.1498785},
+abstract = {The Roofline model offers insight on how to improve the performance of software and hardware.},
+journal = {Commun. ACM},
+month = {apr},
+pages = {65–76},
+numpages = {12}
+}
+
+@inproceedings{ogb2020neurips,
+author = {Hu, Weihua and Fey, Matthias and Zitnik, Marinka and Dong, Yuxiao and Ren, Hongyu and Liu, Bowen and Catasta, Michele and Leskovec, Jure},
+title = {Open graph benchmark: datasets for machine learning on graphs},
+year = {2020},
+isbn = {9781713829546},
+publisher = {Curran Associates Inc.},
+address = {Red Hook, NY, USA},
+abstract = {We present the OPEN GRAPH BENCHMARK (OGB), a diverse set of challenging and realistic benchmark datasets to facilitate scalable, robust, and reproducible graph machine learning (ML) research. OGB datasets are large-scale, encompass multiple important graph ML tasks, and cover a diverse range of domains, ranging from social and information networks to biological networks, molecular graphs, source code ASTs, and knowledge graphs. For each dataset, we provide a unified evaluation protocol using meaningful application-specific data splits and evaluation metrics. In addition to building the datasets, we also perform extensive benchmark experiments for each dataset. Our experiments suggest that OGB datasets present significant challenges of scalability to large-scale graphs and out-of-distribution generalization under realistic data splits, indicating fruitful opportunities for future research. Finally, OGB provides an automated end-to-end graph ML pipeline that simplifies and standardizes the process of graph data loading, experimental setup, and model evaluation. OGB will be regularly updated and welcomes inputs from the community.},
+booktitle = {Proceedings of the 34th International Conference on Neural Information Processing Systems},
+articleno = {1855},
+numpages = {16},
+location = {<conf-loc>, <city>Vancouver</city>, <state>BC</state>, <country>Canada</country>, </conf-loc>},
+series = {NIPS '20}
+}
+
+@inproceedings{recshard2022asplos,
+author = {Sethi, Geet and Acun, Bilge and Agarwal, Niket and Kozyrakis, Christos and Trippel, Caroline and Wu, Carole-Jean},
+title = {RecShard: statistical feature-based memory optimization for industry-scale neural recommendation},
+year = {2022},
+isbn = {9781450392051},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3503222.3507777},
+doi = {10.1145/3503222.3507777},
+abstract = {We propose RecShard, a fine-grained embedding table (EMB) partitioning and placement technique for deep learning recommendation models (DLRMs). RecShard is designed based on two key observations. First, not all EMBs are equal, nor all rows within an EMB are equal in terms of access patterns. EMBs exhibit distinct memory characteristics, providing performance optimization opportunities for intelligent EMB partitioning and placement across a tiered memory hierarchy. Second, in modern DLRMs, EMBs function as hash tables. As a result, EMBs display interesting phenomena, such as the birthday paradox, leaving EMBs severely under-utilized. RecShard determines an optimal EMB sharding strategy for a set of EMBs based on training data distributions and model characteristics, along with the bandwidth characteristics of the underlying tiered memory hierarchy. In doing so, RecShard achieves over 6 times higher EMB training throughput on average for capacity constrained DLRMs. The throughput increase comes from improved EMB load balance by over 12 times and from the reduced access to the slower memory by over 87 times.},
+booktitle = {Proceedings of the 27th ACM International Conference on Architectural Support for Programming Languages and Operating Systems},
+pages = {344–358},
+numpages = {15},
+keywords = {Neural networks, Memory optimization, Deep learning recommendation models, AI training systems},
+location = {Lausanne, Switzerland},
+series = {ASPLOS '22}
+}
+
+@inproceedings{bigbird2024neurips,
+ author = {Zaheer, Manzil and Guruganesh, Guru and Dubey, Kumar Avinava and Ainslie, Joshua and Alberti, Chris and Ontanon, Santiago and Pham, Philip and Ravula, Anirudh and Wang, Qifan and Yang, Li and Ahmed, Amr},
+ booktitle = {Advances in Neural Information Processing Systems},
+ editor = {H. Larochelle and M. Ranzato and R. Hadsell and M.F. Balcan and H. Lin},
+ pages = {17283--17297},
+ publisher = {Curran Associates, Inc.},
+ title = {Big Bird: Transformers for Longer Sequences},
+ url = {https://proceedings.neurips.cc/paper_files/paper/2020/file/c8512d142a2d849725f31a9a7a361ab9-Paper.pdf},
+ volume = {33},
+ year = {2020}
+}
+
+@misc{snapnets2014,
+  author       = {Jure Leskovec and Andrej Krevl},
+  title        = {{SNAP Datasets}: {Stanford} Large Network Dataset Collection},
+  howpublished = {\url{http://snap.stanford.edu/data}},
+  month        = jun,
+  year         = 2014
+}
+
+@INPROCEEDINGS{spzip2021isca,
+  author={Yang, Yifan and Emer, Joel S. and Sanchez, Daniel},
+  booktitle={2021 ACM/IEEE 48th Annual International Symposium on Computer Architecture (ISCA)}, 
+  title={SpZip: Architectural Support for Effective Data Compression In Irregular Applications}, 
+  year={2021},
+  volume={},
+  number={},
+  pages={1069-1082},
+  keywords={Art;Multicore processing;Software algorithms;Data compression;Linear algebra;Performance gain;Data structures;data compression;data movement;decoupled execution;irregular applications;sparse data structures;graph analytics},
+  doi={10.1109/ISCA52012.2021.00087}}
+
+@inproceedings{sam2023asplos,
+author = {Hsu, Olivia and Strange, Maxwell and Sharma, Ritvik and Won, Jaeyeon and Olukotun, Kunle and Emer, Joel S. and Horowitz, Mark A. and Kj\o{}lstad, Fredrik},
+title = {The Sparse Abstract Machine},
+year = {2023},
+isbn = {9781450399180},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi-org.stanford.idm.oclc.org/10.1145/3582016.3582051},
+doi = {10.1145/3582016.3582051},
+abstract = {We propose the Sparse Abstract Machine (SAM), an abstract machine model for targeting sparse tensor algebra to reconfigurable and fixed-function spatial dataflow accelerators. SAM defines a streaming dataflow abstraction with sparse primitives that encompass a large space of scheduled tensor algebra expressions. SAM dataflow graphs naturally separate tensor formats from algorithms and are expressive enough to incorporate arbitrary iteration orderings and many hardware-specific optimizations. We also present Custard, a compiler from a high-level language to SAM that demonstrates SAM's usefulness as an intermediate representation. We automatically bind from SAM to a streaming dataflow simulator. We evaluate the generality and extensibility of SAM, explore the performance space of sparse tensor algebra optimizations using SAM, and show SAM's ability to represent dataflow hardware.},
+booktitle = {Proceedings of the 28th ACM International Conference on Architectural Support for Programming Languages and Operating Systems, Volume 3},
+pages = {710–726},
+numpages = {17},
+keywords = {abstract machine, domain-specific, sparse tensor algebra, streams},
+location = {<conf-loc>, <city>Vancouver</city>, <state>BC</state>, <country>Canada</country>, </conf-loc>},
+series = {ASPLOS 2023}
+}
+
+@article{mlirsparse2022taco,
+author = {Bik, Aart and Koanantakool, Penporn and Shpeisman, Tatiana and Vasilache, Nicolas and Zheng, Bixia and Kjolstad, Fredrik},
+title = {Compiler Support for Sparse Tensor Computations in MLIR},
+year = {2022},
+issue_date = {December 2022},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {19},
+number = {4},
+issn = {1544-3566},
+url = {https://doi-org.stanford.idm.oclc.org/10.1145/3544559},
+doi = {10.1145/3544559},
+abstract = {Sparse tensors arise in problems in science, engineering, machine learning, and data analytics. Programs that operate on such tensors can exploit sparsity to reduce storage requirements and computational time. Developing and maintaining sparse software by hand, however, is a complex and error-prone task. Therefore, we propose treating sparsity as a property of tensors, not a tedious implementation task, and letting a sparse compiler generate sparse code automatically from a sparsity-agnostic definition of the computation. This article discusses integrating this idea into MLIR.},
+journal = {ACM Trans. Archit. Code Optim.},
+month = {sep},
+articleno = {50},
+numpages = {25},
+keywords = {machine learning, tensor algebra, sparse data structures, Compilers}
+}
+
+@article{mosaic2023pldi,
+author = {Bansal, Manya and Hsu, Olivia and Olukotun, Kunle and Kjolstad, Fredrik},
+title = {Mosaic: An Interoperable Compiler for Tensor Algebra},
+year = {2023},
+issue_date = {June 2023},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {7},
+number = {PLDI},
+url = {https://doi-org.stanford.idm.oclc.org/10.1145/3591236},
+doi = {10.1145/3591236},
+abstract = {We introduce Mosaic, a sparse tensor algebra compiler that can bind tensor expressions to external functions of other tensor algebra libraries and compilers. Users can extend Mosaic by adding new functions and bind a sub-expression to a function using a scheduling API. Mosaic substitutes the bound sub-expressions with calls to the external functions and automatically generates the remaining code using a default code generator. As the generated code is fused by default, users can productively leverage both fusion and calls to specialized functions within the same compiler. We demonstrate the benefits of our dual approach by showing that calling hand-written CPU and specialized hardware functions can provide speedups of up to 206\texttimes{} against fused code in some cases, while generating fused code can provide speedups of up to 3.57\texttimes{} against code that calls external functions in other cases. Mosaic also offers a search system that can automatically map an expression to a set of registered external functions. Both the explicit binding and automatic search are verified by Mosaic. Additionally, the interface for adding new external functions is simple and general. Currently, 38 external functions have been added to Mosaic, with each addition averaging 20 lines of code.},
+journal = {Proc. ACM Program. Lang.},
+month = {jun},
+articleno = {122},
+numpages = {26},
+keywords = {automated search, compilation, external functions, sparse tensor algebra}
+}
+
+@inproceedings{looplets2023cgo,
+author = {Ahrens, Willow and Donenfeld, Daniel and Kjolstad, Fredrik and Amarasinghe, Saman},
+title = {Looplets: A Language for Structured Coiteration},
+year = {2023},
+isbn = {9798400701016},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi-org.stanford.idm.oclc.org/10.1145/3579990.3580020},
+doi = {10.1145/3579990.3580020},
+abstract = {Real world arrays often contain underlying structure, such as sparsity, runs of repeated values, or symmetry. Specializing for structure yields significant speedups. But automatically generating efficient code for structured data is challenging, especially when arrays with different structure interact. We show how to abstract over array structures so that the compiler can generate code to coiterate over any combination of them. Our technique enables new array formats (such as 1DVBL for irregular clustered sparsity), new iteration strategies (such as galloping intersections), and new operations over structured data (such as concatenation or convolution).},
+booktitle = {Proceedings of the 21st ACM/IEEE International Symposium on Code Generation and Optimization},
+pages = {41–54},
+numpages = {14},
+keywords = {Array, Coiteration, Compressed, Sparse, Tensor},
+location = {Montr\'{e}al, QC, Canada},
+series = {CGO 2023}
+}
+
+@inproceedings{desc2015micro,
+author = {Ham, Tae Jun and Arag\'{o}n, Juan L. and Martonosi, Margaret},
+title = {DeSC: decoupled supply-compute communication management for heterogeneous architectures},
+year = {2015},
+isbn = {9781450340342},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi-org.stanford.idm.oclc.org/10.1145/2830772.2830800},
+doi = {10.1145/2830772.2830800},
+abstract = {Today's computers employ significant heterogeneity to meet performance targets at manageable power. In adopting increased compute specialization, however, the relative amount of time spent on memory or communication latency has increased. System and software optimizations for memory and communication often come at the costs of increased complexity and reduced portability. We propose Decoupled Supply-Compute (DeSC) as a way to attack memory bottlenecks automatically, while maintaining good portability and low complexity. Drawing from Decoupled Access Execute (DAE) approaches, our work updates and expands on these techniques with increased specialization and automatic compiler support. Across the evaluated workloads, DeSC offers an average of 2.04x speedup over baseline (on homogeneous CMPs) and 1.56x speedup when a DeSC data supplier feeds data to a hardware accelerator. Achieving performance very close to what a perfect cache hierarchy would offer, DeSC offers the performance gains of specialized communication acceleration while maintaining useful generality across platforms.},
+booktitle = {Proceedings of the 48th International Symposium on Microarchitecture},
+pages = {191–203},
+numpages = {13},
+keywords = {DeSC, accelerators, communication management, decoupled architecture},
+location = {Waikiki, Hawaii},
+series = {MICRO-48}
+}
+
+@software{iree2019software,
+author = {{The IREE Authors}},
+license = {Apache-2.0 WITH LLVM-exception},
+month = sep,
+title = {{IREE}},
+url = {https://github.com/iree-org/iree},
+year = {2019}
+}
+
+@inproceedings{ember2026cgo,
+author = {Siracusa, Marco and Hus, Olivia and Soria-Pardos, V\'{\i}ctor and Randall, Joshua and Grasset, Arnaud and Biscondi, Eric and Joseph, Douglas J. and Allen, Randy and Kjolstad, Fredrik and Moret\'{o} Planas, Miquel and Armejach, Adri\`{a}},
+title = {Ember: A Compiler for Embedding Operations on Decoupled Access-Execute Architectures},
+year = {2026},
+booktitle = {Proceedings of the 24th ACM/IEEE International Symposium on Code Generation and Optimization},
+location = {Sydney, Australia},
+series = {CGO '26}
+}
+
+@inproceedings{mlir2021cgo,
+author = {Lattner, Chris and Amini, Mehdi and Bondhugula, Uday and Cohen, Albert and Davis, Andy and Pienaar, Jacques and Riddle, River and Shpeisman, Tatiana and Vasilache, Nicolas and Zinenko, Oleksandr},
+title = {MLIR: scaling compiler infrastructure for domain specific computation},
+year = {2021},
+isbn = {9781728186139},
+publisher = {IEEE Press},
+url = {https://doi-org.stanford.idm.oclc.org/10.1109/CGO51591.2021.9370308},
+doi = {10.1109/CGO51591.2021.9370308},
+abstract = {This work presents MLIR, a novel approach to building reusable and extensible compiler infrastructure. MLIR addresses software fragmentation, compilation for heterogeneous hardware, significantly reducing the cost of building domain specific compilers, and connecting existing compilers together.MLIR facilitates the design and implementation of code generators, translators and optimizers at different levels of abstraction and across application domains, hardware targets and execution environments. The contribution of this work includes (1) discussion of MLIR as a research artifact, built for extension and evolution, while identifying the challenges and opportunities posed by this novel design, semantics, optimization specification, system, and engineering. (2) evaluation of MLIR as a generalized infrastructure that reduces the cost of building compilers---describing diverse use-cases to show research and educational opportunities for future programming languages, compilers, execution environments, and computer architecture. The paper also presents the rationale for MLIR, its original design principles, structures and semantics.},
+booktitle = {Proceedings of the 2021 IEEE/ACM International Symposium on Code Generation and Optimization},
+pages = {2–14},
+numpages = {13},
+location = {Virtual Event, Republic of Korea},
+series = {CGO '21}
+}
+
+@article{taco2017oopsla,
+author = {Kjolstad, Fredrik and Kamil, Shoaib and Chou, Stephen and Lugato, David and Amarasinghe, Saman},
+title = {The tensor algebra compiler},
+year = {2017},
+issue_date = {October 2017},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {1},
+number = {OOPSLA},
+url = {https://doi-org.stanford.idm.oclc.org/10.1145/3133901},
+doi = {10.1145/3133901},
+abstract = {Tensor algebra is a powerful tool with applications in machine learning, data analytics, engineering and the physical sciences. Tensors are often sparse and compound operations must frequently be computed in a single kernel for performance and to save memory. Programmers are left to write kernels for every operation of interest, with different mixes of dense and sparse tensors in different formats. The combinations are infinite, which makes it impossible to manually implement and optimize them all. This paper introduces the first compiler technique to automatically generate kernels for any compound tensor algebra operation on dense and sparse tensors. The technique is implemented in a C++ library called taco. Its performance is competitive with best-in-class hand-optimized kernels in popular libraries, while supporting far more tensor operations.},
+journal = {Proc. ACM Program. Lang.},
+month = {oct},
+articleno = {77},
+numpages = {29},
+keywords = {tensors, tensor algebra, sparse data structures, performance, parallelism, merge lattices, linear algebra, iteration graphs, code generation}
+}
+
+@article{indexstreams2023pldi,
+author = {Kovach, Scott and Kolichala, Praneeth and Gu, Tiancheng and Kjolstad, Fredrik},
+title = {Indexed Streams: A Formal Intermediate Representation for Fused Contraction Programs},
+year = {2023},
+issue_date = {June 2023},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {7},
+number = {PLDI},
+url = {https://doi-org.stanford.idm.oclc.org/10.1145/3591268},
+doi = {10.1145/3591268},
+abstract = {We introduce indexed streams, a formal operational model and intermediate representation that describes the fused execution of a contraction language that encompasses both sparse tensor algebra and relational algebra. We prove that the indexed stream model is correct with respect to a functional semantics. We also develop a compiler for contraction expressions that uses indexed streams as an intermediate representation. The compiler is only 540 lines of code, but we show that its performance can match both the TACO compiler for sparse tensor algebra and the SQLite and DuckDB query processing libraries for relational algebra.},
+journal = {Proc. ACM Program. Lang.},
+month = {jun},
+articleno = {154},
+numpages = {25},
+keywords = {streams, operational semantics, functional programming, contractions}
+}
+
+@article{tacoscheduling2020oopsla,
+author = {Senanayake, Ryan and Hong, Changwan and Wang, Ziheng and Wilson, Amalee and Chou, Stephen and Kamil, Shoaib and Amarasinghe, Saman and Kjolstad, Fredrik},
+title = {A sparse iteration space transformation framework for sparse tensor algebra},
+year = {2020},
+issue_date = {November 2020},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {4},
+number = {OOPSLA},
+url = {https://doi-org.stanford.idm.oclc.org/10.1145/3428226},
+doi = {10.1145/3428226},
+abstract = {We address the problem of optimizing sparse tensor algebra in a compiler and show how to define standard loop transformations---split, collapse, and reorder---on sparse iteration spaces. The key idea is to track the transformation functions that map the original iteration space to derived iteration spaces. These functions are needed by the code generator to emit code that maps coordinates between iteration spaces at runtime, since the coordinates in the sparse data structures remain in the original iteration space. We further demonstrate that derived iteration spaces can tile both the universe of coordinates and the subset of nonzero coordinates: the former is analogous to tiling dense iteration spaces, while the latter tiles sparse iteration spaces into statically load-balanced blocks of nonzeros. Tiling the space of nonzeros lets the generated code efficiently exploit heterogeneous compute resources such as threads, vector units, and GPUs.  We implement these concepts by extending the sparse iteration theory implementation in the TACO system. The associated scheduling API can be used by performance engineers or it can be the target of an automatic scheduling system. We outline one heuristic autoscheduling system, but other systems are possible. Using the scheduling API, we show how to optimize mixed sparse-dense tensor algebra expressions on CPUs and GPUs. Our results show that the sparse transformations are sufficient to generate code with competitive performance to hand-optimized implementations from the literature, while generalizing to all of the tensor algebra.},
+journal = {Proc. ACM Program. Lang.},
+month = {nov},
+articleno = {158},
+numpages = {30},
+keywords = {Sparse Tensor Algebra, Sparse Iteration Spaces, Optimizing Transformations}
+}
+
+@inproceedings{sparsetir2023asplos,
+author = {Ye, Zihao and Lai, Ruihang and Shao, Junru and Chen, Tianqi and Ceze, Luis},
+title = {SparseTIR: Composable Abstractions for Sparse Compilation in Deep Learning},
+year = {2023},
+isbn = {9781450399180},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi-org.stanford.idm.oclc.org/10.1145/3582016.3582047},
+doi = {10.1145/3582016.3582047},
+abstract = {Sparse tensors are rapidly becoming critical components of modern deep learning workloads. However, developing high-performance sparse operators can be difficult and tedious, and existing vendor libraries cannot satisfy the escalating demands from new operators. Sparse tensor compilers simplify the development of operators, but efficient sparse compilation for deep learning remains challenging because a single sparse format cannot maximize hardware efficiency, and single-shot compilers cannot keep up with latest hardware and system advances. In this paper, we observe that the key to addressing both these challenges is to leverage composable formats and composable transformations. We propose SparseTIR, a sparse tensor compilation abstraction that offers composable formats and composable transformations for deep learning workloads. SparseTIR constructs a search space over these composable components for performance tuning. With these improvements, SparseTIR obtains consistent performance speedups vs vendor libraries on GPUs for single operators: 1.20-2.34x for GNN operators, 1.05-2.98x for sparse attention operators, and 0.56-7.45x for sparse convolution operators. SparseTIR also accelerates end-to-end GNNs by 1.08-1.52x for GraphSAGE training, and 4.20-40.18x for RGCN inference.},
+booktitle = {Proceedings of the 28th ACM International Conference on Architectural Support for Programming Languages and Operating Systems, Volume 3},
+pages = {660–678},
+numpages = {19},
+keywords = {Vectorization, Tensor Cores, Tensor Compilers, Sparse Computation, Scheduling, Kernel Fusion, Code Generation and Optimizations},
+location = {Vancouver, BC, Canada},
+series = {ASPLOS 2023}
+}
+
+@inproceedings{spdistal2022sc,
+author = {Yadav, Rohan and Aiken, Alex and Kjolstad, Fredrik},
+title = {SpDISTAL: compiling distributed sparse tensor computations},
+year = {2022},
+isbn = {9784665454445},
+publisher = {IEEE Press},
+abstract = {We introduce SpDISTAL, a compiler for sparse tensor algebra that targets distributed systems. SpDISTAL combines separate descriptions of tensor algebra expressions, sparse data structures, data distribution, and computation distribution. Thus, it enables distributed execution of sparse tensor algebra expressions with a wide variety of sparse data structures and data distributions. SpDISTAL is implemented as a C++ library that targets a distributed task-based runtime system and can generate code for nodes with both multi-core CPUs and multiple GPUs. SpDISTAL generates distributed code that achieves performance competitive with hand-written distributed functions for specific sparse tensor algebra expressions and that outperforms general interpretation-based systems by one to two orders of magnitude.},
+booktitle = {Proceedings of the International Conference on High Performance Computing, Networking, Storage and Analysis},
+articleno = {59},
+numpages = {15},
+keywords = {computer science, parallel programming, programming},
+location = {Dallas, Texas},
+series = {SC '22}
+}
+
+@inproceedings{maple2022isca,
+author = {Orenes-Vera, Marcelo and Manocha, Aninda and Balkind, Jonathan and Gao, Fei and Arag\'{o}n, Juan L. and Wentzlaff, David and Martonosi, Margaret},
+title = {Tiny but mighty: designing and realizing scalable latency tolerance for manycore SoCs},
+year = {2022},
+isbn = {9781450386104},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi-org.stanford.idm.oclc.org/10.1145/3470496.3527400},
+doi = {10.1145/3470496.3527400},
+abstract = {Modern computing systems employ significant heterogeneity and specialization to meet performance targets at manageable power. However, memory latency bottlenecks remain problematic, particularly for sparse neural network and graph analytic applications where indirect memory accesses (IMAs) challenge the memory hierarchy.Decades of prior art have proposed hardware and software mechanisms to mitigate IMA latency, but they fail to analyze real-chip considerations, especially when used in SoCs and manycores. In this paper, we revisit many of these techniques while taking into account manycore integration and verification.We present the first system implementation of latency tolerance hardware that provides significant speedups without requiring any memory hierarchy or processor tile modifications. This is achieved through a Memory Access Parallel-Load Engine (MAPLE), integrated through the Network-on-Chip (NoC) in a scalable manner. Our hardware-software co-design allows programs to perform long-latency memory accesses asynchronously from the core, avoiding pipeline stalls, and enabling greater memory parallelism (MLP).In April 2021 we taped out a manycore chip that includes tens of MAPLE instances for efficient data supply. MAPLE demonstrates a full RTL implementation of out-of-core latency-mitigation hardware, with virtual memory support and automated compilation targetting it. This paper evaluates MAPLE integrated with a dual-core FPGA prototype running applications with full SMP Linux, and demonstrates geomean speedups of 2.35\texttimes{} and 2.27\texttimes{} over software-based prefetching and decoupling, respectively. Compared to state-of-the-art hardware, it provides geomean speedups of 1.82\texttimes{} and 1.72\texttimes{} over prefetching and decoupling techniques.},
+booktitle = {Proceedings of the 49th Annual International Symposium on Computer Architecture},
+pages = {817–830},
+numpages = {14},
+keywords = {decoupling, latency tolerance, memory, modular RTL},
+location = {New York, New York},
+series = {ISCA '22}
+}
+
+@inproceedings{dae1982isca,
+author = {Smith, James E.},
+title = {Decoupled access/execute computer architectures},
+year = {1982},
+publisher = {IEEE Computer Society Press},
+address = {Washington, DC, USA},
+abstract = {An architecture for improving computer performance is presented and discussed. The main feature of the architecture is a high degree of decoupling between operand access and execution. This results in an implementation which has two separate instruction streams that communicate via queues. A similar architecture has been previously proposed for array processors, but in that context the software is called on to do most of the coordination and synchronization between the instruction streams. This paper emphasizes implementation features that remove this burden from the programmer. Performance comparisons with a conventional scalar architecture are given, and these show that considerable performance gains are possible.Single instruction stream versions, both physical and conceptual, are discussed with the primary goal of minimizing the differences with conventional architectures. This would allow known compilation and programming techniques to be used. Finally, the problem of deadlock in such a system is discussed, and one possible solution is given.},
+booktitle = {Proceedings of the 9th Annual Symposium on Computer Architecture},
+pages = {112–119},
+numpages = {8},
+location = {Austin, Texas, USA},
+series = {ISCA '82}
+}
+
+
+@inproceedings{workspaces2019cgo,
+author = {Kjolstad, Fredrik and Ahrens, Willow and Kamil, Shoaib and Amarasinghe, Saman},
+title = {Tensor algebra compilation with workspaces},
+year = {2019},
+isbn = {9781728114361},
+publisher = {IEEE Press},
+abstract = {This paper shows how to extend sparse tensor algebra compilers to introduce temporary tensors called workspaces to avoid inefficient sparse data structures accesses. We develop an intermediate representation (IR) for tensor operations called concrete index notation that specifies when sub-computations occur and where they are stored. We then describe the workspace transformation in this IR, how to programmatically invoke it, and how the IR is compiled to sparse code. Finally, we show how the transformation can be used to optimize sparse tensor kernels, including sparse matrix multiplication, sparse tensor addition, and the matricized tensor times Khatri-Rao product (MTTKRP).  Our results show that the workspace transformation brings the performance of these kernels on par with hand-optimized implementations. For example, we improve the performance of MTTKRP with dense output by up to 35\%, and enable generating sparse matrix multiplication and MTTKRP with sparse output, neither of which were supported by prior tensor algebra compilers.},
+booktitle = {Proceedings of the 2019 IEEE/ACM International Symposium on Code Generation and Optimization},
+pages = {180–192},
+numpages = {13},
+keywords = {workspaces, temporaries, sparse tensor algebra, concrete index notation, code optimization},
+location = {Washington, DC, USA},
+series = {CGO 2019}
+}
+
+@article{spworkspaces2024pldi,
+author = {Zhang, Genghan and Hsu, Olivia and Kjolstad, Fredrik},
+title = {Compilation of Modular and General Sparse Workspaces},
+year = {2024},
+issue_date = {June 2024},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {8},
+number = {PLDI},
+url = {https://doi-org.stanford.idm.oclc.org/10.1145/3656426},
+doi = {10.1145/3656426},
+abstract = {Recent years have seen considerable work on compiling sparse tensor algebra expressions. This paper addresses a shortcoming in that work, namely how to generate efficient code (in time and space) that scatters values into a sparse result tensor. We address this shortcoming through a compiler design that generates code that uses sparse intermediate tensors (sparse workspaces) as efficient adapters between compute code that scatters and result tensors that do not support random insertion. Our compiler automatically detects sparse scattering behavior in tensor expressions and inserts necessary intermediate workspace tensors. We present an algorithm template for workspace insertion that is the backbone of our code generation algorithm. Our algorithm template is modular by design, supporting sparse workspaces that span multiple user-defined implementations. Our evaluation shows that sparse workspaces can be up to 27.12\texttimes{} faster than the dense workspaces of prior work. On the other hand, dense workspaces can be up to 7.58\texttimes{} faster than the sparse workspaces generated by our compiler in other situations, which motivates our compiler design that supports both. Our compiler produces sequential code that is competitive with hand-optimized linear and tensor algebra libraries on the expressions they support, but that generalizes to any other expression. Sparse workspaces are also more memory efficient than dense workspaces as they compress away zeros. This compression can asymptotically decrease memory usage, enabling tensor computations on data that would otherwise run out of memory.},
+journal = {Proc. ACM Program. Lang.},
+month = {jun},
+articleno = {196},
+numpages = {26},
+keywords = {code composition, compilation, sparse tensor algebra, sparse workspaces}
+}
+
+@INPROCEEDINGS {dlrm2020hpca,
+author = {U. Gupta and C. Wu and X. Wang and M. Naumov and B. Reagen and D. Brooks and B. Cottel and K. Hazelwood and M. Hempstead and B. Jia and H. S. Lee and A. Malevich and D. Mudigere and M. Smelyanskiy and L. Xiong and X. Zhang},
+booktitle = {2020 IEEE International Symposium on High Performance Computer Architecture (HPCA)},
+title = {The Architectural Implications of Facebook's DNN-Based Personalized Recommendation},
+year = {2020},
+volume = {},
+issn = {},
+pages = {488-501},
+abstract = {The widespread application of deep learning has changed the landscape of computation in data centers. In particular, personalized recommendation for content ranking is now largely accomplished using deep neural networks. However, despite their importance and the amount of compute cycles they consume, relatively little research attention has been devoted to recommendation systems. To facilitate research and advance the understanding of these workloads, this paper presents a set of real-world, production-scale DNNs for personalized recommendation coupled with relevant performance metrics for evaluation. In addition to releasing a set of open-source workloads, we conduct in-depth analysis that underpins future system design and optimization for at-scale recommendation: Inference latency varies by 60% across three Intel server generations, batching and co-location of inference jobs can drastically improve latency-bounded throughput, and diversity across recommendation models leads to different optimization strategies.},
+keywords = {computational modeling;data centers;computer architecture;throughput;optimization;artificial intelligence;videos},
+doi = {10.1109/HPCA47549.2020.00047},
+url = {https://doi.ieeecomputersociety.org/10.1109/HPCA47549.2020.00047},
+publisher = {IEEE Computer Society},
+address = {Los Alamitos, CA, USA},
+month = {feb}
+}
+
+@inproceedings{planar2021acm,
+author = {Barredo, Adri\'{a}n and Armejach, Adri\`{a} and Beard, Jonathan and Moreto, Miquel},
+title = {PLANAR: a programmable accelerator for near-memory data rearrangement},
+year = {2021},
+isbn = {9781450383356},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3447818.3460368},
+doi = {10.1145/3447818.3460368},
+abstract = {Many applications employ irregular and sparse memory accesses that cannot take advantage of existing cache hierarchies in high performance processors. To solve this problem, Data Layout Transformation (DLT) techniques rearrange sparse data into a dense representation, improving locality and cache utilization. However, prior proposals in this space fail to provide a design that (i) scales with multi-core systems, (ii) hides rearrangement latency, and (iii) provides the necessary interfaces to ease programmability.In this work we present PLANAR, a programmable near-memory accelerator that rearranges sparse data into dense. By placing PLANAR devices at the memory controller level we enable a design that scales well with multi-core systems, hides operation latency by performing non-blocking fine-grain data rearrangements, and eases programmability by supporting virtual memory and conventional memory allocation mechanisms. Our evaluation shows that PLANAR leads to significant reductions in data movement and dynamic energy, providing an average 4.58\texttimes{} speedup.},
+booktitle = {Proceedings of the 35th ACM International Conference on Supercomputing},
+pages = {164–176},
+numpages = {13},
+keywords = {data layout transformation, near-memory accelerator, sparse data},
+location = {Virtual Event, USA},
+series = {ICS '21}
+}
+
+@inproceedings{glove2014emnlp,
+    title = "{G}lo{V}e: Global Vectors for Word Representation",
+    author = "Pennington, Jeffrey  and
+      Socher, Richard  and
+      Manning, Christopher",
+    editor = "Moschitti, Alessandro  and
+      Pang, Bo  and
+      Daelemans, Walter",
+    booktitle = "Proceedings of the 2014 Conference on Empirical Methods in Natural Language Processing ({EMNLP})",
+    month = oct,
+    year = "2014",
+    address = "Doha, Qatar",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/D14-1162",
+    doi = "10.3115/v1/D14-1162",
+    pages = "1532--1543",
+}
+
+@INPROCEEDINGS{fusedmm2021ipdps,
+  author={Rahman, Md. Khaledur and Sujon, Majedul Haque and Azad, Ariful},
+  booktitle={2021 IEEE International Parallel and Distributed Processing Symposium (IPDPS)}, 
+  title={FusedMM: A Unified SDDMM-SpMM Kernel for Graph Embedding and Graph Neural Networks}, 
+  year={2021},
+  volume={},
+  number={},
+  pages={256-266},
+  keywords={Distributed processing;Program processors;Memory management;Bandwidth;Load management;Libraries;Graph neural networks;message passing;GNN;graph embedding},
+  doi={10.1109/IPDPS49936.2021.00034}}
+
+@inproceedings{caches2022memsys,
+author = {Ibrahim, Mohamed Assem and Kayiran, Onur and Aga, Shaizeen},
+title = {Efficient Cache Utilization via Model-aware Data Placement for Recommendation Models},
+year = {2022},
+isbn = {9781450385701},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3488423.3519317},
+doi = {10.1145/3488423.3519317},
+abstract = {Deep neural network (DNN) based recommendation models (RMs) represent a class of critical workloads that are broadly used in social media, entertainment content, and online businesses. Given their pervasive usage, understanding the memory subsystem behavior of these models is crucial, particularly from the perspective of future memory subsystem design. To this end, in this work, we first do an in-depth memory footprint and traffic analysis of emerging RMs. We observe that emerging RMs will severely stress future (and possibly larger) caches and memories. To address this challenge, we make the key observation that a data placement strategy that is aware of the components within these models (as opposed to one that considers the entire model as a whole) stands a better chance of relieving the stress on the memory subsystem. Specifically, of the two key components of these models, namely, embedding tables and multi-layer perceptron layers, we show how we can exploit the locality of memory accesses to embedding tables to come up with a more nuanced data placement scheme. We demonstrate how our proposed data placement strategy can reduce overall memory traffic (approximately 32\%) while improving performance (up to 1.99 \texttimes{}). We argue that memory subsystems that are more amenable to residency controls stand a better chance to address the needs of emerging models.},
+booktitle = {Proceedings of the International Symposium on Memory Systems},
+articleno = {2},
+numpages = {11},
+keywords = {Caches, DLRM, Embedding Tables, MLPs, Neural Networks, Recommendation Models},
+location = {Washington DC, DC, USA},
+series = {MEMSYS '21}
+}
+
+@inbook{pytorch2019neurips,
+author = {Paszke, Adam and Gross, Sam and Massa, Francisco and Lerer, Adam and Bradbury, James and Chanan, Gregory and Killeen, Trevor and Lin, Zeming and Gimelshein, Natalia and Antiga, Luca and Desmaison, Alban and K\"{o}pf, Andreas and Yang, Edward and DeVito, Zach and Raison, Martin and Tejani, Alykhan and Chilamkurthy, Sasank and Steiner, Benoit and Fang, Lu and Bai, Junjie and Chintala, Soumith},
+title = {PyTorch: an imperative style, high-performance deep learning library},
+year = {2019},
+publisher = {Curran Associates Inc.},
+address = {Red Hook, NY, USA},
+abstract = {Deep learning frameworks have often focused on either usability or speed, but not both. PyTorch is a machine learning library that shows that these two goals are in fact compatible: it provides an imperative and Pythonic programming style that supports code as a model, makes debugging easy and is consistent with other popular scientific computing libraries, while remaining efficient and supporting hardware accelerators such as GPUs.In this paper, we detail the principles that drove the implementation of PyTorch and how they are reflected in its architecture. We emphasize that every aspect of PyTorch is a regular Python program under the full control of its user. We also explain how the careful and pragmatic implementation of the key components of its runtime enables them to work together to achieve compelling performance. We demonstrate the efficiency of individual subsystems, as well as the overall speed of PyTorch on several common benchmarks.},
+booktitle = {Proceedings of the 33rd International Conference on Neural Information Processing Systems},
+articleno = {721},
+numpages = {12}
+}
+
+@article{caffe2014arxiv,
+  Author = {Jia, Yangqing and Shelhamer, Evan and Donahue, Jeff and Karayev, Sergey and Long, Jonathan and Girshick, Ross and Guadarrama, Sergio and Darrell, Trevor},
+  Journal = {https://arxiv.org/pdf/1909.01315},
+  Title = {Deep Graph Library: A Graph-Centric, Highly-Performant Package for Graph Neural Networks},
+  Year = {2020}
+}
+
+
+
+@article{dgl1010arxiv,
+  author       = {Minjie Wang and
+                  Lingfan Yu and
+                  Da Zheng and
+                  Quan Gan and
+                  Yu Gai and
+                  Zihao Ye and
+                  Mufei Li and
+                  Jinjing Zhou and
+                  Qi Huang and
+                  Chao Ma and
+                  Ziyue Huang and
+                  Qipeng Guo and
+                  Hao Zhang and
+                  Haibin Lin and
+                  Junbo Zhao and
+                  Jinyang Li and
+                  Alexander J. Smola and
+                  Zheng Zhang},
+  title        = {Deep Graph Library: Towards Efficient and Scalable Deep Learning on
+                  Graphs},
+  journal      = {CoRR},
+  volume       = {abs/1909.01315},
+  year         = {2019},
+  url          = {http://arxiv.org/abs/1909.01315},
+  eprinttype    = {arXiv},
+  eprint       = {1909.01315},
+  timestamp    = {Fri, 21 Jun 2024 12:54:57 +0200},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-1909-01315.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+
+
+@article{glow2018arxiv,
+  author       = {Nadav Rotem and
+                  Jordan Fix and
+                  Saleem Abdulrasool and
+                  Summer Deng and
+                  Roman Dzhabarov and
+                  James Hegeman and
+                  Roman Levenstein and
+                  Bert Maher and
+                  Nadathur Satish and
+                  Jakob Olesen and
+                  Jongsoo Park and
+                  Artem Rakhov and
+                  Misha Smelyanskiy},
+  title        = {Glow: Graph Lowering Compiler Techniques for Neural Networks},
+  journal      = {CoRR},
+  volume       = {abs/1805.00907},
+  year         = {2018},
+  url          = {http://arxiv.org/abs/1805.00907},
+  eprinttype    = {arXiv},
+  eprint       = {1805.00907},
+  timestamp    = {Mon, 13 Aug 2018 16:47:45 +0200},
+  biburl       = {https://dblp.org/rec/journals/corr/abs-1805-00907.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@INPROCEEDINGS{fowers2014spmv,
+  author={Fowers, Jeremy and Ovtcharov, Kalin and Strauss, Karin and Chung, Eric S. and Stitt, Greg},
+  booktitle={2014 IEEE 22nd Annual International Symposium on Field-Programmable Custom Computing Machines}, 
+  title={A High Memory Bandwidth FPGA Accelerator for Sparse Matrix-Vector Multiplication}, 
+  year={2014},
+  volume={},
+  number={},
+  pages={36-43},
+  keywords={Vectors;Encoding;Field programmable gate arrays;Abstracts;Sparse matrices;Computer architecture;Decoding;sparse matrix vector multiplication;FPGA;accelerator;SPMV;SMVM;reconfigurable computing;HPC},
+  doi={10.1109/FCCM.2014.23}}
+
+@INPROCEEDINGS{grigoras2015spmv,
+  author={Grigoras, Paul and Burovskiy, Pavel and Hung, Eddie and Luk, Wayne},
+  booktitle={2015 IEEE 23rd Annual International Symposium on Field-Programmable Custom Computing Machines}, 
+  title={Accelerating SpMV on FPGAs by Compressing Nonzero Values}, 
+  year={2015},
+  volume={},
+  number={},
+  pages={64-67},
+  keywords={Sparse matrices;Field programmable gate arrays;Decoding;Encoding;Dictionaries;Bandwidth;Sparse matrix-vector multiplication;nonzero compression;FPGA},
+  doi={10.1109/FCCM.2015.30}}
+
+@INPROCEEDINGS{lin2010spmv,
+  author={Lin, Colin Yu and Zhang, Zheng and Wong, Ngai and So, Hayden Kwok-Hay},
+  booktitle={2010 International Conference on Field-Programmable Technology}, 
+  title={Design space exploration for sparse matrix-matrix multiplication on FPGAs}, 
+  year={2010},
+  volume={},
+  number={},
+  pages={369-372},
+  keywords={Sparse matrices;Field programmable gate arrays;System-on-a-chip;Delay;Memory management;Indexes},
+  doi={10.1109/FPT.2010.5681425}}
+
+@INPROCEEDINGS{umuroglu2014spmv,
+  author={Umuroglu, Yaman and Jahre, Magnus},
+  booktitle={2014 IEEE 32nd International Conference on Computer Design (ICCD)}, 
+  title={An energy efficient column-major backend for FPGA SpMV accelerators}, 
+  year={2014},
+  volume={},
+  number={},
+  pages={432-439},
+  keywords={Bandwidth;Random access memory;Vectors;Field programmable gate arrays;Sparse matrices;Kernel;Computer architecture},
+  doi={10.1109/ICCD.2014.6974716}}
+
+@INPROCEEDINGS{nurvitadhi2015spmv,
+  author={Nurvitadhi, Eriko and Mishra, Asit and Marr, Debbie},
+  booktitle={2015 International Conference on Compilers, Architecture and Synthesis for Embedded Systems (CASES)}, 
+  title={A sparse matrix vector multiply accelerator for support vector machine}, 
+  year={2015},
+  volume={},
+  number={},
+  pages={109-116},
+  keywords={Sparse matrices;Support vector machines;Machine learning algorithms;Algorithm design and analysis;Software algorithms;Hardware;Software;Hardware accelerator;machine learning;support vector machine},
+  doi={10.1109/CASES.2015.7324551}}
+
+@INPROCEEDINGS{asgari2020alrescha,
+  author={Asgari, Bahar and Hadidi, Ramyad and Krishna, Tushar and Kim, Hyesoon and Yalamanchili, Sudhakar},
+  booktitle={2020 IEEE International Symposium on High Performance Computer Architecture (HPCA)}, 
+  title={ALRESCHA: A Lightweight Reconfigurable Sparse-Computation Accelerator}, 
+  year={2020},
+  volume={},
+  number={},
+  pages={249-260},
+  keywords={Sparse matrices;Hardware;Kernel;Parallel processing;US Department of Transportation;Mathematical model;Computational modeling;Sparse;Reconfiguration;Accelerator;Scientific Problems;PDE solver},
+  doi={10.1109/HPCA47549.2020.00029}}
+
+
+@misc{tf2015whitepaper,
+title={ {TensorFlow}: Large-Scale Machine Learning on Heterogeneous Systems},
+url={https://www.tensorflow.org/},
+note={Software available from tensorflow.org},
+author={
+    Mart\'{i}n~Abadi and
+    Ashish~Agarwal and
+    Paul~Barham and
+    Eugene~Brevdo and
+    Zhifeng~Chen and
+    Craig~Citro and
+    Greg~S.~Corrado and
+    Andy~Davis and
+    Jeffrey~Dean and
+    Matthieu~Devin and
+    Sanjay~Ghemawat and
+    Ian~Goodfellow and
+    Andrew~Harp and
+    Geoffrey~Irving and
+    Michael~Isard and
+    Yangqing Jia and
+    Rafal~Jozefowicz and
+    Lukasz~Kaiser and
+    Manjunath~Kudlur and
+    Josh~Levenberg and
+    Dandelion~Man\'{e} and
+    Rajat~Monga and
+    Sherry~Moore and
+    Derek~Murray and
+    Chris~Olah and
+    Mike~Schuster and
+    Jonathon~Shlens and
+    Benoit~Steiner and
+    Ilya~Sutskever and
+    Kunal~Talwar and
+    Paul~Tucker and
+    Vincent~Vanhoucke and
+    Vijay~Vasudevan and
+    Fernanda~Vi\'{e}gas and
+    Oriol~Vinyals and
+    Pete~Warden and
+    Martin~Wattenberg and
+    Martin~Wicke and
+    Yuan~Yu and
+    Xiaoqiang~Zheng},
+  year={2015},
+}
+
+@article{bernerslee2001semanticweb,
+  author = {Tim Berners-Lee and James Hendler and Ora Lassila},
+  title = {The Semantic Web: A New Form of Web Content that is Meaningful to Computers will Unleash a Revolution of New Possibilities},
+  journal = {Scientific American},
+  month = {May},
+  year = {2001}
+}
+
+@article{memwall1995sigarch,
+author = {Wulf, Wm. A. and McKee, Sally A.},
+title = {Hitting the memory wall: implications of the obvious},
+year = {1995},
+issue_date = {March 1995},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {23},
+number = {1},
+issn = {0163-5964},
+url = {https://doi.org/10.1145/216585.216588},
+doi = {10.1145/216585.216588},
+journal = {SIGARCH Comput. Archit. News},
+month = {mar},
+pages = {20–24},
+numpages = {5}
+}
+
+@article{10.1145/325096.325132,
+author = {Lenoski, Daniel and Laudon, James and Gharachorloo, Kourosh and Gupta, Anoop and Hennessy, John},
+title = {The directory-based cache coherence protocol for the DASH multiprocessor},
+year = {1990},
+issue_date = {June 1990},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {18},
+number = {2SI},
+issn = {0163-5964},
+url = {https://doi.org/10.1145/325096.325132},
+doi = {10.1145/325096.325132},
+abstract = {DASH is a scalable shared-memory multiprocessor currently being developed at Stanford's Computer Systems Laboratory. The architecture consists of powerful processing nodes, each with a portion of the shared-memory, connected to a scalable interconnection network. A key feature of DASH is its distributed directory-based cache coherence protocol. Unlike traditional snoopy coherence protocols, the DASH protocol does not rely on broadcast; instead it uses point-to-point messages sent between the processors and memories to keep caches consistent. Furthermore, the DASH system does not contain any single serialization or control point. While these features provide the basis for scalability, they also force a reevaluation of many fundamental issues involved in the design of a protocol. These include the issues of correctness, performance and protocol complexity. In this paper, we present the design of the DASH coherence protocol and discuss how it addresses the above issues. We also discuss our strategy for verifying the correctness of the protocol and briefly compare our protocol to the IEEE Scalable Coherent Interface protocol.},
+journal = {SIGARCH Comput. Archit. News},
+month = {may},
+pages = {148–159},
+numpages = {12}
+}
+
+@patent{siracusa2025dsmu,
+  title        = {Data Structure Marshalling Unit},
+  author       = {Siracusa, Marco and Randall, Joshua and Joseph, Douglas J. and Moret{\"o} Planas, Miquel and Armejach Sanosa, Adri{\`a}},
+  number       = {US20250077499A1},
+  year         = {2025},
+  month        = mar,
+  url          = {https://patents.google.com/patent/US20250077499A1/en},
+  assignee     = {Arm Ltd.},
+  nationality  = {US},
+  type         = {Patent},
+}
+
+@inproceedings{mshr1990lenoski,
+author = {Lenoski, Daniel and Laudon, James and Gharachorloo, Kourosh and Gupta, Anoop and Hennessy, John},
+title = {The directory-based cache coherence protocol for the DASH multiprocessor},
+year = {1990},
+isbn = {0897913663},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/325164.325132},
+doi = {10.1145/325164.325132},
+abstract = {DASH is a scalable shared-memory multiprocessor currently being developed at Stanford's Computer Systems Laboratory. The architecture consists of powerful processing nodes, each with a portion of the shared-memory, connected to a scalable interconnection network. A key feature of DASH is its distributed directory-based cache coherence protocol. Unlike traditional snoopy coherence protocols, the DASH protocol does not rely on broadcast; instead it uses point-to-point messages sent between the processors and memories to keep caches consistent. Furthermore, the DASH system does not contain any single serialization or control point. While these features provide the basis for scalability, they also force a reevaluation of many fundamental issues involved in the design of a protocol. These include the issues of correctness, performance and protocol complexity. In this paper, we present the design of the DASH coherence protocol and discuss how it addresses the above issues. We also discuss our strategy for verifying the correctness of the protocol and briefly compare our protocol to the IEEE Scalable Coherent Interface protocol.},
+booktitle = {Proceedings of the 17th Annual International Symposium on Computer Architecture},
+pages = {148–159},
+numpages = {12},
+location = {Seattle, Washington, USA},
+series = {ISCA '90}
+}
+
+@inproceedings{vec1991acm,
+author = {Smith, Lauren L.},
+title = {Vectorizing C compilers: how good are they?},
+year = {1991},
+isbn = {0897914597},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/125826.126105},
+doi = {10.1145/125826.126105},
+booktitle = {Proceedings of the 1991 ACM/IEEE Conference on Supercomputing},
+pages = {544–553},
+numpages = {10},
+location = {Albuquerque, New Mexico, USA},
+series = {Supercomputing '91}
+}
+
+@book{comp2001pub,
+author = {Kennedy, Ken and Allen, John R.},
+title = {Optimizing compilers for modern architectures: a dependence-based approach},
+year = {2001},
+isbn = {1558602860},
+publisher = {Morgan Kaufmann Publishers Inc.},
+address = {San Francisco, CA, USA},
+abstract = {Modern computer architectures designed with high-performance microprocessors offer tremendous potential gains in performance over previous designs. Yet their very complexity makes it increasingly difficult to produce efficient code and to realize their full potential. This landmark text from two leaders in the field focuses on the pivotal role that compilers can play in addressing this critical issue. The basis for all the methods presented in this book is data dependence, a fundamental compiler analysis tool for optimizing programs on high-performance microprocessors and parallel architectures. It enables compiler designers to write compilers that automatically transform simple, sequential programs into forms that can exploit special features of these modern architectures. The text provides a broad introduction to data dependence, to the many transformation strategies it supports, and to its applications to important optimization problems such as parallelization, compiler memory hierarchy management, and instruction scheduling. The authors demonstrate the importance and wide applicability of dependence-based compiler optimizations and give the compiler writer the basics needed to understand and implement them. They also offer cookbook explanations for transforming applications by hand to computational scientists and engineers who are driven to obtain the best possible performance of their complex applications.}
+}
+
+@ARTICLE {sve2017micro,
+author = {N. Stephens and S. Biles and M. Boettcher and J. Eapen and M. Eyole and G. Gabrielli and M. Horsnell and G. Magklis and A. Martinez and N. Premillieu and A. Reid and A. Rico and P. Walker},
+journal = {IEEE Micro},
+title = {The ARM Scalable Vector Extension},
+year = {2017},
+volume = {37},
+number = {02},
+issn = {1937-4143},
+pages = {26-39},
+abstract = {This article describes the ARM Scalable Vector Extension (SVE). Several goals guided the design of the architecture. First was the need to extend the vector processing capability associated with the ARM AArch64 execution state to better address the computational requirements in domains such as high-performance computing, data analytics, computer vision, and machine learning. Second was the desire to introduce an extension that can scale across multiple implementations, both now and into the future, allowing CPU designers to choose the vector length most suitable for their power, performance, and area targets. Finally, the architecture should avoid imposing a software development cost as the vector length changes and where possible reduce it by improving the reach of compiler auto-vectorization technologies. SVE achieves these goals. It allows implementations to choose a vector register length between 128 and 2,048 bits. It supports a vector-length agnostic programming model that lets code run and scale automatically across all vector lengths without recompilation. Finally, it introduces several innovative features that begin to overcome some of the traditional barriers to autovectorization.},
+keywords = {scalability;programming;computer architecture;software engineering;encoding;vectors;high performance computing},
+doi = {10.1109/MM.2017.35},
+publisher = {IEEE Computer Society},
+address = {Los Alamitos, CA, USA},
+month = {mar}
+}
+
+@article{mantovani2020benchmark,
+title = {Performance and energy consumption of HPC workloads on a cluster based on Arm ThunderX2 CPU},
+journal = {Future Generation Computer Systems},
+volume = {112},
+pages = {800-818},
+year = {2020},
+issn = {0167-739X},
+doi = {https://doi.org/10.1016/j.future.2020.06.033},
+url = {https://www.sciencedirect.com/science/article/pii/S0167739X19309781},
+author = {Filippo Mantovani and Marta Garcia-Gasulla and José Gracia and Esteban Stafford and Fabio Banchelli and Marc Josep-Fabrego and Joel Criado-Ledesma and Mathias Nachtmann},
+keywords = {HPC applications, CFD, Benchmarks, ThunderX2, Scalability, Energy},
+abstract = {In this paper, we analyze the performance and energy consumption of an Arm-based high-performance computing (HPC) system developed within the European project Mont-Blanc 3. This system, called Dibona, has been integrated by ATOS/Bull, and it is powered by the latest Marvell’s CPU, ThunderX2. This CPU is the same one that powers the Astra supercomputer, the first Arm-based supercomputer entering the Top500 in November 2018. We study from micro-benchmarks up to large production codes. We include an interdisciplinary evaluation of three scientific applications (a finite-element fluid dynamics code, a smoothed particle hydrodynamics code, and a lattice Boltzmann code) and the Graph 500 benchmark, focusing on parallel and energy efficiency as well as studying their scalability up to thousands of Armv8 cores. For comparison, we run the same tests on state-of-the-art x86 nodes included in Dibona and the Tier-0 supercomputer MareNostrum4. Our experiments show that the ThunderX2 has a 25% lower performance on average, mainly due to its small vector unit yet somewhat compensated by its 30% wider links between the CPU and the main memory. We found that the software ecosystem of the Armv8 architecture is comparable to the one available for Intel. Our results also show that ThunderX2 delivers similar or better energy-to-solution and scalability, proving that Arm-based chips are legitimate contenders in the market of next-generation HPC systems.}
+}
+
+@article{armejach2019hpc,
+author = {Armejach, Adri\`{a} and Casas, Marc and Moret\'{o}, Miquel},
+title = {Design trade-offs for emerging HPC processors based on mobile market technology},
+year = {2019},
+issue_date = {Sep 2019},
+publisher = {Kluwer Academic Publishers},
+address = {USA},
+volume = {75},
+number = {9},
+issn = {0920-8542},
+url = {https://doi.org/10.1007/s11227-019-02819-4},
+doi = {10.1007/s11227-019-02819-4},
+abstract = {High-performance computing (HPC) is at the crossroads of a potential transition toward mobile market processor technology. Unlike in prior transitions, numerous hardware vendors and integrators will have access to state-of-the-art processor designs due to Arm’s licensing business model. This fact gives them greater flexibility to implement custom HPC-specific designs. In this paper, we undertake a study to quantify the different energy-performance trade-offs when architecting a processor based on mobile market technology. Through detailed simulations over a representative set of benchmarks, our results show that: (i) a modest amount of last-level cache per core is sufficient, leading to significant power and area savings; (ii) in-order cores offer favorable trade-offs when compared to out-of-order cores for a wide range of benchmarks; and (iii) heterogeneous configurations help to improve processor performance and energy efficiency.},
+journal = {J. Supercomput.},
+month = sep,
+pages = {5717–5740},
+numpages = {24},
+keywords = {Multi-core design trade-offs, Energy efficiency, Heterogeneous processors}
+}
+
+@ARTICLE{oliveira2021damov,
+  author={Oliveira, Geraldo F. and Gómez-Luna, Juan and Orosa, Lois and Ghose, Saugata and Vijaykumar, Nandita and Fernandez, Ivan and Sadrosadati, Mohammad and Mutlu, Onur},
+  journal={IEEE Access}, 
+  title={DAMOV: A New Methodology and Benchmark Suite for Evaluating Data Movement Bottlenecks}, 
+  year={2021},
+  volume={9},
+  number={},
+  pages={134457-134502},
+  keywords={Measurement;Random access memory;Memory management;Benchmark testing;Bandwidth;Tools;Hardware;Benchmarking;data movement;energy;memory systems;near-data processing;performance;processing-in-memory;workload characterization;3D-stacked memory},
+  doi={10.1109/ACCESS.2021.3110993}}
+
+@INPROCEEDINGS{bean2015gdma,
+  author={Bean, Andrew and Kapre, Nachiket and Cheung, Peter},
+  booktitle={2015 International Conference on ReConFigurable Computing and FPGAs (ReConFig)}, 
+  title={G-DMA: improving memory access performance for hardware accelerated sparse graph computation}, 
+  year={2015},
+  volume={},
+  number={},
+  pages={1-6},
+  keywords={Engines;Decoding;System-on-chip;Hardware;Memory management;Standards;Central Processing Unit},
+  doi={10.1109/ReConFig.2015.7393317}}
+
+@INPROCEEDINGS{asgari2021copernicus,
+  author={Asgari, Bahar and Hadidi, Ramyad and Dierberger, Joshua and Steinichen, Charlotte and Marfatia, Amaan and Kim, Hyesoon},
+  booktitle={2021 IEEE International Symposium on Workload Characterization (IISWC)}, 
+  title={Copernicus: Characterizing the Performance Implications of Compression Formats Used in Sparse Workloads}, 
+  year={2021},
+  volume={},
+  number={},
+  pages={1-12},
+  keywords={Measurement;Power demand;Scientific computing;Memory management;Bandwidth;Machine learning;Throughput;Sparse problems;compression formats;decompression;domain-specific architecture;characterization},
+  doi={10.1109/IISWC53511.2021.00012}}
+
+@article{alappat2022spmv,
+author = {Alappat, Christie and Meyer, Nils and Laukemann, Jan and Gruber, Thomas and Hager, Georg and Wellein, Gerhard and Wettig, Tilo},
+title = {Execution-Cache-Memory modeling and performance tuning of sparse matrix-vector multiplication and Lattice quantum chromodynamics on A64FX},
+journal = {Concurrency and Computation: Practice and Experience},
+volume = {34},
+number = {20},
+pages = {e6512},
+keywords = {A64FX, ECM model, Lattice quantum chromodynamics, sparse matrix-vector multiplication},
+doi = {https://doi.org/10.1002/cpe.6512},
+url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/cpe.6512},
+eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/cpe.6512},
+abstract = {Abstract The A64FX CPU is arguably the most powerful Arm-based processor design to date. Although it is a traditional cache-based multicore processor, its peak performance and memory bandwidth rival accelerator devices. A good understanding of its performance features is of paramount importance for developers who wish to leverage its full potential. We present an architectural analysis of the A64FX used in the Fujitsu FX1000 supercomputer at a level of detail that allows for the construction of Execution-Cache-Memory performance models for steady-state loops. In the process we identify architectural peculiarities that point to viable generic optimization strategies. After validating the model using simple streaming loops we apply the insight gained to sparse matrix-vector multiplication (SpMV) and the domain wall (DW) kernel from quantum chromodynamics. For SpMV we show why the compressed row storage (CRS) matrix storage format is not a good practical choice on this architecture and how the SELL-C-σ format can achieve bandwidth saturation. For the DW kernel we provide a cache-reuse analysis and show how an appropriate choice of data layout for complex arrays can realize memory-bandwidth saturation in this case as well. A comparison with state-of-the-art high-end Intel Cascade Lake AP and Nvidia V100 systems puts the capabilities of the A64FX into perspective. We also explore the potential for power optimizations using the tuning knobs provided by the Fugaku system, achieving energy savings of about 31\% for SpMV and 18\% for DW.},
+year = {2022}
+}
+
+@INPROCEEDINGS{bell2009spmv,
+  author={Bell, Nathan and Garland, Michael},
+  booktitle={Proceedings of the Conference on High Performance Computing Networking, Storage and Analysis}, 
+  title={Implementing sparse matrix-vector multiplication on throughput-oriented processors}, 
+  year={2009},
+  volume={},
+  number={},
+  pages={1-11},
+  keywords={Sparse matrices;Instruction sets;Kernel;Bandwidth;Graphics processing units;Hardware;Vectors;Throughput;Memory management;Optimization},
+  doi={10.1145/1654059.1654078}}
+
+
+@inproceedings{llvm2004cs,
+author = {Lattner, Chris and Adve, Vikram},
+title = {LLVM: A Compilation Framework for Lifelong Program Analysis \& Transformation},
+year = {2004},
+isbn = {0769521029},
+publisher = {IEEE Computer Society},
+address = {USA},
+abstract = {This paper describes LLVM (Low Level Virtual Machine),a compiler framework designed to support transparent, lifelongprogram analysis and transformation for arbitrary programs,by providing high-level information to compilertransformations at compile-time, link-time, run-time, and inidle time between runs.LLVM defines a common, low-levelcode representation in Static Single Assignment (SSA) form,with several novel features: a simple, language-independenttype-system that exposes the primitives commonly used toimplement high-level language features; an instruction fortyped address arithmetic; and a simple mechanism that canbe used to implement the exception handling features ofhigh-level languages (and setjmp/longjmp in C) uniformlyand efficiently.The LLVM compiler framework and coderepresentation together provide a combination of key capabilitiesthat are important for practical, lifelong analysis andtransformation of programs.To our knowledge, no existingcompilation approach provides all these capabilities.We describethe design of the LLVM representation and compilerframework, and evaluate the design in three ways: (a) thesize and effectiveness of the representation, including thetype information it provides; (b) compiler performance forseveral interprocedural problems; and (c) illustrative examplesof the benefits LLVM provides for several challengingcompiler problems.},
+booktitle = {Proceedings of the International Symposium on Code Generation and Optimization: Feedback-Directed and Runtime Optimization},
+pages = {75},
+location = {Palo Alto, California},
+series = {CGO '04}
+}
+
+@misc{lowepower2020gem5,
+    title={The gem5 {S}imulator: {V}ersion 20.0+}, 
+    author={J. Lowe-Power and A. Mutaal Ahmad and A. Akram and M. Alian and R. Amslinger and M. Andreozzi and A. Armejach and N. Asmussen and B. Beckmann and S. Bharadwaj and G. Black and G. Bloom and B. R. Bruce and D. Rodrigues Carvalho and J. Castrillon and L. Chen and N. Derumigny and S. Diestelhorst and W. Elsasser and C. Escuin and M. Fariborz and A. Farmahini-Farahani and P. Fotouhi and R. Gambord and J. Gandhi and D. Gope and T. Grass and A. Gutierrez and B. Hanindhito and A. Hansson and S. Haria and A. Harris and T. Hayes and A. Herrera and M. Horsnell and S. A. R. Jafri and R. Jagtap and H. Jang and R. Jeyapaul and T. M. Jones and M. Jung and S. Kannoth and H. Khaleghzadeh and Y. Kodama and T. Krishna and T. Marinelli and C. Menard and A. Mondelli and M. Moreto and T. Mück and O. Naji and K. Nathella and H. Nguyen and N. Nikoleris and L. E. Olson and M. Orr and B. Pham and P. Prieto and T. Reddy and A. Roelke and M. Samani and A. Sandberg and J. Setoain and B. Shingarov and M. D. Sinclair and T. Ta and R. Thakur and G. Travaglini and M. Upton and N. Vaish and I. Vougioukas and W. Wang and Z. Wang and N. Wehn and C. Weis and D. A. Wood and H. Yoon and \'{E}. F. Zulian},
+    year={2020},
+    eprint={2007.03152},
+    archivePrefix={arXiv},
+    primaryClass={cs.AR}
+}
+
+@misc{criteo2024,
+  author       = {Criteo AI Lab},
+  title        = {Criteo 1TB Click Logs Dataset},
+  howpublished = {\url{https://ailab.criteo.com/download-criteo-1tb-click-logs-dataset/}},
+  year         = {2024}
+}
+
+@inproceedings{kanellopoulos2019smash,
+author = {Kanellopoulos, Konstantinos and Vijaykumar, Nandita and Giannoula, Christina and Azizi, Roknoddin and Koppula, Skanda and Ghiasi, Nika Mansouri and Shahroodi, Taha and Luna, Juan Gomez and Mutlu, Onur},
+title = {SMASH: Co-Designing Software Compression and Hardware-Accelerated Indexing for Efficient Sparse Matrix Operations},
+year = {2019},
+isbn = {9781450369381},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3352460.3358286},
+doi = {10.1145/3352460.3358286},
+booktitle = {Proceedings of the 52nd Annual IEEE/ACM International Symposium on Microarchitecture},
+pages = {600–614},
+numpages = {15},
+keywords = {accelerators, sparse matrices, specialized architectures, efficiency, graph processing, hardware-software cooperation, compression, linear algebra, memory},
+location = {Columbus, OH, USA},
+series = {MICRO '52}
+}
+
+@INPROCEEDINGS{zhou2018cambricons,
+  author={Zhou, Xuda and Du, Zidong and Guo, Qi and Liu, Shaoli and Liu, Chengsi and Wang, Chao and Zhou, Xuehai and Li, Ling and Chen, Tianshi and Chen, Yunji},
+  booktitle={2018 51st Annual IEEE/ACM International Symposium on Microarchitecture (MICRO)}, 
+  title={Cambricon-S: Addressing Irregularity in Sparse Neural Networks through A Cooperative Software/Hardware Approach}, 
+  year={2018},
+  volume={},
+  number={},
+  pages={15-28},
+  keywords={Synapses;Neurons;Image coding;Quantization (signal);Convergence;Biological neural networks;neural networks;sparsity;accelerator},
+  doi={10.1109/MICRO.2018.00011}}
+
+@inproceedings{sadi2019spmv,
+author = {Sadi, Fazle and Sweeney, Joe and Low, Tze Meng and Hoe, James C. and Pileggi, Larry and Franchetti, Franz},
+title = {Efficient SpMV Operation for Large and Highly Sparse Matrices using Scalable Multi-way Merge Parallelization},
+year = {2019},
+isbn = {9781450369381},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3352460.3358330},
+doi = {10.1145/3352460.3358330},
+abstract = {The importance of Sparse Matrix dense Vector multiplication (SpMV) operation in graph analytics and numerous scientific applications has led to development of custom accelerators that are intended to over-come the difficulties of sparse data operations on general purpose architectures. However, efficient SpMV operation on large problem (i.e. working set exceeds on-chip storage) is severely constrained due to strong dependence on limited amount of fast random access memory to scale. Additionally, unstructured matrix with high sparsity pose difficulties as most solutions rely on exploitation of data locality. This work presents an algorithm co-optimized scalable hardware architecture that can efficiently operate on very large (~billion nodes) and/or highly sparse (avg. degree <10) graphs with significantly less on-chip fast memory than existing solutions. A novel parallelization methodology for implementing large and high throughput multi-way merge network is the key enabler of this high performance SpMV accelerator. Additionally, a data compression scheme to reduce off-chip traffic and special computation for nodes with exceptionally large number of edges, commonly found in power-law graphs, are presented. This accelerator is demonstrated with 16-nm fabricated ASIC and Stratix® 10 FPGA platforms. Experimental results show more than an order of magnitude improvement over current custom hardware solutions and more than two orders of magnitude improvement over commercial off-the-shelf (COTS) architectures for both performance and energy efficiency.},
+booktitle = {Proceedings of the 52nd Annual IEEE/ACM International Symposium on Microarchitecture},
+pages = {347–358},
+numpages = {12},
+keywords = {SpMV, custom hardware, merge parallelization, sparse matrices},
+location = {Columbus, OH, USA},
+series = {MICRO-52}
+}
+
+@INPROCEEDINGS{giannoula2022sparsep,
+  author={Giannoula, Christina and Fernandez, Ivan and Gómez-Luna, Juan and Koziris, Nectarios and Goumas, Georgios and Mutlu, Onur},
+  booktitle={2022 IEEE Computer Society Annual Symposium on VLSI (ISVLSI)}, 
+  title={SparseP: Efficient Sparse Matrix Vector Multiplication on Real Processing-In-Memory Architectures}, 
+  year={2022},
+  volume={},
+  number={},
+  pages={288-291},
+  keywords={Heart;Scientific computing;Graphics processing units;Machine learning;Computer architecture;Very large scale integration;Sparse matrices},
+  doi={10.1109/ISVLSI54635.2022.00063}}
+
+
+@inproceedings{bert2019acl,
+    title = "{BERT}: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+    author = "Devlin, Jacob  and
+      Chang, Ming-Wei  and
+      Lee, Kenton  and
+      Toutanova, Kristina",
+    editor = "Burstein, Jill  and
+      Doran, Christy  and
+      Solorio, Thamar",
+    booktitle = "Proceedings of the 2019 Conference of the North {A}merican Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers)",
+    month = jun,
+    year = "2019",
+    address = "Minneapolis, Minnesota",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/N19-1423",
+    doi = "10.18653/v1/N19-1423",
+    pages = "4171--4186",
+    abstract = "We introduce a new language representation model called BERT, which stands for Bidirectional Encoder Representations from Transformers. Unlike recent language representation models (Peters et al., 2018a; Radford et al., 2018), BERT is designed to pre-train deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context in all layers. As a result, the pre-trained BERT model can be fine-tuned with just one additional output layer to create state-of-the-art models for a wide range of tasks, such as question answering and language inference, without substantial task-specific architecture modifications. BERT is conceptually simple and empirically powerful. It obtains new state-of-the-art results on eleven natural language processing tasks, including pushing the GLUE score to 80.5 (7.7 point absolute improvement), MultiNLI accuracy to 86.7{\%} (4.6{\%} absolute improvement), SQuAD v1.1 question answering Test F1 to 93.2 (1.5 point absolute improvement) and SQuAD v2.0 Test F1 to 83.1 (5.1 point absolute improvement).",
+}
+
+@inproceedings{10.1145/2749469.2750392,
+author = {Kanev, Svilen and Darago, Juan Pablo and Hazelwood, Kim and Ranganathan, Parthasarathy and Moseley, Tipp and Wei, Gu-Yeon and Brooks, David},
+title = {Profiling a warehouse-scale computer},
+year = {2015},
+isbn = {9781450334020},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2749469.2750392},
+doi = {10.1145/2749469.2750392},
+abstract = {With the increasing prevalence of warehouse-scale (WSC) and cloud computing, understanding the interactions of server applications with the underlying microarchitecture becomes ever more important in order to extract maximum performance out of server hardware. To aid such understanding, this paper presents a detailed microarchitectural analysis of live datacenter jobs, measured on more than 20,000 Google machines over a three year period, and comprising thousands of different applications.We first find that WSC workloads are extremely diverse, breeding the need for architectures that can tolerate application variability without performance loss. However, some patterns emerge, offering opportunities for co-optimization of hardware and software. For example, we identify common building blocks in the lower levels of the software stack. This "datacenter tax" can comprise nearly 30\% of cycles across jobs running in the fleet, which makes its constituents prime candidates for hardware specialization in future server systems-on-chips. We also uncover opportunities for classic microarchitectural optimizations for server processors, especially in the cache hierarchy. Typical workloads place significant stress on instruction caches and prefer memory latency over bandwidth. They also stall cores often, but compute heavily in bursts. These observations motivate several interesting directions for future warehouse-scale computers.},
+booktitle = {Proceedings of the 42nd Annual International Symposium on Computer Architecture},
+pages = {158–169},
+numpages = {12},
+location = {Portland, Oregon},
+series = {ISCA '15}
+}
+
+@article{profiling2015acm,
+author = {Kanev, Svilen and Darago, Juan Pablo and Hazelwood, Kim and Ranganathan, Parthasarathy and Moseley, Tipp and Wei, Gu-Yeon and Brooks, David},
+title = {Profiling a warehouse-scale computer},
+year = {2015},
+issue_date = {June 2015},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {43},
+number = {3S},
+issn = {0163-5964},
+url = {https://doi.org/10.1145/2872887.2750392},
+doi = {10.1145/2872887.2750392},
+abstract = {With the increasing prevalence of warehouse-scale (WSC) and cloud computing, understanding the interactions of server applications with the underlying microarchitecture becomes ever more important in order to extract maximum performance out of server hardware. To aid such understanding, this paper presents a detailed microarchitectural analysis of live datacenter jobs, measured on more than 20,000 Google machines over a three year period, and comprising thousands of different applications.We first find that WSC workloads are extremely diverse, breeding the need for architectures that can tolerate application variability without performance loss. However, some patterns emerge, offering opportunities for co-optimization of hardware and software. For example, we identify common building blocks in the lower levels of the software stack. This "datacenter tax" can comprise nearly 30\% of cycles across jobs running in the fleet, which makes its constituents prime candidates for hardware specialization in future server systems-on-chips. We also uncover opportunities for classic microarchitectural optimizations for server processors, especially in the cache hierarchy. Typical workloads place significant stress on instruction caches and prefer memory latency over bandwidth. They also stall cores often, but compute heavily in bursts. These observations motivate several interesting directions for future warehouse-scale computers.},
+journal = {SIGARCH Comput. Archit. News},
+month = {jun},
+pages = {158–169},
+numpages = {12}
+}
+
+@software{jax2018github,
+  author = {James Bradbury and Roy Frostig and Peter Hawkins and Matthew James Johnson and Chris Leary and Dougal Maclaurin and George Necula and Adam Paszke and Jake Vander{P}las and Skye Wanderman-{M}ilne and Qiao Zhang},
+  title = {{JAX}: composable transformations of {P}ython+{N}um{P}y programs},
+  url = {http://github.com/google/jax},
+  version = {0.3.13},
+  year = {2018},
+}
+
+@inproceedings{pytorchgeometric2019github,
+  title={Fast Graph Representation Learning with {PyTorch Geometric}},
+  author={Fey, Matthias and Lenssen, Jan E.},
+  booktitle={ICLR Workshop on Representation Learning on Graphs and Manifolds},
+  year={2019},
+}
+
+@inproceedings{tpu2023isca,
+author = {Jouppi, Norm and Kurian, George and Li, Sheng and Ma, Peter and Nagarajan, Rahul and Nai, Lifeng and Patil, Nishant and Subramanian, Suvinay and Swing, Andy and Towles, Brian and Young, Clifford and Zhou, Xiang and Zhou, Zongwei and Patterson, David A},
+title = {TPU v4: An Optically Reconfigurable Supercomputer for Machine Learning with Hardware Support for Embeddings},
+year = {2023},
+isbn = {9798400700958},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3579371.3589350},
+doi = {10.1145/3579371.3589350},
+abstract = {In response to innovations in machine learning (ML) models, production workloads changed radically and rapidly. TPU v4 is the fifth Google domain specific architecture (DSA) and its third supercomputer for such ML models. Optical circuit switches (OCSes) dynamically reconfigure its interconnect topology to improve scale, availability, utilization, modularity, deployment, security, power, and performance; users can pick a twisted 3D torus topology if desired. Much cheaper, lower power, and faster than Infiniband, OCSes and underlying optical components are <5\% of system cost and <3\% of system power. Each TPU v4 includes SparseCores, dataflow processors that accelerate models that rely on embeddings by 5x--7x yet use only 5\% of die area and power. Deployed since 2020, TPU v4 outperforms TPU v3 by 2.1x and improves performance/Watt by 2.7x. The TPU v4 supercomputer is 4x larger at 4096 chips and thus nearly 10x faster overall, which along with OCS flexibility and availability allows a large language model to train at an average of ~60\% of peak FLOPS/second. For similar sized systems, it is ~4.3x--4.5x faster than the Graphcore IPU Bow and is 1.2x--1.7x faster and uses 1.3x--1.9x less power than the Nvidia A100. TPU v4s inside the energy-optimized warehouse scale computers of Google Cloud use ~2--6x less energy and produce ~20x less CO2e than contemporary DSAs in typical on-premise data centers.},
+booktitle = {Proceedings of the 50th Annual International Symposium on Computer Architecture},
+articleno = {82},
+numpages = {14},
+keywords = {CO2 equivalent emissions, energy, carbon emissions, warehouse scale computer, power usage effectiveness, large language model, embeddings, reconfigurable, optical interconnect, supercomputer, IPU, GPU, TPU, domain specific architecture, machine learning},
+location = {Orlando, FL, USA},
+series = {ISCA '23}
+}
+
+@inproceedings{mtia2023isca,
+author = {Firoozshahian, Amin and Coburn, Joel and Levenstein, Roman and Nattoji, Rakesh and Kamath, Ashwin and Wu, Olivia and Grewal, Gurdeepak and Aepala, Harish and Jakka, Bhasker and Dreyer, Bob and Hutchin, Adam and Diril, Utku and Nair, Krishnakumar and Aredestani, Ehsan K. and Schatz, Martin and Hao, Yuchen and Komuravelli, Rakesh and Ho, Kunming and Abu Asal, Sameer and Shajrawi, Joe and Quinn, Kevin and Sreedhara, Nagesh and Kansal, Pankaj and Wei, Willie and Jayaraman, Dheepak and Cheng, Linda and Chopda, Pritam and Wang, Eric and Bikumandla, Ajay and Karthik Sengottuvel, Arun and Thottempudi, Krishna and Narasimha, Ashwin and Dodds, Brian and Gao, Cao and Zhang, Jiyuan and Al-Sanabani, Mohammed and Zehtabioskuie, Ana and Fix, Jordan and Yu, Hangchen and Li, Richard and Gondkar, Kaustubh and Montgomery, Jack and Tsai, Mike and Dwarakapuram, Saritha and Desai, Sanjay and Avidan, Nili and Ramani, Poorvaja and Narayanan, Karthik and Mathews, Ajit and Gopal, Sethu and Naumov, Maxim and Rao, Vijay and Noru, Krishna and Reddy, Harikrishna and Venkatapuram, Prahlad and Bjorlin, Alexis},
+title = {MTIA: First Generation Silicon Targeting Meta's Recommendation Systems},
+year = {2023},
+isbn = {9798400700958},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3579371.3589348},
+doi = {10.1145/3579371.3589348},
+abstract = {Meta has traditionally relied on using CPU-based servers for running inference workloads, specifically Deep Learning Recommendation Models (DLRM), but the increasing compute and memory requirements of these models have pushed the company towards using specialized solutions such as GPUs or other hardware accelerators. This paper describes the company's effort in constructing its first silicon specifically designed for recommendation systems; it describes the accelerator architecture and platform design, the software stack for enabling and optimizing PyTorch-based models and provides an initial performance evaluation. With our emerging software stack, we have made significant progress towards reaching the same or higher efficiency as the GPU: We averaged 0.9x perf/W across various DLRMs, and benchmarks show operators such as GEMMs reaching 2x perf/W. Finally, the paper describes the lessons we learned during this journey which can improve the performance and programmability of future generations of architecture.},
+booktitle = {Proceedings of the 50th Annual International Symposium on Computer Architecture},
+articleno = {80},
+numpages = {13},
+keywords = {programmability, performance, recommendation systems, inference, machine learning, accelerators},
+location = {Orlando, FL, USA},
+series = {ISCA '23}
+}
+
+@inproceedings{mixed2021press,
+author = {Ginart, A.A. and Naumov, Maxim and Mudigere, Dheevatsa and Yang, Jiyan and Zou, James},
+title = {Mixed Dimension Embeddings with Application to Memory-Efficient Recommendation Systems},
+year = {2021},
+publisher = {IEEE Press},
+url = {https://doi.org/10.1109/ISIT45174.2021.9517710},
+doi = {10.1109/ISIT45174.2021.9517710},
+abstract = {Embedding representations power machine intelligence in many applications, including recommendation systems, but they are space intensive - potentially occupying hundreds of gigabytes in large-scale settings. To help manage this outsized memory consumption, we explore mixed dimension embeddings, an embedding layer architecture in which a particular embedding vector's dimension scales with its query frequency. Through theoretical analysis and systematic experiments, we demonstrate that using mixed dimensions can drastically reduce the memory usage, while maintaining and even improving the ML performance. Empirically, we show that the proposed mixed dimension layers improve accuracy by 0.1 % using half as many parameters or maintain it using 16 x fewer parameters for click-through rate prediction on the Criteo Kaggle dataset. They also train over 2x faster on a GPU. A full version of this paper is accessible at: https://arxiv.org/abs/1909.11810},
+booktitle = {2021 IEEE International Symposium on Information Theory (ISIT)},
+pages = {2786–2791},
+numpages = {6},
+location = {Melbourne, Australia}
+}
+
+@inproceedings{neural2020acm,
+author = {Joglekar, Manas R. and Li, Cong and Chen, Mei and Xu, Taibai and Wang, Xiaoming and Adams, Jay K. and Khaitan, Pranav and Liu, Jiahui and Le, Quoc V.},
+title = {Neural Input Search for Large Scale Recommendation Models},
+year = {2020},
+isbn = {9781450379984},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3394486.3403288},
+doi = {10.1145/3394486.3403288},
+abstract = {Recommendation problems with large numbers of discrete items, such as products, webpages, or videos, are ubiquitous in the technology industry. Deep neural networks are being increasingly used for these recommendation problems. These models use embeddings to represent discrete items as continuous vectors, and the vocabulary sizes and embedding dimensions, despite their heavy influence on the model's accuracy, are often manually selected in a heuristical manner. We present Neural Input Search (NIS), a technique for learning the optimal vocabulary sizes and embedding dimensions for categorical features. The goal is to maximize prediction accuracy subject to a constraint on the total memory used by all embeddings. Moreover, we argue that the traditional Single-size Embedding (SE), which uses the same embedding dimension for all values of a feature, suffers from inefficient usage of model capacity and training data. We propose a novel type of embedding, namely Multi-size Embedding (ME), which allows the embedding dimension to vary for different values of the feature. During training we use reinforcement learning to find the optimal vocabulary size for each feature and embedding dimension for each value of the feature. Experimentation on two public recommendation datasets shows that NIS can find significantly better models with much fewer embedding parameters. We also deployed NIS in production to a real world large scale App ranking model in our company's App store, Google Play, resulting in +1.02\% App Install with 30\% smaller model size.},
+booktitle = {Proceedings of the 26th ACM SIGKDD International Conference on Knowledge Discovery \& Data Mining},
+pages = {2387–2397},
+numpages = {11},
+keywords = {recommendation models, embeddings, automl},
+location = {Virtual Event, CA, USA},
+series = {KDD '20}
+}
+
+@INPROCEEDINGS{understanding2021hpca,
+  author={Acun, Bilge and Murphy, Matthew and Wang, Xiaodong and Nie, Jade and Wu, Carole-Jean and Hazelwood, Kim},
+  booktitle={2021 IEEE International Symposium on High-Performance Computer Architecture (HPCA)}, 
+  title={Understanding Training Efficiency of Deep Learning Recommendation Models at Scale}, 
+  year={2021},
+  volume={},
+  number={},
+  pages={802-814},
+  keywords={Training;Deep learning;Computational modeling;Memory management;Graphics processing units;Production;Throughput;Recommendation models;GPUs;training efficiency;deep learning},
+  doi={10.1109/HPCA51647.2021.00072}}
+
+@inproceedings{recnmp2020isca,
+author = {Ke, Liu and Gupta, Udit and Cho, Benjamin Youngjae and Brooks, David and Chandra, Vikas and Diril, Utku and Firoozshahian, Amin and Hazelwood, Kim and Jia, Bill and Lee, Hsien-Hsin S. and Li, Meng and Maher, Bert and Mudigere, Dheevatsa and Naumov, Maxim and Schatz, Martin and Smelyanskiy, Mikhail and Wang, Xiaodong and Reagen, Brandon and Wu, Carole-Jean and Hempstead, Mark and Zhang, Xuan},
+title = {RecNMP: accelerating personalized recommendation with near-memory processing},
+year = {2020},
+isbn = {9781728146614},
+publisher = {IEEE Press},
+url = {https://doi.org/10.1109/ISCA45697.2020.00070},
+doi = {10.1109/ISCA45697.2020.00070},
+abstract = {Personalized recommendation systems leverage deep learning models and account for the majority of data center AI cycles. Their performance is dominated by memory-bound sparse embedding operations with unique irregular memory access patterns that pose a fundamental challenge to accelerate. This paper proposes a lightweight, commodity DRAM compliant, near-memory processing solution to accelerate personalized recommendation inference. The in-depth characterization of production-grade recommendation models shows that embedding operations with high model-, operator- and data-level parallelism lead to memory bandwidth saturation, limiting recommendation inference performance. We propose RecNMP which provides a scalable solution to improve system throughput, supporting a broad range of sparse embedding models. RecNMP is specifically tailored to production environments with heavy co-location of operators on a single server. Several hardware/software co-optimization techniques such as memory-side caching, table-aware packet scheduling, and hot entry profiling are studied, providing up to 9.8x memory latency speedup over a highly-optimized baseline. Overall, RecNMP offers 4.2x throughput improvement and 45.8\% memory energy savings.},
+booktitle = {Proceedings of the ACM/IEEE 47th Annual International Symposium on Computer Architecture},
+pages = {790–803},
+numpages = {14},
+location = {Virtual Event},
+series = {ISCA '20}
+}
+
+@inbook{shun2013ligra,
+author = {Shun, Julian and Blelloch, Guy E.},
+title = {Ligra: a lightweight graph processing framework for shared memory},
+year = {2013},
+isbn = {9781450319225},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi-org.stanford.idm.oclc.org/10.1145/2442516.2442530},
+abstract = {There has been significant recent interest in parallel frameworks for processing graphs due to their applicability in studying social networks, the Web graph, networks in biology, and unstructured meshes in scientific simulation. Due to the desire to process large graphs, these systems have emphasized the ability to run on distributed memory machines. Today, however, a single multicore server can support more than a terabyte of memory, which can fit graphs with tens or even hundreds of billions of edges. Furthermore, for graph algorithms, shared-memory multicores are generally significantly more efficient on a per core, per dollar, and per joule basis than distributed memory systems, and shared-memory algorithms tend to be simpler than their distributed counterparts.In this paper, we present a lightweight graph processing framework that is specific for shared-memory parallel/multicore machines, which makes graph traversal algorithms easy to write. The framework has two very simple routines, one for mapping over edges and one for mapping over vertices. Our routines can be applied to any subset of the vertices, which makes the framework useful for many graph traversal algorithms that operate on subsets of the vertices. Based on recent ideas used in a very fast algorithm for breadth-first search (BFS), our routines automatically adapt to the density of vertex sets. We implement several algorithms in this framework, including BFS, graph radii estimation, graph connectivity, betweenness centrality, PageRank and single-source shortest paths. Our algorithms expressed using this framework are very simple and concise, and perform almost as well as highly optimized code. Furthermore, they get good speedups on a 40-core machine and are significantly more efficient than previously reported results using graph frameworks on machines with many more cores.},
+booktitle = {Proceedings of the 18th ACM SIGPLAN Symposium on Principles and Practice of Parallel Programming},
+pages = {135–146},
+numpages = {12}
+}
+
+@article{zhang2018graphit,
+author = {Zhang, Yunming and Yang, Mengjiao and Baghdadi, Riyadh and Kamil, Shoaib and Shun, Julian and Amarasinghe, Saman},
+title = {GraphIt: a high-performance graph DSL},
+year = {2018},
+issue_date = {November 2018},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {2},
+number = {OOPSLA},
+url = {https://doi-org.stanford.idm.oclc.org/10.1145/3276491},
+doi = {10.1145/3276491},
+abstract = {The performance bottlenecks of graph applications depend not only on the algorithm and the underlying hardware, but also on the size and structure of the input graph. As a result, programmers must try different combinations of a large set of techniques, which make tradeoffs among locality, work-efficiency, and parallelism, to develop the best implementation for a specific algorithm and type of graph. Existing graph frameworks and domain specific languages (DSLs) lack flexibility, supporting only a limited set of optimizations. This paper introduces GraphIt, a new DSL for graph computations that generates fast implementations for algorithms with different performance characteristics running on graphs with different sizes and structures. GraphIt separates what is computed (algorithm) from how it is computed (schedule). Programmers specify the algorithm using an algorithm language, and performance optimizations are specified using a separate scheduling language. The algorithm language simplifies expressing the algorithms, while exposing opportunities for optimizations. We formulate graph optimizations, including edge traversal direction, data layout, parallelization, cache, NUMA, and kernel fusion optimizations, as tradeoffs among locality, parallelism, and work-efficiency. The scheduling language enables programmers to easily search through this complicated tradeoff space by composing together a large set of edge traversal, vertex data layout, and program structure optimizations. The separation of algorithm and schedule also enables us to build an autotuner on top of GraphIt to automatically find high-performance schedules. The compiler uses a new scheduling representation, the graph iteration space, to model, compose, and ensure the validity of the large number of optimizations. We evaluate GraphIt’s performance with seven algorithms on graphs with different structures and sizes. GraphIt outperforms the next fastest of six state-of-the-art shared-memory frameworks (Ligra, Green-Marl, GraphMat, Galois, Gemini, and Grazelle) on 24 out of 32 experiments by up to 4.8\texttimes{}, and is never more than 43\% slower than the fastest framework on the other experiments. GraphIt also reduces the lines of code by up to an order of magnitude compared to the next fastest framework.},
+journal = {Proc. ACM Program. Lang.},
+month = {oct},
+articleno = {121},
+numpages = {30},
+keywords = {Big Data, Code Generation, Compiler Optimizations, Domain Specific Languages, Graph Algorithms, Parallel Programming Languages}
+}
+
+@INPROCEEDINGS{gale2020sparsegpu,
+  author={Gale, Trevor and Zaharia, Matei and Young, Cliff and Elsen, Erich},
+  booktitle={SC20: International Conference for High Performance Computing, Networking, Storage and Analysis}, 
+  title={Sparse GPU Kernels for Deep Learning}, 
+  year={2020},
+  volume={},
+  number={},
+  pages={1-14},
+  keywords={Deep learning;Neural networks;Memory management;Graphics processing units;Sparse matrices;Acceleration;Kernel;Neural networks;sparse matrices;graphics processing units},
+  doi={10.1109/SC41405.2020.00021}}
+
+@INPROCEEDINGS{jianjun2021gcnax,
+  author={Li, Jiajun and Louri, Ahmed and Karanth, Avinash and Bunescu, Razvan},
+  booktitle={2021 IEEE International Symposium on High-Performance Computer Architecture (HPCA)}, 
+  title={GCNAX: A Flexible and Energy-efficient Accelerator for Graph Convolutional Neural Networks}, 
+  year={2021},
+  volume={},
+  number={},
+  pages={775-788},
+  keywords={Program processors;Simulation;Random access memory;Accelerator architectures;Throughput;Energy efficiency;Space exploration;Graph Convolutional Neural Networks;Dataflow Accelerators;Domain-specific Accelerators},
+  doi={10.1109/HPCA51647.2021.00070}}
+
+@INPROCEEDINGS{spmm2014aktulga,
+  author={Aktulga, Hasan Metin and Buluç, Aydin and Williams, Samuel and Yang, Chao},
+  booktitle={2014 IEEE 28th International Parallel and Distributed Processing Symposium}, 
+  title={Optimizing Sparse Matrix-Multiple Vectors Multiplication for Nuclear Configuration Interaction Calculations}, 
+  year={2014},
+  volume={},
+  number={},
+  pages={1213-1222},
+  keywords={Sparse matrices;Vectors;Instruction sets;Bandwidth;Eigenvalues and eigenfunctions;Arrays;Wave functions;Sparse Matrix Multiplication;Block Eigensolver;Nuclear Configuration Interaction;Extended Roofline Model},
+  doi={10.1109/IPDPS.2014.125}}
+
+@misc{mpact2021google,
+  author = {Google},
+  title = {MLIR Sparsifier},
+  url = {https://developers.google.com/mlir-sparsifier},
+  year = {2021}
+}
+
+@misc{nvidiah100,
+  author = {Nvidia},
+  title = {Nvidia H100 specs},
+  url = {https://www.nvidia.com/en-us/data-center/h100/},
+    year={2024}
+}
+
+@misc{nvidiat4,
+  author = {Nvidia},
+  title = {Nvidia T4 specs},
+  url = {https://www.nvidia.com/en-us/data-center/tesla-t4/},
+    year={2024}
+}
+
+@misc{nvidiansys,
+  author = {Nvidia},
+  title = {Nvidia Nsight Systems},
+  url = {https://developer.nvidia.com/nsight-systems},
+    year={2024}
+}
+
+@INPROCEEDINGS{sme2022wilkinson,
+  author={Wilkinson, Finn and McIntosh-Smith, Simon},
+  booktitle={2022 IEEE/ACM International Workshop on Performance Modeling, Benchmarking and Simulation of High Performance Computer Systems (PMBS)}, 
+  title={An Initial Evaluation of Arm’s Scalable Matrix Extension}, 
+  year={2022},
+  volume={},
+  number={},
+  pages={135-140},
+  keywords={Adaptation models;Computational modeling;Instruction sets;High performance computing;Conferences;Benchmark testing;Hardware;Micro-Architecture;SimEng Simulation;Scalable Matrix Extension;BLAS Acceleration;In-CPU Acceleration},
+  doi={10.1109/PMBS56514.2022.00018}
+}
+
+@INPROCEEDINGS{sapphire2022nassif,
+  author={Nassif, Nevine and Munch, Ashley O. and Molnar, Carleton L. and Pasdast, Gerald and Lyer, Sitaraman V. and Yang, Zibing and Mendoza, Oscar and Huddart, Mark and Venkataraman, Srikrishnan and Kandula, Sireesha and Marom, Rafi and Kern, Alexandra M. and Bowhill, Bill and Mulvihill, David R. and Nimmagadda, Srikanth and Kalidindi, Varma and Krause, Jonathan and Haq, Mohammad M. and Sharma, Roopali and Duda, Kevin},
+  booktitle={2022 IEEE International Solid-State Circuits Conference (ISSCC)}, 
+  title={Sapphire Rapids: The Next-Generation Intel Xeon Scalable Processor}, 
+  year={2022},
+  volume={65},
+  number={},
+  pages={44-46},
+  keywords={Power system management;Conferences;Metals;Integrated circuit interconnections;Routing;Delays;Transistors},
+  doi={10.1109/ISSCC42614.2022.9731107}
+}
+
+@INPROCEEDINGS{stream2019wang,
+  author={Wang, Zhengrong and Nowatzki, Tony},
+  booktitle={2019 ACM/IEEE 46th Annual International Symposium on Computer Architecture (ISCA)}, 
+  title={Stream-based Memory Access Specialization for General Purpose Processors}, 
+  year={2019},
+  volume={},
+  number={},
+  pages={736-749},
+  keywords={Stream;Specialization;Decoupled Access Execute;DAE;Prefetching;Cache Bypassing;Microarchitecture;ISA},
+  doi={}
+}
+
+@INPROCEEDINGS{dsagen2020weng,
+  author={Weng, Jian and Liu, Sihao and Dadu, Vidushi and Wang, Zhengrong and Shah, Preyas and Nowatzki, Tony},
+  booktitle={2020 ACM/IEEE 47th Annual International Symposium on Computer Architecture (ISCA)}, 
+  title={DSAGEN: Synthesizing Programmable Spatial Accelerators}, 
+  year={2020},
+  volume={},
+  number={},
+  pages={268-281},
+  keywords={},
+  doi={10.1109/ISCA45697.2020.00032}
+}
+
+@inproceedings{graphsage2017hamilton,
+author = {Hamilton, William L. and Ying, Rex and Leskovec, Jure},
+title = {Inductive representation learning on large graphs},
+year = {2017},
+isbn = {9781510860964},
+publisher = {Curran Associates Inc.},
+address = {Red Hook, NY, USA},
+abstract = {Low-dimensional embeddings of nodes in large graphs have proved extremely useful in a variety of prediction tasks, from content recommendation to identifying protein functions. However, most existing approaches require that all nodes in the graph are present during training of the embeddings; these previous approaches are inherently transductive and do not naturally generalize to unseen nodes. Here we present GraphSAGE, a general inductive framework that leverages node feature information (e.g., text attributes) to efficiently generate node embeddings for previously unseen data. Instead of training individual embeddings for each node, we learn a function that generates embeddings by sampling and aggregating features from a node's local neighborhood. Our algorithm outperforms strong baselines on three inductive node-classification benchmarks: we classify the category of unseen nodes in evolving information graphs based on citation and Reddit post data, and we show that our algorithm generalizes to completely unseen graphs using a multi-graph dataset of protein-protein interactions.},
+booktitle = {Proceedings of the 31st International Conference on Neural Information Processing Systems},
+pages = {1025–1035},
+numpages = {11},
+location = {Long Beach, California, USA},
+series = {NIPS'17}
+}
+
+@INPROCEEDINGS{elrec2022wang,
+  author={Wang, Zheng and Wang, Yuke and Feng, Boyuan and Mudigere, Dheevatsa and Muthiah, Bharath and Ding, Yufei},
+  booktitle={SC22: International Conference for High Performance Computing, Networking, Storage and Analysis}, 
+  title={EL-Rec: Efficient Large-Scale Recommendation Model Training via Tensor-Train Embedding Table}, 
+  year={2022},
+  volume={},
+  number={},
+  pages={1-14},
+  keywords={Training;Deep learning;Costs;Limiting;High performance computing;Pipelines;Graphics processing units;Recommender systems;High performance computing;Deep learning},
+  doi={10.1109/SC41404.2022.00075}}
+
+@INPROCEEDINGS{openembedding2023chen,
+  author={Chen, Cheng and Wang, Yilin and Yang, Jun and Liu, Yiming and Lu, Mian and Zheng, Zhao and He, Bingsheng and Wong, Weng-Fai and You, Liang and Sun, Penghao and Zhao, Yuping and Hu, Fenghua and Rudoff, Andy},
+  booktitle={2023 IEEE 39th International Conference on Data Engineering (ICDE)}, 
+  title={OpenEmbedding: A Distributed Parameter Server for Deep Learning Recommendation Models using Persistent Memory}, 
+  year={2023},
+  volume={},
+  number={},
+  pages={2976-2987},
+  keywords={Training;Checkpointing;Industries;Deep learning;Costs;Scalability;Random access memory;machine learning system;recommendation model;parameter server;persistent memory},
+  doi={10.1109/ICDE55515.2023.00228}}
+
+@article{liu2024unisparse,
+author = {Liu, Jie and Zhao, Zhongyuan and Ding, Zijian and Brock, Benjamin and Rong, Hongbo and Zhang, Zhiru},
+title = {UniSparse: An Intermediate Language for General Sparse Format Customization},
+year = {2024},
+issue_date = {April 2024},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {8},
+number = {OOPSLA1},
+url = {https://doi-org.stanford.idm.oclc.org/10.1145/3649816},
+doi = {10.1145/3649816},
+abstract = {The ongoing trend of hardware specialization has led to a growing use of custom data formats when processing sparse workloads, which are typically memory-bound. These formats facilitate optimized software/hardware implementations by utilizing sparsity pattern- or target-aware data structures and layouts to enhance memory access latency and bandwidth utilization. However, existing sparse tensor programming models and compilers offer little or no support for productively customizing the sparse formats. Additionally, because these frameworks represent formats using a limited set of per-dimension attributes, they lack the flexibility to accommodate numerous new variations of custom sparse data structures and layouts.  
+To overcome this deficiency, we propose UniSparse, an intermediate language that provides a unified abstraction for representing and customizing sparse formats. Unlike the existing attribute-based frameworks, UniSparse decouples the logical representation of the sparse tensor (i.e., the data structure) from its low-level memory layout, enabling the customization of both. As a result, a rich set of format customizations can be succinctly expressed in a small set of well-defined query, mutation, and layout primitives. We also develop a compiler leveraging the MLIR infrastructure, which supports adaptive customization of formats, and automatic code generation of format conversion and compute operations for heterogeneous architectures. We demonstrate the efficacy of our approach through experiments running commonly-used sparse linear algebra operations with specialized formats on multiple different hardware targets, including an Intel CPU, an NVIDIA GPU, an AMD Xilinx FPGA, and a simulated processing-in-memory (PIM) device.},
+journal = {Proc. ACM Program. Lang.},
+month = apr,
+articleno = {99},
+numpages = {29},
+keywords = {compilers, heterogeneous systems, programming languages, sparse data formats}
+}
+
+@article{naumov2019dlrm,
+  author    = {Maxim Naumov and Dheevatsa Mudigere and Hao{-}Jun Michael Shi and Jianyu Huang and Narayanan Sundaraman and Jongsoo Park and Xiaodong Wang and Udit Gupta and Carole{-}Jean Wu and Alisson G. Azzolini and Dmytro Dzhulgakov and Andrey Mallevich and Ilia Cherniavskii and Yinghai Lu and Raghuraman Krishnamoorthi and Ansha Yu and Volodymyr Kondratenko and Stephanie Pereira and Xianjie Chen and Wenlin Chen and Vijay Rao and Bill Jia and Liang Xiong and Misha Smelyanskiy},
+  title     = {Deep Learning Recommendation Model for Personalization and Recommendation Systems},
+  journal   = {CoRR},
+  volume    = {abs/1906.00091},
+  year      = {2019},
+  url       = {https://arxiv.org/abs/1906.00091},
+}
+
+@INPROCEEDINGS{mess2024micro,
+  author={Esmaili-Dokht, Pouya and Sgherzi, Francesco and Girelli, Valéria Soldera and Boixaderas, Isaac and Carmin, Mariana and Monemi, Alireza and Armejach, Adrià and Mercadal, Estanislao and Llort, Germán and Radojković, Petar and Moreto, Miquel and Giménez, Judit and Martorell, Xavier and Ayguadé, Eduard and Labarta, Jesus and Confalonieri, Emanuele and Dubey, Rishabh and Adlard, Jason},
+  booktitle={2024 57th IEEE/ACM International Symposium on Microarchitecture (MICRO)}, 
+  title={A Mess of Memory System Benchmarking, Simulation and Application Profiling}, 
+  year={2024},
+  volume={},
+  number={},
+  pages={136-152},
+  keywords={Measurement;Runtime;Microarchitecture;System performance;Source coding;Production;Benchmark testing;Performance analysis;Servers;Stress;Memory systems;benchmarking;simulation;application profiling;CXL;bandwidth-latency curves},
+  doi={10.1109/MICRO61859.2024.00020}}
+
+@INPROCEEDINGS{deeprecsys2020isca,
+  author={Gupta, Udit and Hsia, Samuel and Saraph, Vikram and Wang, Xiaodong and Reagen, Brandon and Wei, Gu-Yeon and Lee, Hsien-Hsin S. and Brooks, David and Wu, Carole-Jean},
+  booktitle={2020 ACM/IEEE 47th Annual International Symposium on Computer Architecture (ISCA)}, 
+  title={DeepRecSys: A System for Optimizing End-To-End At-Scale Neural Recommendation Inference}, 
+  year={2020},
+  volume={},
+  number={},
+  pages={982-995},
+  keywords={},
+  doi={10.1109/ISCA45697.2020.00084}}
+
+@book{barret94csr,
+author = {Barrett, Richard and Berry, Michael and Chan, Tony F. and Demmel, James and Donato, June and Dongarra, Jack and Eijkhout, Victor and Pozo, Roldan and Romine, Charles and van der Vorst, Henk},
+title = {Templates for the Solution of Linear Systems: Building Blocks for Iterative Methods},
+publisher = {Society for Industrial and Applied Mathematics},
+year = {1994},
+doi = {10.1137/1.9781611971538},
+address = {},
+edition   = {},
+URL = {https://epubs.siam.org/doi/abs/10.1137/1.9781611971538},
+eprint = {https://epubs.siam.org/doi/pdf/10.1137/1.9781611971538}
+}
+
+@article{little1961queue,
+author = {Little, John D. C.},
+title = {A Proof for the Queuing Formula},
+year = {1961},
+issue_date = {June 1961},
+publisher = {INFORMS},
+address = {Linthicum, MD, USA},
+volume = {9},
+number = {3},
+issn = {0030-364X},
+url = {https://doi.org/10.1287/opre.9.3.383},
+doi = {10.1287/opre.9.3.383},
+abstract = {In a queuing process, let 1/λ be the mean time between the arrivals of two consecutive units, L be the mean number of units in the system, and W be the mean time spent by a unit in the system. It is shown that, if the three means are finite and the corresponding stochastic processes strictly stationary, and, if the arrival process is metrically transitive with nonzero mean, then L = λW.},
+journal = {Oper. Res.},
+month = jun,
+pages = {383–387},
+numpages = {5}
+}
+
+
+@article{lawson1979blas,
+author = {Lawson, C. L. and Hanson, R. J. and Kincaid, D. R. and Krogh, F. T.},
+title = {Basic Linear Algebra Subprograms for Fortran Usage},
+year = {1979},
+issue_date = {Sept. 1979},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {5},
+number = {3},
+issn = {0098-3500},
+url = {https://doi.org/10.1145/355841.355847},
+doi = {10.1145/355841.355847},
+journal = {ACM Trans. Math. Softw.},
+month = sep,
+pages = {308–323},
+numpages = {16}
+}
+
+@INPROCEEDINGS{li2009mcpat,
+  author={Li, Sheng and Ahn, Jung Ho and Strong, Richard D. and Brockman, Jay B. and Tullsen, Dean M. and Jouppi, Norman P.},
+  booktitle={2009 42nd Annual IEEE/ACM International Symposium on Microarchitecture (MICRO)}, 
+  title={McPAT: An integrated power, area, and timing modeling framework for multicore and manycore architectures}, 
+  year={2009},
+  volume={},
+  number={},
+  pages={469-480},
+  keywords={Timing;Multicore processing;Semiconductor device modeling;Predictive models;Costs;Out of order;Electronic design automation and methodology;Integrated circuit interconnections;Space exploration;Microarchitecture;Performance;Verification},
+  doi={}}
+
+@inproceedings{spmm2021selvitopi,
+author = {Selvitopi, Oguz and Brock, Benjamin and Nisa, Israt and Tripathy, Alok and Yelick, Katherine and Bulu\c{c}, Ayd\i{}n},
+title = {Distributed-memory parallel algorithms for sparse times tall-skinny-dense matrix multiplication},
+year = {2021},
+isbn = {9781450383356},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3447818.3461472},
+doi = {10.1145/3447818.3461472},
+abstract = {Sparse times dense matrix multiplication (SpMM) finds its applications in well-established fields such as computational linear algebra as well as emerging fields such as graph neural networks. In this study, we evaluate the performance of various techniques for performing SpMM as a distributed computation across many nodes by focusing on GPU accelerators. We examine how the actual local computational performance of state-of-the-art SpMM implementations affect computational efficiency as dimensions change when we scale to large numbers of nodes, which proves to be an unexpectedly important bottleneck. We also consider various distribution strategies, including A-Stationary, B-Stationary, and C-Stationary algorithms, 1.5D and 2D algorithms, and RDMA-based and bulk synchronous methods of data transfer. Our results show that the best choice of algorithm and implementation technique depends not only on the cost of communication for particular matrix sizes and dimensions, but also on the performance of local SpMM operations. Our evaluations reveal that with the involvement of GPU accelerators, the best design choices for SpMM differ from the conventional algorithms that are known to perform well for dense matrix-matrix or sparse matrix-sparse matrix multiplies.},
+booktitle = {Proceedings of the 35th ACM International Conference on Supercomputing},
+pages = {431–442},
+numpages = {12},
+keywords = {RDMA, graphics accelerators, parallel algorithms, sparse linear algebra, sparse matrices},
+location = {Virtual Event, USA},
+series = {ICS '21}
+}
+
+@inproceedings{dvfs2018jimborean,
+author = {Jimborean, Alexandra and Koukos, Konstantinos and Spiliopoulos, Vasileios and Black-Schaffer, David and Kaxiras, Stefanos},
+title = {Fix the code. Don't tweak the hardware: A new compiler approach to Voltage-Frequency scaling},
+year = {2018},
+isbn = {9781450326704},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2544137.2544161},
+doi = {10.1145/2544137.2544161},
+abstract = {Traditional compiler approaches to optimize power efficiency aim to adjust voltage and frequency at runtime to match the code characteristics to the hardware (e.g., running memory-bound phases at a lower frequency). However, such approaches are constrained by three factors: (i) voltage-frequency transitions are too slow to be applied at instruction granularity, (ii) larger code regions are seldom unequivocally memory- or compute-bound, and, (iii) the available voltage scaling range for future technologies is rapidly shrinking. These factors necessitate new approaches to address power-efficiency at the code-generation level. This paper proposes one such approach to automatically generate power-efficient code using a decoupled access/execute (DAE) model.In DAE a program is split into tasks, where each task consists of two sufficiently coarse-grained phases to enable effective Dynamic Voltage Frequency Scaling (DVFS): (i) the access-phase for data prefetch (heavily memory-bound), and (ii) the execute-phase that performs the actual computation (heavily compute-bound). Our contribution is to provide a compiler methodology to automatically generate the access-phases for a task-based programming system. Our approach is capable of handling both affine (through a polyhedral analysis) and non-affine codes (through optimized task skeletons). Our evaluation shows that the automatically generated versions improve EDP by 25\% on average compared to a coupled execution, without any performance degradation, and surpasses the EDP savings of the corresponding hand-crafted tasks by 5\%.},
+booktitle = {Proceedings of Annual IEEE/ACM International Symposium on Code Generation and Optimization},
+pages = {262–272},
+numpages = {11},
+keywords = {Task-Based Execution, Polyhedral Model, Performance, Energy, Decoupled Execution, DVFS, Compiler Optimizations},
+location = {Orlando, FL, USA},
+series = {CGO '14}
+}
+
+@inproceedings{rvx2025lopoukhine,
+author = {Lopoukhine, Alexandre and Ficarelli, Federico and Vasiladiotis, Christos and Lydike, Anton and Van Delm, Josse and Dutilleul, Alban and Benini, Luca and Verhelst, Marian and Grosser, Tobias},
+title = {A Multi-level Compiler Backend for Accelerated Micro-kernels Targeting RISC-V ISA Extensions},
+year = {2025},
+isbn = {9798400712753},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3696443.3708952},
+doi = {10.1145/3696443.3708952},
+abstract = {High-performance micro-kernels must fully exploit today’s diverse and specialized hardware to deliver peak performance to deep neural networks (DNNs).              While higher-level optimizations for DNNs are offered by numerous compilers (e.g., MLIR, TVM, OpenXLA), performance-critical micro-kernels are left to specialized code generators or handwritten assembly.                Even though widely-adopted compilers (e.g., LLVM, GCC) offer tuned backends, their CPU-focused input abstraction, unstructured intermediate representation (IR) and general-purpose best-effort design inhibit tailored code generation for innovative hardware.                We think it is time to widen the classical hourglass backend and embrace progressive lowering across a diverse set of structured abstractions to bring domain-specific code generation to compiler backends.                We demonstrate this concept by implementing a custom backend for a RISC-V-based accelerator with hardware loops and streaming registers, leveraging knowledge about the hardware at levels of abstraction that match its custom instruction set architecture (ISA).                We use incremental register allocation over structured IRs, while dropping classical spilling heuristics, and show up to 90\% floating-point unit (FPU) utilization across key DNN kernels.                By breaking the backend hourglass model, we reopen the path from domain-specific abstractions to specialized hardware.},
+booktitle = {Proceedings of the 23rd ACM/IEEE International Symposium on Code Generation and Optimization},
+pages = {163–178},
+numpages = {16},
+keywords = {accelerators, code generation, compilers},
+location = {Las Vegas, NV, USA},
+series = {CGO '25}
+}
+
+@inproceedings{jouppi2023tpu,
+  author    = {Norman P. Jouppi and George Kurian and Sheng Li and Prashanth Ma and Rajat Nagarajan and Li Nai and Sudarshan Ramasamy and Praveen Mangalagiri and Shiyu Chang and Samira Mirbagheri and Daniel Alkalay and James Laudon and Cliff Young and David A. Patterson and Yifan Ding and Xiaoyu Ma and Yanqi Zhou and Kaiyuan Zhang and Yuanzhong Xu and Meng Li and Chen Wu and Jeff Dean and Urs H{\"o}lzle},
+  title     = {{TPU v4: An Optically Reconfigurable Supercomputer for Machine Learning with Hardware Support for Embeddings}},
+  booktitle = {Proceedings of the 50th Annual International Symposium on Computer Architecture (ISCA)},
+  year      = {2023},
+  pages     = {1--14},
+  publisher = {ACM},
+  doi       = {10.1145/3579371.3589350}
+}
+
+@misc{nvidiaHopper,
+  author       = {{NVIDIA Corporation}},
+  title        = {NVIDIA Hopper Architecture In-Depth},
+  year         = {2022},
+  howpublished = {\url{https://www.nvidia.com/en-us/data-center/technologies/hopper-architecture/}},
+  note         = {Whitepaper}
+}
+
+@article{pellauer2023symphony,
+author = {Pellauer, Michael and Clemons, Jason and Balaji, Vignesh and Crago, Neal and Jaleel, Aamer and Lee, Donghyuk and O’Connor, Mike and Parashar, Angshuman and Treichler, Sean and Tsai, Po-An and Keckler, Stephen W. and Emer, Joel S.},
+title = {Symphony: Orchestrating Sparse and Dense Tensors with Hierarchical Heterogeneous Processing},
+year = {2023},
+issue_date = {November 2023},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {41},
+number = {1–4},
+issn = {0734-2071},
+url = {https://doi.org/10.1145/3630007},
+doi = {10.1145/3630007},
+abstract = {Sparse tensor algorithms are becoming widespread, particularly in the domains of deep learning, graph and data analytics, and scientific computing. Current high-performance broad-domain architectures, such as GPUs, often suffer memory system inefficiencies by moving too much data or moving it too far through the memory hierarchy. To increase performance and efficiency, proposed domain-specific accelerators tailor their architectures to the data needs of a narrow application domain, but as a result cannot be applied to a wide range of algorithms or applications that contain a mix of sparse and dense algorithms.This article proposes Symphony, a hybrid programmable/specialized architecture that focuses on the orchestration of data throughout the memory hierarchy to simultaneously reduce the movement of unnecessary data and data movement distances. Key elements of the Symphony architecture include (1) specialized reconfigurable units aimed not only at roofline floating-point computations but also at supporting data orchestration features, such as address generation, data filtering, and sparse metadata processing; and (2) distribution of computation resources (both programmable and specialized) throughout the on-chip memory hierarchy. We demonstrate that Symphony can match non-programmable ASIC performance on sparse tensor algebra and provide&nbsp;31\texttimes{} improved runtime and 44\texttimes{} improved energy over a comparably provisioned GPU for these applications.},
+journal = {ACM Trans. Comput. Syst.},
+month = dec,
+articleno = {4},
+numpages = {30},
+keywords = {Sparse tensor algebra, data orchestration, accelerators}
+}
+
+@article{dongarra2013toward,
+  title={Toward a new metric for ranking high performance computing systems},
+  author={Dongarra, Jack and Heroux, Michael A},
+  journal={Sandia Report, SAND2013-4744},
+  volume={312},
+  pages={150},
+  year={2013},
+  publisher={Citeseer}
+}
+
+@article{dongarra2013hpcg,
+  title={HPCG technical specification},
+  author={Dongarra, Jack and Luszczek, Piotr and Heroux, M},
+  journal={Sandia National Laboratories, Sandia Report SAND2013-8752},
+  year={2013}
+}
+
+@INPROCEEDINGS{talati2021prodigy,
+  author={Talati, Nishil and May, Kyle and Behroozi, Armand and Yang, Yichen and Kaszyk, Kuba and Vasiladiotis, Christos and Verma, Tarunesh and Li, Lu and Nguyen, Brandon and Sun, Jiawen and Morton, John Magnus and Ahmadi, Agreen and Austin, Todd and O’Boyle, Michael and Mahlke, Scott and Mudge, Trevor and Dreslinski, Ronald},
+  booktitle={2021 IEEE International Symposium on High-Performance Computer Architecture (HPCA)}, 
+  title={Prodigy: Improving the Memory Latency of Data-Indirect Irregular Workloads Using Hardware-Software Co-Design}, 
+  year={2021},
+  volume={},
+  number={},
+  pages={654-667},
+  doi={10.1109/HPCA51647.2021.00061}}
+
+
+@inproceedings{talati2022ndminer,
+author = {Talati, Nishil and Ye, Haojie and Yang, Yichen and Belayneh, Leul and Chen, Kuan-Yu and Blaauw, David and Mudge, Trevor and Dreslinski, Ronald},
+title = {NDMiner: Accelerating Graph Pattern Mining Using near Data Processing},
+year = {2022},
+isbn = {9781450386104},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3470496.3527437},
+doi = {10.1145/3470496.3527437},
+booktitle = {Proceedings of the 49th Annual International Symposium on Computer Architecture},
+pages = {146–159},
+numpages = {14},
+keywords = {graph pattern mining, hardware-software co-design, near data processing},
+location = {New York, New York},
+series = {ISCA '22}
+}
+
+@inproceedings{sato20a64fx,
+author = {Sato, Mitsuhisa and Ishikawa, Yutaka and Tomita, Hirofumi and Kodama, Yuetsu and Odajima, Tetsuya and Tsuji, Miwako and Yashiro, Hisashi and Aoki, Masaki and Shida, Naoyuki and Miyoshi, Ikuo and Hirai, Kouichi and Furuya, Atsushi and Asato, Akira and Morita, Kuniki and Shimizu, Toshiyuki},
+title = {Co-Design for A64FX Manycore Processor and "Fugaku"},
+year = {2020},
+isbn = {9781728199986},
+publisher = {IEEE Press},
+booktitle = {Proceedings of the International Conference for High Performance Computing, Networking, Storage and Analysis},
+articleno = {47},
+numpages = {15},
+keywords = {exascale computing, manycore processor, co-design, high-performance computing},
+location = {Atlanta, Georgia},
+series = {SC '20}
+}
+
+
+@INPROCEEDINGS{buluc2008dcsr,
+  author={Buluc, Aydin and Gilbert, John R.},
+  booktitle={2008 IEEE International Symposium on Parallel and Distributed Processing}, 
+  title={On the representation and multiplication of hypersparse matrices}, 
+  year={2008},
+  volume={},
+  number={},
+  pages={1-11},
+  keywords={},
+  doi={10.1109/IPDPS.2008.4536313},
+  ISSN={1530-2075},
+  month={April},}
+
+@inproceedings{nagasaka2018spgemm,
+author = {Nagasaka, Yusuke and Matsuoka, Satoshi and Azad, Ariful and Bulu\c{c}, Ayd\i{}n},
+title = {High-Performance Sparse Matrix-Matrix Products on Intel KNL and Multicore Architectures},
+year = {2018},
+isbn = {9781450365239},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3229710.3229720},
+doi = {10.1145/3229710.3229720},
+booktitle = {Workshop Proceedings of the 47th International Conference on Parallel Processing},
+articleno = {34},
+numpages = {10},
+keywords = {SpGEMM, Intel KNL, Sparse matrix},
+location = {Eugene, OR, USA},
+series = {ICPP Workshops '18}
+}
+
+
+  @online{frosttdataset,
+  title = {{FROSTT}: The Formidable Repository of Open Sparse Tensors and Tools},
+  author = {Smith, Shaden and Choi, Jee W. and Li, Jiajia and Vuduc, Richard and Park, Jongsoo and Liu, Xing and Karypis, George},
+  url = {http://frostt.io/},
+  year = {2017},
+}
+
+@INPROCEEDINGS{walkers,
+  author={Kocberber, Onur and Grot, Boris and Picorel, Javier and Falsafi, Babak and Lim, Kevin and Ranganathan, Parthasarathy},
+  booktitle={2013 46th Annual IEEE/ACM International Symposium on Microarchitecture (MICRO)}, 
+  title={Meet the walkers accelerating index traversals for in-memory databases}, 
+  year={2013},
+  volume={},
+  number={},
+  pages={468-479},
+  doi={}}
+
+@inproceedings{AinsworthJ16,
+  author       = {Sam Ainsworth and
+                  Timothy M. Jones},
+  editor       = {Ozcan Ozturk and
+                  Kemal Ebcioglu and
+                  Mahmut T. Kandemir and
+                  Onur Mutlu},
+  title        = {Graph Prefetching Using Data Structure Knowledge},
+  booktitle    = {Proceedings of the 2016 International Conference on Supercomputing,
+                  {ICS} 2016, Istanbul, Turkey, June 1-3, 2016},
+  pages        = {39:1--39:11},
+  publisher    = {{ACM}},
+  year         = {2016},
+  url          = {https://doi.org/10.1145/2925426.2926254},
+  doi          = {10.1145/2925426.2926254},
+  timestamp    = {Mon, 04 Jul 2022 08:26:29 +0200},
+  biburl       = {https://dblp.org/rec/conf/ics/AinsworthJ16.bib},
+  bibsource    = {dblp computer science bibliography, https://dblp.org}
+}
+
+@INPROCEEDINGS{hats,
+  author={Mukkara, Anurag and Beckmann, Nathan and Abeydeera, Maleen and Ma, Xiaosong and Sanchez, Daniel},
+  booktitle={2018 51st Annual IEEE/ACM International Symposium on Microarchitecture (MICRO)}, 
+  title={Exploiting Locality in Graph Analytics through Hardware-Accelerated Traversal Scheduling}, 
+  year={2018},
+  volume={},
+  number={},
+  pages={1-14},
+  doi={10.1109/MICRO.2018.00010}
+  }
+
+@INPROCEEDINGS{yu2015,
+  author={Yu, Xiangyao and Hughes, Christopher J. and Satish, Nadathur and Devadas, Srinivas},
+  booktitle={2015 48th Annual IEEE/ACM International Symposium on Microarchitecture (MICRO)}, 
+  title={IMP: Indirect memory prefetcher}, 
+  year={2015},
+  volume={},
+  number={},
+  pages={178-190},
+  doi={10.1145/2830772.2830807}
+  }
+
+@ARTICLE{impulse,
+  author={Lixin Zhang and Zhen Fang and Parker, M. and Mathew, B.K. and Schaelicke, L. and Carter, J.B. and Hsieh, W.C. and McKee, S.A.},
+  journal={IEEE Transactions on Computers}, 
+  title={The Impulse memory controller}, 
+  year={2001},
+  volume={50},
+  number={11},
+  pages={1117-1132},
+  doi={10.1109/12.966490}
+  }
+
+  @ARTICLE{dre,
+  author={Lloyd, Scott and Gokhale, Maya},
+  journal={Computer}, 
+  title={In-Memory Data Rearrangement for Irregular, Data-Intensive Computing}, 
+  year={2015},
+  volume={48},
+  number={8},
+  pages={18-25},
+  doi={10.1109/MC.2015.230}
+  }
+
+@misc{graphblascppspec,
+  title={Graph{BLAS} {C}++ Specification},
+  author={Brock, Benjamin and McMillan, Scott and Bulu\c{c}, Ayd{\i}n and Mattson, Timothy and Moreira, Jos{\'e}},
+  howpublished={\url{https://github.com/GraphBLAS/graphblas-api-cpp}},
+  volume = {Draft Version 0.1a},
+  year={2022}
+}
+
+
+@INPROCEEDINGS{tarantula,
+  author={Espasa, R. and Ardanaz, F. and Emer, J. and Felix, S. and Gago, J. and Gramunt, R. and Hernandez, I. and Juan, T. and Lowney, G. and Mattina, M. and Seznec, A.},
+  booktitle={Proceedings 29th Annual International Symposium on Computer Architecture}, 
+  title={Tarantula: a vector extension to the alpha architecture}, 
+  year={2002},
+  volume={},
+  number={},
+  pages={281-292},
+  doi={10.1109/ISCA.2002.1003586}
+}
+
+@ARTICLE{spert2-T0,
+  author={Wawrzynek, J. and Asanovic, K. and Kingsbury, B. and Johnson, D. and Beck, J. and Morgan, N.},
+  journal={Computer}, 
+  title={Spert-II: a vector microprocessor system}, 
+  year={1996},
+  volume={29},
+  number={3},
+  pages={79-86},
+  doi={10.1109/2.485896}
+}
+
+@misc{cray,
+  title={{The Benchmarker’s Guide for CRAY SV1 Systems}},
+  author={Brandt, M. and Brooks, J. and Cahir, M. and Hewitt, T. and LopezPineda, E. and Sandness, D.},
+  howpublished={\url{https://parallel.ru/sites/default/files/ftp/computers/cray/sv1_bmguide.pdf}}
+}
+
+
+
+@inproceedings{srivastava2020matraptor,
+  title={{MatRaptor}: A sparse-sparse matrix multiplication accelerator based on row-wise product},
+  author={Srivastava, Nitish and Jin, Hanchen and Liu, Jie and Albonesi, David and Zhang, Zhiru},
+  booktitle={2020 53rd Annual IEEE/ACM International Symposium on Microarchitecture (MICRO)},
+  pages={766--780},
+  year={2020},
+  organization={IEEE}
+}
+
+@inproceedings{zhang2021gamma,
+  title={{GAMMA}: leveraging Gustavson’s algorithm to accelerate sparse matrix multiplication},
+  author={Zhang, Guowei and Attaluri, Nithya and Emer, Joel S and Sanchez, Daniel},
+  booktitle={Proceedings of the 26th ACM International Conference on Architectural Support for Programming Languages and Operating Systems},
+  pages={687--701},
+  year={2021}
+}
+
+
+@article{area-scaling,
+title = {Scaling equations for the accurate prediction of CMOS device performance from 180nm to 7nm},
+journal = {Integration},
+volume = {58},
+pages = {74-81},
+year = {2017},
+issn = {0167-9260},
+doi = {https://doi.org/10.1016/j.vlsi.2017.02.002},
+url = {https://www.sciencedirect.com/science/article/pii/S0167926017300755},
+author = {Aaron Stillmaker and Bevan Baas}
+}
+
+@ARTICLE{n1core,
+  author={Pellegrini, Andrea and Stephens, Nigel and Bruce, Magnus and Ishii, Yasuo and Pusdesris, Joseph and Raja, Abhishek and Abernathy, Chris and Koppanalil, Jinson and Ringe, Tushar and Tummala, Ashok and Jalal, Jamshed and Werkheiser, Mark and Kona, Anitha},
+  journal={IEEE Micro}, 
+  title={The Arm Neoverse N1 Platform: Building Blocks for the Next-Gen Cloud-to-Edge Infrastructure SoC}, 
+  year={2020},
+  volume={40},
+  number={2},
+  pages={53-62},
+  doi={10.1109/MM.2020.2972222}
+}
+
+@misc{amx,
+  title={Intel Architecture Instruction Set Extensions and Future Features},
+  author={Intel Corporation},
+  howpublished={\url{https://software.intel.com/content/dam/develop/external/us/en/documents-tps/architecture-instruction-set-extensions-programming-reference.pdf}},
+  volume = {319433-048},
+  year={2023}
+}
+
+@inproceedings{milanovic2022masked,
+author = {Milakovi\'{c}, Srundefinedan and Selvitopi, Oguz and Nisa, Israt and Budimli\'{c}, Zoran and Bulu\c{c}, Aydin},
+title = {Parallel Algorithms for Masked Sparse Matrix-Matrix Products},
+year = {2022},
+isbn = {9781450392044},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3503221.3508430},
+doi = {10.1145/3503221.3508430},
+booktitle = {Proceedings of the 27th ACM SIGPLAN Symposium on Principles and Practice of Parallel Programming},
+pages = {453–454},
+numpages = {2},
+keywords = {masked-SpGEMM, GraphBLAS, sparse matrix},
+location = {Seoul, Republic of Korea},
+series = {PPoPP '22}
+}
+
+@article{kokkos2014carter,
+author = {Carter Edwards, H. and Trott, Christian R. and Sunderland, Daniel},
+title = {Kokkos},
+year = {2014},
+issue_date = {December 2014},
+publisher = {Academic Press, Inc.},
+address = {USA},
+volume = {74},
+number = {12},
+issn = {0743-7315},
+url = {https://doi.org/10.1016/j.jpdc.2014.07.003},
+doi = {10.1016/j.jpdc.2014.07.003},
+abstract = {The manycore revolution can be characterized by increasing thread counts, decreasing memory per thread, and diversity of continually evolving manycore architectures. High performance computing (HPC) applications and libraries must exploit increasingly finer levels of parallelism within their codes to sustain scalability on these devices. A major obstacle to performance portability is the diverse and conflicting set of constraints on memory access patterns across devices. Contemporary portable programming models address manycore parallelism (e.g., OpenMP, OpenACC, OpenCL) but fail to address memory access patterns. The Kokkos C++ library enables applications and domain libraries to achieve performance portability on diverse manycore architectures by unifying abstractions for both fine-grain data parallelism and memory access patterns. In this paper we describe Kokkos' abstractions, summarize its application programmer interface (API), present performance results for unit-test kernels and mini-applications, and outline an incremental strategy for migrating legacy C++ codes to Kokkos. The Kokkos library is under active research and development to incorporate capabilities from new generations of manycore architectures, and to address a growing list of applications and domain libraries. We developed a performance portable programming model (PM) for manycore devices.Unifying parallel dispatch and data layout is mandatory for performance portability.The Kokkos C++library implements this PM with pthreads, OpenMP, and CUDA back-ends.Demonstrate Xeon Phi and NVIDIA GPU performance portability with mini-applications.Recommend a strategy for legacy application codes to migrate to manycore.},
+journal = {J. Parallel Distrib. Comput.},
+month = dec,
+pages = {3202–3216},
+numpages = {15},
+keywords = {GPU, Manycore, Mini-application, Multidimensional array, Parallel computing, Performance portability, Thread parallelism}
+}
+
+@article{phipps2019genten,
+author = {Phipps, Eric T. and Kolda, Tamara G.},
+title = {Software for Sparse Tensor Decomposition on Emerging Computing Architectures},
+journal = {SIAM Journal on Scientific Computing},
+volume = {41},
+number = {3},
+pages = {C269-C290},
+year = {2019},
+doi = {10.1137/18M1210691},
+URL = {https://doi.org/10.1137/18M1210691},
+eprint = {https://doi.org/10.1137/18M1210691},
+abstract = { In this paper, we develop software for decomposing sparse tensors that is portable to and performant on a variety of multicore, manycore, and GPU computing architectures. The result is a single code whose performance matches optimized architecture-specific implementations. The key to a portable approach is to determine multiple levels of parallelism that can be mapped in different ways to different architectures, and we explain how to do this for the matricized tensor times Khatri--Rao product (MTTKRP), which is the key kernel in canonical polyadic tensor decomposition. Our implementation leverages the Kokkos framework, which enables a single code to achieve high performance across multiple architectures that differ in how they approach fine-grained parallelism. We also introduce a new construct for portable thread-local arrays, which we call compile-time polymorphic arrays. Not only are the specifics of our approaches and implementation interesting for tuning tensor computations, but they also provide a roadmap for developing other portable high-performance codes. As a last step in optimizing performance, we modify the MTTKRP algorithm itself to do a permuted traversal of tensor nonzeros to reduce atomic-write contention. We test the performance of our implementation on 16- and 68-core Intel CPUs and the K80 and P100 NVIDIA GPUs, showing that we are competitive with state-of-the-art architecture-specific codes while having the advantage of being able to run on a variety of architectures. }
+}
+
+@INPROCEEDINGS {parashar2017sparse,
+author = { Parashar, Angshuman and Rhu, Minsoo and Mukkara, Anurag and Puglielli, Antonio and Venkatesan, Rangharajan and Khailany, Brucek and Emer, Joel and Keckler, Stephen W. and Dally, William J. },
+booktitle = { 2017 ACM/IEEE 44th Annual International Symposium on Computer Architecture (ISCA) },
+title = {{ SCNN: An accelerator for compressed-sparse convolutional neural networks }},
+year = {2017},
+volume = {},
+ISSN = {},
+pages = {27-40},
+abstract = { Convolutional Neural Networks (CNNs) have emerged as a fundamental technology for machine learning. High performance and extreme energy efficiency are critical for deployments of CNNs, especially in mobile platforms such as autonomous vehicles, cameras, and electronic personal assistants. This paper introduces the Sparse CNN (SCNN) accelerator architecture, which improves performance and energy efficiency by exploiting the zero-valued weights that stem from network pruning during training and zero-valued activations that arise from the common ReLU operator. Specifically, SCNN employs a novel dataflow that enables maintaining the sparse weights and activations in a compressed encoding, which eliminates unnecessary data transfers and reduces storage requirements. Furthermore, the SCNN dataflow facilitates efficient delivery of those weights and activations to a multiplier array, where they are extensively reused; product accumulation is performed in a novel accumulator array. On contemporary neural networks, SCNN can improve both performance and energy by a factor of 2.7× and 2.3×, respectively, over a comparably provisioned dense CNN accelerator. },
+keywords = {Training;Arrays;Random access memory;Accelerator architectures;Encoding},
+doi = {10.1145/3079856.3080254},
+url = {https://doi.ieeecomputersociety.org/10.1145/3079856.3080254},
+publisher = {IEEE Computer Society},
+address = {Los Alamitos, CA, USA},
+month =Jun}
+
+
+@misc{beamer2015gapbs,
+  author = {Beamer, Scott and Asanović, Krste and Patterson, David},
+  keywords = {Distributed, Parallel, and Cluster Computing (cs.DC), Data Structures and Algorithms (cs.DS), FOS: Computer and information sciences, FOS: Computer and information sciences},
+  title = {The {GAP} {B}enchmark {S}uite},
+  publisher = {arXiv},
+  year = {2015},
+}
+
+
+@inproceedings{zhang2020sparch,
+  title={{SpArch}: Efficient architecture for sparse matrix multiplication},
+  author={Zhang, Zhekai and Wang, Hanrui and Han, Song and Dally, William J},
+  booktitle={2020 IEEE International Symposium on High Performance Computer Architecture (HPCA)},
+  pages={261--274},
+  year={2020},
+  organization={IEEE}
+}
+@inproceedings{pal2018outerspace,
+  title={{OuterSPACE}: An outer product based sparse matrix multiplication accelerator},
+  author={Pal, Subhankar and Beaumont, Jonathan and Park, Dong-Hyeon and Amarnath, Aporva and Feng, Siying and Chakrabarti, Chaitali and Kim, Hun-Seok and Blaauw, David and Mudge, Trevor and Dreslinski, Ronald},
+  booktitle={2018 IEEE International Symposium on High Performance Computer Architecture (HPCA)},
+  pages={724--736},
+  year={2018},
+  organization={IEEE}
+}
+
+
+@inproceedings{dadu2019spu,
+  title={Towards general purpose acceleration by exploiting common data-dependence forms},
+  author={Dadu, Vidushi and Weng, Jian and Liu, Sihao and Nowatzki, Tony},
+  booktitle={Proceedings of the 52nd Annual IEEE/ACM International Symposium on Microarchitecture},
+  pages={924--939},
+  year={2019}
+}
+
+@inproceedings{rucker2021capstan,
+author = {Rucker, Alexander and Vilim, Matthew and Zhao, Tian and Zhang, Yaqi and Prabhakar, Raghu and Olukotun, Kunle},
+title = {Capstan: A Vector RDA for Sparsity},
+year = {2021},
+isbn = {9781450385572},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3466752.3480047},
+doi = {10.1145/3466752.3480047},
+abstract = {This paper proposes Capstan: a scalable, parallel-patterns-based, reconfigurable dataflow accelerator (RDA) for sparse and dense tensor applications. Instead of designing for one application, we start with common sparse data formats, each of which supports multiple applications. Using a declarative programming model, Capstan supports application-independent sparse iteration and memory primitives that can be mapped to vectorized, high-performance hardware. We optimize random-access sparse memories with configurable out-of-order execution to increase SRAM random-access throughput from 32% to 80%. For a variety of sparse applications, Capstan with DDR4 memory is 18\texttimes{} faster than a multi-core CPU baseline, while Capstan with HBM2 memory is 16\texttimes{} faster than an Nvidia V100 GPU. For sparse applications that can be mapped to Plasticine, a recent dense RDA, Capstan is 7.6\texttimes{} to 365\texttimes{} faster and only 16% larger.},
+booktitle = {MICRO-54: 54th Annual IEEE/ACM International Symposium on Microarchitecture},
+pages = {1022–1035},
+numpages = {14},
+keywords = {parallel patterns, CGRA, vectorization, reconfigurable dataflow accelerator, RDA, sparse iteration, sparsity},
+location = {Virtual Event, Greece},
+series = {MICRO '21}
+}
+
+@INPROCEEDINGS{quin2020sigma,
+  author={Qin, Eric and Samajdar, Ananda and Kwon, Hyoukjun and Nadella, Vineet and Srinivasan, Sudarshan and Das, Dipankar and Kaul, Bharat and Krishna, Tushar},
+  booktitle={2020 IEEE International Symposium on High Performance Computer Architecture (HPCA)}, 
+  title={SIGMA: A Sparse and Irregular GEMM Accelerator with Flexible Interconnects for DNN Training}, 
+  year={2020},
+  volume={},
+  number={},
+  pages={58-70},
+  keywords={Training;Sparse matrices;Arrays;Graphics processing units;Engines;Kernel;Tensile stress},
+  doi={10.1109/HPCA47549.2020.00015}}
+
+@INPROCEEDINGS{zhang2016cambriconx,
+  author={Zhang, Shijin and Du, Zidong and Zhang, Lei and Lan, Huiying and Liu, Shaoli and Li, Ling and Guo, Qi and Chen, Tianshi and Chen, Yunji},
+  booktitle={2016 49th Annual IEEE/ACM International Symposium on Microarchitecture (MICRO)}, 
+  title={Cambricon-X: An accelerator for sparse neural networks}, 
+  year={2016},
+  volume={},
+  number={},
+  pages={1-12},
+  keywords={Artificial neural networks;Neurons;Biological neural networks;Computer architecture;Graphics processing units;Architecture;Feature extraction},
+  doi={10.1109/MICRO.2016.7783723}}
+
+
+@INPROCEEDINGS {bharadwaj2022sparse_for_ml,
+author = {V. Bharadwaj and A. Buluc and J. Demmel},
+booktitle = {2022 IEEE International Parallel and Distributed Processing Symposium (IPDPS)},
+title = {Distributed-Memory Sparse Kernels for Machine Learning},
+year = {2022},
+volume = {},
+issn = {},
+pages = {47-58},
+keywords = {machine learning algorithms;costs;runtime;collaborative filtering;layout;machine learning;inference algorithms},
+doi = {10.1109/IPDPS53621.2022.00014},
+url = {https://doi.ieeecomputersociety.org/10.1109/IPDPS53621.2022.00014},
+publisher = {IEEE Computer Society},
+address = {Los Alamitos, CA, USA},
+month = {jun}
+}
+
+@INPROCEEDINGS{scheffler2021stream,
+  author={Scheffler, Paul and Zaruba, Florian and Schuiki, Fabian and Hoefler, Torsten and Benini, Luca},
+  booktitle={2021 Design, Automation and Test in Europe Conference and Exhibition (DATE)}, 
+  title={Indirection Stream Semantic Register Architecture for Efficient Sparse-Dense Linear Algebra}, 
+  year={2021},
+  volume={},
+  number={},
+  pages={1787-1792},
+  keywords={Technological innovation;Tensors;Multicore processing;Graphics processing units;Linear algebra;Hardware;Energy efficiency;Computer Architecture;Hardware Acceleration;Linear Algebra;Sparse Computation;Sparse Tensors},
+  doi={10.23919/DATE51398.2021.9474230}}
+
+@ARTICLE{scheffler2023stream,
+  author={Scheffler, Paul and Zaruba, Florian and Schuiki, Fabian and Hoefler, Torsten and Benini, Luca},
+  journal={IEEE Transactions on Parallel and Distributed Systems}, 
+  title={Sparse Stream Semantic Registers: A Lightweight ISA Extension Accelerating General Sparse Linear Algebra}, 
+  year={2023},
+  volume={34},
+  number={12},
+  pages={3147-3161},
+  keywords={Indexes;Hardware;Generators;Sparse matrices;Tensors;Registers;Micromechanical devices;Computer architecture;hardware acceleration;linear algebra;sparse computation;sparse tensors},
+  doi={10.1109/TPDS.2023.3322029}}
+
+@INPROCEEDINGS{zhang2023axipack,
+  author={Zhang, Chi and Scheffler, Paul and Benz, Thomas and Perotti, Matteo and Benini, Luca},
+  booktitle={2023 Design, Automation and Test in Europe Conference and Exhibition (DATE)}, 
+  title={AXI-Pack: Near-Memory Bus Packing for Bandwidth-Efficient Irregular Workloads}, 
+  year={2023},
+  volume={},
+  number={},
+  pages={1-6},
+  keywords={Protocols;Program processors;Prefetching;Memory management;Semantics;Benchmark testing;Energy efficiency;Computer architecture;On-chip interconnects;Memory systems;Irregular workloads},
+  doi={10.23919/DATE56975.2023.10137243}}
+
+@inproceedings{scheffler2024stream,
+author = {Scheffler, Paul and Colagrande, Luca and Benini, Luca},
+title = {SARIS: Accelerating Stencil Computations on Energy-Efficient RISC-V Compute Clusters with Indirect Stream Registers},
+year = {2024},
+isbn = {9798400706011},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3649329.3658494},
+doi = {10.1145/3649329.3658494},
+abstract = {Stencil codes are performance-critical in many compute-intensive applications, but suffer from significant address calculation and irregular memory access overheads. This work presents SARIS, a general and highly flexible methodology for stencil acceleration using register-mapped indirect streams. We demonstrate SARIS for various stencil codes on an eight-core RISC-V compute cluster with indirect stream registers, achieving significant speedups of 2.72x, near-ideal FPU utilizations of 81\%, and energy efficiency improvements of 1.58x over an RV32G baseline on average. Scaling out to a 256-core manycore system, we estimate an average FPU utilization of 64\%, an average speedup of 2.14x, and up to 15\% higher fractions of peak compute than a leading GPU code generator.},
+booktitle = {Proceedings of the 61st ACM/IEEE Design Automation Conference},
+articleno = {251},
+numpages = {6},
+keywords = {stencil codes, streams, ISA extensions, performance optimization},
+location = {San Francisco, CA, USA},
+series = {DAC '24}
+}
+
+@ARTICLE{scheffler2025occamy,
+  author={Scheffler, Paul and Benz, Thomas and Potocnik, Viviane and Fischer, Tim and Colagrande, Luca and Wistoff, Nils and Zhang, Yichao and Bertaccini, Luca and Ottavi, Gianmarco and Eggimann, Manuel and Cavalcante, Matheus and Paulin, Gianna and Gürkaynak, Frank K. and Rossi, Davide and Benini, Luca},
+  journal={IEEE Journal of Solid-State Circuits}, 
+  title={Occamy: A 432-Core Dual-Chiplet Dual-HBM2E 768-DP-GFLOP/s RISC-V System for 8-to-64-bit Dense and Sparse Computing in 12-nm FinFET}, 
+  year={2025},
+  volume={60},
+  number={4},
+  pages={1324-1338},
+  keywords={Chiplets;Computer architecture;Tensors;Integrated circuit interconnections;Device-to-device communication;Codes;Throughput;Register transfer level;Engines;Bandwidth;2.5-D integration;chiplet;high-performance computing (HPC);interposer;machine learning (ML);manycore;multi-precision;RISC-V;sparse acceleration;stencil acceleration},
+  doi={10.1109/JSSC.2025.3529249}}
+
+@INPROCEEDINGS{manoni2025spikestream,
+  author={Manoni, Simone and Scheffler, Paul and Zanatta, Luca and Acquaviva, Andrea and Benini, Luca and Bartolini, Andrea},
+  booktitle={2025 Design, Automation and Test in Europe Conference (DATE)}, 
+  title={SpikeStream: Accelerating Spiking Neural Network Inference on RISC-V Clusters with Sparse Computation Extensions}, 
+  year={2025},
+  volume={},
+  number={},
+  pages={1-7},
+  keywords={Program processors;Runtime;Software design;Neuromorphics;Multicore processing;Spiking neural networks;Energy efficiency;Optimization;Streams;Standards;Neuromorphic Processing;RISC-V;Streaming Architecture;Neural Network Runtime},
+  doi={10.23919/DATE64628.2025.10992749}}

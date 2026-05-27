@@ -1,0 +1,28 @@
+\begin{table}
+  \centering
+  %\footnotesize
+  \caption[Selected inputs for graph-learning models.]{Typical inputs for graph-learning models. Layer sizes indicates the size of the embedding vectors, defined as the number of elements. For GNNs, we report the embedding size of each layer.}
+  \vspace{-1em}
+\[
+\begin{tabular}{cccccc}
+\toprule
+  \textbf{Model} & \textbf{Input} & \textbf{\#Nodes} & \textbf{\#Edges} & \textbf{Layers sizes} \\
+\toprule
+  GNN & \texttt{arxiv}~\cite{ogb2020neurips} & 0.2M & 1.2M & 128$\times$256$\times$256$\times$40 \\
+  GNN & \texttt{mag}~\cite{ogb2020neurips} & 1.9M & 21.1M & 128$\times$256$\times$349 \\
+  GNN & \texttt{products}~\cite{ogb2020neurips} & 2.4M & 61.9M & 100$\times$256$\times$256$\times$47 \\
+  GNN & \texttt{proteins}~\cite{ogb2020neurips} & 0.1M & 39.6M & 8$\times$256$\times$256$\times$112\\
+\hline
+  MP & \texttt{com-Youtube}~\cite{snapnets2014} & 1.1M & 6.0M & 128 \\
+  MP & \texttt{roadNet-CA}~\cite{snapnets2014} & 2.0M & 5.5M & 128 \\
+  MP & \texttt{web-Google}~\cite{snapnets2014} & 0.9M & 5.1M & 128 \\
+  MP & \texttt{wiki-Talk}~\cite{snapnets2014} & 2.4M & 5.0M & 128 \\
+\hline
+  KG & \texttt{biokg}~\cite{ogb2020neurips} & 0.1M & 5.1M & 512 \\
+  KG & \texttt{wikikg2}~\cite{ogb2020neurips} & 2.5M & 17.1M & 512 \\
+\bottomrule
+\end{tabular}
+\]
+  \label{tab:graph-inputs}
+  %\vspace{-2em}
+\end{table}

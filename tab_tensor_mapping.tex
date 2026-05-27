@@ -1,0 +1,32 @@
+\begin{sidewaystable}
+    \centering
+    \setlength{\tabcolsep}{2.5pt}
+    \caption[Mapping different sparse tensor algebra kernels to TMU hardware.]{Mapping different sparse tensor algebra kernels to TMU hardware. Notation P\textit{x} means the loop at level \textit{x} is parallel.}
+    \label{tab:tensor-mapping}
+    %\vspace{-0.3cm}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{@{}lllc|ccc|cccccc|cccccc|ccc@{}}
+    \toprule
+        \multirow{2}{*}{\textbf{Algorithm}} & \textbf{Einsum} & \textbf{Sparse} & \textbf{Schedule} & \multicolumn{3}{c|}{\textbf{Traversal type}} & \multicolumn{6}{c|}{\textbf{Data streams}} & \multicolumn{6}{c|}{\textbf{Group Traversal}} & \multicolumn{3}{c}{\textbf{Callbacks}} \\ 
+        
+        & \textbf{expression} & \textbf{formats} & \textbf{(\underline{SIMD})} & \textbf{Dns} & \textbf{Idx} & \textbf{Rng} & \textbf{lin} & \textbf{map} & \textbf{mem} & \textbf{ldr} & \textbf{fwd} & \textbf{msk} & \textbf{Single} & \textbf{BCast} & \textbf{LockStep} & \textbf{CnjMrg} & \textbf{DsjMrg} & \textbf{Keep} & \textbf{H} & \textbf{B} & \textbf{T} \\ \midrule
+        \textbf{SpMV P0} & $Z_i=A_{ij}B_j$ & $A$=CSR & $\underline{ij}$ & $i$ & ~ & $j$ & ~ & ~ & $ij$ & ~ & ~ & ~ & ~ & ~ & $ij$ & ~ & ~ & ~ & ~ & $j$ & ~ \\
+        \textbf{SpMV P1} & $Z_i=A_{ij}B_j$ & $A$=CSR & $i\underline{j}$ & $i$ & ~ & $j$ & ~ & ~ & $ij$ & ~ & ~ & ~ & ~ & $i$ & $j$ & ~ & ~ & ~ & ~ & $j$ & $j$ \\
+        \textbf{SpMSpV} & $Z_i=A_{ij}B_j$ & $A$,$B$=CSR & $ij$ & $ij$ & ~ & $j$ & ~ & ~ & $ij$ & ~ & ~ & ~ & ~ & $i$ & ~ & $j$ & ~ & ~ & ~ & $j$ & ~ \\
+        \textbf{SpMM P0} & $Z_{ij}=A_{ik}B_{kj}$ & $A$=CSR & $\underline{ikj}$ & $ij$ & $j$ & $k$ & ~ & ~ & $ikj$ & ~ & ~ & ~ & ~ & ~ & $ikj$ & ~ & ~ & ~ & $j$ & $j$ & ~ \\
+        \textbf{SpMM P1} & $Z_{ij}=A_{ik}B_{kj}$ & $A$=CSR & $i\underline{kj}$ & $ij$ & $j$ & $k$ & ~ & ~ & $ikj$ & ~ & ~ & ~ & ~ & $i$ & $kj$ & ~ & ~ & ~ & $j$ & $j$ & $k$ \\
+        \textbf{SpMM P2} & $Z_{ij}=A_{ik}B_{kj}$ & $A$=CSR & $ik\underline{j}$ & $ij$ & $j$ & $k$ & ~ & ~ & $ikj$ & ~ & ~ & ~ & $i$ & $k$ & $j$ & ~ & ~ & ~ & $j$ & $j$ & ~ \\
+        \textbf{SpMSpM P0} & $Z_{ij}=A_{ik}B_{kj}$ & $A$,$B$,$X$=CSR & $\underline{ikj}$ & $i$ & ~ & $kj$ & ~ & ~ & $ikj$ & ~ & ~ & ~ & ~ & ~ & $ikj$ & ~ & ~ & ~ & ~ & $j$ & $k$ \\
+        \textbf{SpMSpM P2} & $Z_{ij}=A_{ik}B_{kj}$ & $A$,$B$,$X$=CSR & $ik\underline{j}$ & $i$ & ~ & $kj$ & ~ & ~ & $ikj$ & ~ & ~ & ~ & $i$ & $k$ & $j$ & ~ & ~ & ~ & $j$ & $j$ & $k$ \\
+        \textbf{SpKAdd} & $Z_{ij}=\sum_{k}^{}A^{k}_{ij}$ & $A^{k}$,$X$=DCSR & $\underline{kij}$ & $i$ & ~ & $j$ & ~ & ~ & $ij$ & ~ & ~ & $j$ & ~ & ~ & ~ & ~ & $ij$ & ~ & ~ & $j$ & ~ \\
+        \textbf{PageRank} & $Z_i=A_{ij}X_jY_i$ & $A$=CSR & $i\underline{j}$ & $i$ & ~ & $j$ & ~ & ~ & $ij$ & ~ & ~ & ~ & ~ & $i$ & $j$ & ~ & ~ & ~ & ~ & $j$ & $j$ \\
+        \textbf{TriangleCount} & $c=L_{ik}L^{T}_{kj}L_{ij}$ & $L$=CSR & $ikj$ & $i$ & ~ & $kj$ & ~ & ~ & $ikj$ & ~ & $k$ & ~ & ~ & ~ & $ik$ & $j$ & ~ & ~ & ~ & $j$ & ~ \\
+        \textbf{MTTKRP P1} & $Z_{ij} = A_{ikl}B_{kj}C_{lj}$ & $A$=COO & $i\underline{klj}$ & $ij$ & $klj$ & ~ & $i$ & ~ & $iklj$ & ~ & ~ & ~ & ~ & $i$ & $klj$ & ~ & ~ & ~ & $j$ & $j$ & ~ \\
+        \textbf{MTTKRP P2} & $Z_{ij} = A_{ikl}B_{kj}C_{lj}$ & $A$=COO & $ikl\underline{j}$ & $iklj$ & $j$ & ~ & $i$ & $kl$ & $iklj$ & $i$ & ~ & ~ & $i$ & $kl$ & $j$ & ~ & ~ & ~ & $kl$ & $j$ & ~ \\
+        \textbf{SpTC} & $Z_{ij} = A_{ikl}B_{lkj}$ & $A$,$B$=CSF & $iklj$ & $i$ & ~ & $jkl$ & ~ & ~ & $ijkl$ & ~ & ~ & ~ & ~ & $i$ & ~ & $jkl$ & ~ & $j$ & ~ & $j$ & $i$ \\
+        \textbf{SpTTV} & $Z_{ij} = A_{ijk}B_{k}$ & $A$=CSF & $ij\underline{k}$ & $ik$ & ~ & $jk$ & ~ & ~ & $ijk$ & ~ & ~ & ~ & ~ & $k$ & $k$ & ~ & ~ & ~ & ~ & $k$ & $k$ \\
+        \textbf{SpTTM} & $Z_{ijk} = A_{ijl}B_{lk}$ & $A$=CSF & $ijl\underline{k}$ & $ik$ & $l$ & $jl$ & ~ & ~ & $ijlk$ & ~ & ~ & ~ & ~ & $l$ & $k$ & ~ & ~ & ~ & ~ & $k$ & $k$ \\
+        \bottomrule
+    \end{tabular}}    
+    %\vspace{-0.4cm}
+\end{sidewaystable}

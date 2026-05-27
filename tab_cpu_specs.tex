@@ -1,0 +1,20 @@
+\begin{table}[]
+    \centering
+    %\footnotesize
+    \caption[Specifications of the multicore CPU processor used in our study (baseline).]{Specifications of the multicore CPU processor used in our study, a beefy HPC processor with Arm-like cores, HBM, and large caches.}
+    \vspace{-0.5em}
+    \begin{tabular}{rl}
+        \toprule
+        SiP & 96 cores \& LLC slices, 6 HBM stacks. \\
+        Core & N1-like OoO core @ 2.4\,GHz, 224-entry ROB, 2$\times$96-entry LSQ. \\
+        Comp & 2$\times$64B vector units per core, one 64B$\times$64B matrix unit per core. \\
+        L1D & 64\,KiB/core, 4-way, 2-cycle access, 32 MSHRs, stride/IMP prefetcher. \\
+        L2 & 512\,KiB/core, 8-way, 8-cycle access, 64 MSHRs, best-offset prefetcher. \\
+        LLC & Mostly exclusive, 1\,MiB/slice, 16-way, 12-cycle access, 128 MSHRs. \\
+        NoC & 2D mesh, 1-cycle routers, 1-cycle links, MOESI-like AMBA~5 CHI. \\
+        HBM & HBM3, 560\,GB/s per stack, 12\,GB per stack. \\
+        %TMU & 8\,KiB storage, 256 MSHRs, 1\,GHz. \\        
+        \bottomrule
+    \end{tabular}
+    \label{tab:cpu-specs-embedding}
+\end{table}

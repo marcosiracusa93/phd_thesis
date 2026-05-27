@@ -1,0 +1,86 @@
+\begin{figure}
+    \centering
+    \begin{minipage}{\columnwidth}
+    \begin{lstlisting}[basicstyle=\ttfamily\footnotesize]
+void eb(idxs: mref<? x idx>, offs: mref<? x idx>,
+         vals: mref<? x f32>, out: mref<? x ? x f32>){
+  slc.for(str s_b from 0 to num_batches){
+    str s_beg = slc.mem_str(offs[s_b]);
+    str s_end = slc.mem_str(offs[s_b+1]);
+    slc.for(str s_ptr from s_beg to s_end){
+      str s_idx = slc.mem_str(idxs[s_ptr]);
+      slc.for(str s_e from 0 to emb_len){
+        str s_val = slc.mem_str(vals[s_idx,s_e]);
+        slc.callback{
+          idx b = slc.to_val(s_b);
+          idx e = slc.to_val(s_e);
+          f32 val = slc.to_val(s_val);
+          f32 acc = out[b,e];
+          out[b,e] = acc + val; }}}}}
+    \end{lstlisting}
+    \vspace{-1em}
+    \subcaption{Unoptimized code.}
+    \label{fig:opt-none}
+    \end{minipage}
+
+    \begin{minipage}{\columnwidth}
+    \begin{lstlisting}[basicstyle=\ttfamily\footnotesize,firstnumber=7]
+      (*\unchanged{str s\_idx = slc.mem\_str(idxs[s\_ptr]); }*)
+      slcv.for<vlen>((str s_e, str msk) from 0 to emb_len){
+        str s_val = slcv.mem_str<vlen>(vals[s_idx,s_e], msk);
+        slcv.callback{
+          (*\unchanged{idx b = slc.to\_val(s\_b); }*)
+          idx e = slcv.to_val(s_e)[0];
+          vec<vlen x f32> val = slcv.to_val<vlen>(s_val);
+          vec<vlen x f32> acc = vload<vlen>(out[b,e]);
+          vstore<vlen>(acc + val, out[b,e], acc); }}}}}
+    \end{lstlisting}
+    \vspace{-1em}
+    \subcaption{Vectorized code.}
+    \label{fig:opt-vec}
+    \end{minipage}
+
+    \begin{minipage}{\columnwidth}
+    \begin{lstlisting}[basicstyle=\ttfamily\footnotesize,firstnumber=7]
+      (*\unchanged{str s\_idx = slc.mem\_str(idxs[s\_ptr]); }*)
+      str<vec<vlen x f32>> buf = slcv.buf_str(); // Buffer str
+      (*\unchanged{slcv.for<vlen>((str s\_e, str msk) from 0 to emb\_len)\{ }*)
+        (*\unchanged{str s\_val = slcv.mem\_str<vlen>(vals[s\_idx,s\_e], msk); }*)
+        slc.push(buf, s_val); } // Push into the buffer
+      slcv.callback{ // Callback moved at the end of inner loop
+        (*\unchanged{idx b = slc.to\_val(s\_b); }*)
+        vec<vlen x f32> buf_vec = slc.to_val(buf); // Get buffer
+        for(idx e = 0; e < emb_len; e++){ // Iterate buffer
+          vec<vlen x f32> val = buf_vec[e]; // Get buffered element
+          (*\unchanged{vec<vlen x f32> acc = vload<vlen>(out[b,e]); }*)
+          (*\unchanged{vstore<vlen>(acc + val, out[b,e], acc); \}\}\}\}\}\} }*)
+    \end{lstlisting}
+    \vspace{-1em}
+    \subcaption{Buffered code.}
+    \label{fig:opt-buf}
+    \end{minipage}
+
+    \begin{minipage}{\columnwidth}
+    \begin{lstlisting}[basicstyle=\ttfamily\footnotesize,firstnumber=7]
+      (*\unchanged{str s\_idx = slc.mem\_str(idxs[s\_ptr]); }*)
+      (*\unchanged{str<vec<vlen x f32>> buf = slcv.buf\_str(); }*)
+      slcv.for<vlen>((str s_e, str msk) from 0 to emb_len)(idx i=0){
+        (*\unchanged{str s\_val = slcv.mem\_str<vlen>(vals[s\_idx,s\_e], msk); }*)
+        (*\unchanged{slc.push(buf, s\_val); \} }*)
+      (*\unchanged{slcv.callback\{ }*)
+        (*\unchanged{vec<vlen x f32> buf\_vec = slc.to\_val(buf); }*)
+        (*\unchanged{for(idx e = 0; e < emb\_len; e++)\{ }*)
+          (*\unchanged{vec<vlen x f32> val = buf\_vec[e]; }*)
+          vec<vlen x f32> acc = vload<vlen>(out[i,e]);
+          vstore<vlen>(acc + val, out[i,e], acc); }}}}
+    slc.callback{ i++; }}} // end of indices in segment loop
+    \end{lstlisting}
+    \vspace{-1em}
+    \subcaption{Queue aligned code.}
+    \label{fig:opt-idx}
+    \end{minipage}
+    
+    \vspace{-0.8em}
+    \caption[Progressive DAE optimization steps.]{Progressive optimization of the EB SLC IR. Gray means unchanged.}
+    \label{fig:opt-transformations}
+\end{figure}

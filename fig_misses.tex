@@ -1,0 +1,35 @@
+\begin{figure}
+    \centering
+    %\vspace{-1em}
+    \begin{subfigure}[b]{0.49\linewidth} % 40% width
+        \includegraphics[width=\linewidth]{img_misses_proteins.pdf}
+        \vspace{-2.2em}
+        \caption{\texttt{proteins}}
+        %\vspace{0.5em}
+        \label{fig:miss-proteins}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\linewidth} % 40% width
+        \includegraphics[width=\linewidth]{img_misses_arxiv.pdf}
+        \vspace{-2.2em}
+        \caption{\texttt{arxiv}}
+        %\vspace{0.5em}
+        \label{fig:miss-arxiv}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\linewidth} % 40% width
+        \includegraphics[width=\linewidth]{img_misses_mag.pdf}
+        \vspace{-2.2em}
+        \caption{\texttt{mag}}
+        %\vspace{0.5em}
+        \label{fig:miss-mag}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\linewidth} % 40% width
+        \includegraphics[width=\linewidth]{img_misses_products.pdf}
+        \vspace{-2.2em}
+        \caption{\texttt{products}}
+        %\vspace{0.5em}
+        \label{fig:miss-products}
+    \end{subfigure}
+    %\vspace{-1em}
+    \caption[Cache miss rate for embedding lookups on CPU.]{Cache miss rate for embedding lookups on the multicore CPU processor. The subfigures are the different datasets whereas the lines are the different embedding sizes. The cache miss rate of each level is computed as percentage of misses per vector requests for that specific level. Overall, associative caches hierarchies are ineffective for most datasets and embedding sizes. However, for higher-locality datasets like \texttt{protein} and \texttt{arxiv}, the L3 cache can actually filter a large fraction of embedding lookups.}
+    \label{fig:misses}
+\end{figure}

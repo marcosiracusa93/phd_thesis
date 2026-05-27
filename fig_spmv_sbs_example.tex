@@ -1,0 +1,67 @@
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth,trim=0 260 275 10,clip]{img_spmv_sbs_example.pdf}
+        \vspace{-0.5cm}
+        \caption{T1: starts to load dense matrix fiber (row\_pointers)}
+        \label{fig:sbs-example-t1}
+    \end{subfigure}
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth,trim=275 260 2 10,clip]{img_spmv_sbs_example.pdf}
+        \vspace{-0.5cm}
+        \caption{T2: starts to load compressed mtx fibers (row elements)}
+        \label{fig:sbs-example-t2}
+    \end{subfigure}
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth,trim=0 130 275 134,clip]{img_spmv_sbs_example.pdf}
+        \vspace{-0.5cm}
+        \caption{T3: first row has all elements outstanding, loading second row}
+        \label{fig:sbs-example-t3}
+    \end{subfigure}
+    %\vspace{-1em}
+  \caption[First part of step-by-step example of DAE execution.]{First part of step-by-step example of SpMV with inner-loop vectorization (see \Cref{tab:streams}, P1 version) over the first row of the CSR matrix in \Cref{fig:sparse_formats}.}
+  \label{fig:spmv_example_1}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth,trim=275 130 2 134,clip]{img_spmv_sbs_example.pdf}
+        \vspace{-0.5cm}
+        \caption{T4: starts to load dense-vector values (lookup operation)}
+        \label{fig:sbs-example-t4}
+    \end{subfigure}
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth,trim=0 4 275 260,clip]{img_spmv_sbs_example.pdf}
+        \vspace{-0.5cm}
+        \caption{T5: some operands are ready to be queued into the outQ}
+        \label{fig:sbs-example-t5}
+    \end{subfigure}
+    \centering
+    \begin{subfigure}[b]{\textwidth}
+        \centering
+        \includegraphics[width=\textwidth,trim=275 4 2 260,clip]{img_spmv_sbs_example.pdf}
+        \vspace{-0.5cm}
+        \caption{T6: all elements of the first row got queued into the outQ}
+        \label{fig:sbs-example-t6}
+    \end{subfigure}
+    %\vspace{-1em}
+  \caption[Second part of step-by-step example of DAE execution.]{Second part of step-by-step example of SpMV with inner-loop vectorization (see \Cref{tab:streams}, P1 version) over the first row of the CSR matrix in \Cref{fig:sparse_formats}.}
+  \label{fig:spmv_example_2}
+\end{figure}
+
+%\begin{figure}
+%\centering
+%  \includegraphics[width=\textwidth]{img_spmv_sbs_example.pdf}
+%  \caption{Example performing SpMV with inner-loop vectorization (see \Cref{tab:streams}, P1 version) over the first row of the CSR matrix in %\Cref{fig:sparse_formats}.}
+%  \label{fig:spmv_example}
+%\end{figure}

@@ -1,0 +1,38 @@
+\begin{figure}
+%\centering
+  \normalsize
+\[
+\begin{array}{rl|@{\hspace{1.5\arraycolsep}}rl}
+\textit{Any CPU Statement} & STMT &
+\textit{Memory Reference} & mref \\
+\textit{CPU variable} & var &
+\textit{Stream Variable} & s \\
+\textit{Unsigned Integer} & \text{uint} \\
+%\hline
+\end{array}
+\]
+\[
+\begin{array}{rlrl}
+  \textit{For-Loop} & FOR & \bnfdef & \text{for } (HEAD) \text{ \{ } SDEC^* ~ BODY \text{ \} }\\
+  \textit{For Header} & HEAD & \bnfdef & s = r \text{ to } r \text{ step } \text{uint} \\
+  \textit{Stream Declaration} & SDEC  & \bnfdef & s = se \\
+  \textit{Loop Body} & BODY & \bnfdef & CALL ~\bnfalt~ CALL? ~~ FOR ~~ CALL? \\
+  \textit{Callback} & CALL & \bnfdef & \text{callback()} \text{ \{ } TVAL^*~ STMT^+ \text{ \}} \\
+  \textit{Value Conversion} & TVAL & \bnfdef & var = \text{to\_val}(s) \\
+  \textit{Loop Range} & r & \bnfdef &  s ~\bnfalt~ var ~\bnfalt~ \text{uint}  \\
+  \textit{Stream Expression} & se & \bnfdef & ls~\bnfalt~as~\bnfalt~cs~\bnfalt~bs \\
+  \textit{Load Stream} & ls  & \bnfdef & \text{load\_str} (mref[indices^*], uint) \\
+  %\textit{Store Stream} & ss  & \bnfdef & \text{store\_str} (mref[indices^*], s, uint) \\
+  \textit{Indices} & indices & \bnfdef & s~\bnfalt~var~\bnfalt~ \text{uint} \\
+  \textit{ALU Stream} & as & \bnfdef & \text{alu\_str} (sop, s_1, s_2) \\
+  \textit{Stream Ops} & sop  & \bnfdef & +~\bnfalt~-~\bnfalt~*~\bnfalt~ 
+/~\bnfalt~\%~\bnfalt~ \ldots  \\
+  %\textit{Accumulation Stream} & cs & \bnfdef & \text{accumulation\_str} (indices) \\
+  %\textit{Buffer Stream} & bs & \bnfdef & \text{buffer\_str} () \\
+\end{array}
+\]
+  %\vspace{-1em}
+  \caption{The Structured Lookup-Compute (SLC) IR.}
+  \label{fig:slc-ir}
+  %\vspace{-0.5em}
+\end{figure}

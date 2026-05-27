@@ -1,0 +1,58 @@
+\begin{table}[htbp!]
+\centering
+
+% ---------- Table 3 ----------
+\caption[TU traversal primitives.]{TU traversal primitives. For each signature, \texttt{int} arguments are constant values and \texttt{stream} arguments are the values loaded by the parent loop, as explained later. The \texttt{Dense} traversal implements a regular for-loop with static loop bounds. The \texttt{Range} traversal implements a for loop with data-dependent loop bounds, coming from two streams. The \texttt{Index} traversal implements a for loop that loads a dense structure with fixed size from arbitrary memory locations, whose starting location is indicated by the lower bound.}
+\label{tab:traversal}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Type} & \textbf{Description} & \textbf{Signature} & \textbf{Traversal}\\
+\midrule
+\texttt{Dense} & \makecell[l]{dense (or single)\\fiber scan} & \makecell[l]{\texttt{DnsFbrT(int beg, int end,}\\\texttt{ int stride=1)}} & \makecell[l]{for(i=beg; i<end;\\ \; i+=stride)}\\
+\texttt{Range} & \makecell[l]{compressed fiber\\lookup and scan} & \makecell[l]{\texttt{RngFbrT(stream beg, stream end,}\\\texttt{ int offset=0, int stride=1)}} & \makecell[l]{for(i=beg.head()+offset;\\ \; i<end.head(); i+=stride)}\\
+\texttt{Index} & \makecell[l]{dense fiber\\lookup and scan} & \makecell[l]{\texttt{IdxFbrT(stream beg, int size,}\\\texttt{ int offset=0, int stride=1)}} & \makecell[l]{for(i=beg.head()+offset;\\ \; i<beg.head()+size; i+=stride)}\\
+\bottomrule
+\end{tabular}
+}
+
+\vspace{1.2em}
+
+% ---------- Table 4 ----------
+\caption{Data streams for a TU.}
+\label{tab:streams}
+\begin{tabular}{@{}llc@{}}
+\toprule
+\textbf{Type} & \textbf{Description} & \textbf{Function}\\
+\midrule
+\texttt{mem} & loads \texttt{p}'s elements from memory at index \texttt{x} & \texttt{p[x]}\\
+\texttt{ite} & generates TU iteration indexes $\in$[\texttt{beg},\texttt{end}) & \texttt{x:b->e}\\
+\texttt{lin} & implements a linear transformation on \texttt{x} & \texttt{ax+b}\\
+\texttt{map} & reads \texttt{x}-th element of a small map \texttt{a=\{v1,...,v16\}} & \texttt{a[x]}\\
+\texttt{ldr} & computes the address of the \texttt{x}-th element in \texttt{p} & \texttt{\&p[x]}\\
+\midrule
+\texttt{fwd} &\multicolumn{2}{l}{forwards a leftward TU stream to the next layer}\\
+\texttt{msk} &\multicolumn{2}{l}{outputs a layer predicate for merging and lockstep operations}\\
+\bottomrule
+\end{tabular}
+
+\vspace{1.2em}
+
+% ---------- Table 5 ----------
+\caption{Inter-layer configurations.}
+\label{tab:tg_config}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Type} & \textbf{Description}\\
+\midrule
+\texttt{Single} & iterates a single lane\\
+\texttt{BCast} & broadcasts a single lane to a parallel group\\
+\texttt{Keep} & keeps one lane out of a parallel group\\
+\midrule
+\texttt{DisjMrg} & joins lanes of a layer\\
+\texttt{ConjMrg} & intersects lanes of a layer\\
+\texttt{LockStep} & co-iterates lanes of a layer\\
+\bottomrule
+\end{tabular}
+
+\end{table}
