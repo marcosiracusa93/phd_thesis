@@ -2,14 +2,14 @@
     \begin{lstlisting}[]
 void spmv(row_ptrs: mref<? x idx>, // adj matrix CSR pointers
           col_idxs: mref<? x idx>, // adj matrix CSR indices
-          nnz_vals: mref<? x f32>, // matrix non-zero values
+          nnz_vals: mref<? x f32>, // matrix nonzero values
           vec_vals: mref<? x f32>, // dense vector values
           out_vals: mref<? x f32>){ // output tensor
   // Go through all rows
   for (idx row_idx=0; row_idx<n_rows; row_idx++){
     idx ptr_beg = row_ptrs[row_idx];
     idx ptr_end = row_ptrs[row_idx+1];
-    // Go through all non-zero in a row
+    // Go through all nonzeros in a row
     for (idx ptr=ptr_beg; ptr<ptr_end; ptr++){
       f32 nnz_val = nnz_vals[ptr];
       idx col_idx = col_idxs[ptr];
@@ -17,6 +17,6 @@ void spmv(row_ptrs: mref<? x idx>, // adj matrix CSR pointers
       out_vals[row_idx] += nnz_val * vec_val; }}}}
     \end{lstlisting}
     \vspace{-1em}
-    \caption[Pseudocode of sparse matrix-vector multiplication.]{Pseudocode of the SpMV in \Cref{fig:spmv-lookup}. The outer loop goes through all the matrix rows whereas the inner loop goes through all the non-zero element in each row. Line 14 looks up the dense vector, a critical operation in modern processors.}
+    \caption[Pseudocode of sparse matrix-vector multiplication.]{Pseudocode of the SpMV in \Cref{fig:spmv-lookup}. The outer loop goes through all matrix rows, whereas the inner loop goes through all nonzero elements in each row. Line 14 looks up the dense vector, a critical operation in modern processors.}
     \label{fig:spmv-code}
 \end{figure}

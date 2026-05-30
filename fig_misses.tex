@@ -30,6 +30,6 @@
         \label{fig:miss-products}
     \end{subfigure}
     %\vspace{-1em}
-    \caption[Cache miss rate for embedding lookups on CPU.]{Cache miss rate for embedding lookups on the multicore CPU processor. The subfigures are the different datasets whereas the lines are the different embedding sizes. The cache miss rate of each level is computed as percentage of misses per vector requests for that specific level. Overall, associative caches hierarchies are ineffective for most datasets and embedding sizes. However, for higher-locality datasets like \texttt{protein} and \texttt{arxiv}, the L3 cache can actually filter a large fraction of embedding lookups.}
+    \caption[Cache miss rate for embedding lookups on CPU.]{Cache miss rate for embedding lookups on the multicore CPU processor. Subfigures correspond to different datasets, whereas lines correspond to different embedding sizes. The cache miss rate of each level is computed as the percentage of misses per vector request for that specific level. Overall, associative cache hierarchies are ineffective for most datasets and embedding sizes. However, for higher-locality datasets like \texttt{proteins} and \texttt{arxiv}, the L3 cache can filter a large fraction of embedding lookups.}
     \label{fig:misses}
 \end{figure}

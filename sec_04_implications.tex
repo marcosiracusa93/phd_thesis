@@ -1,6 +1,6 @@
 \chapter{The Architectural Implications of Sparsity} \label{sec:architectural-implications-of-sparsity}
 
-This chapter discusses the architectural implications of sparsity. We fist study sparse scientific models to understand the implications of branch mispredictions and indirect scalar lookups. Then, we study sparse machine learning models to understand the implications of indirect vector lookups with different spatial and temporal locality. We use these insights to design the TMU-CPU system introduced in the next chapter.
+This chapter discusses the architectural implications of sparsity. We first study sparse scientific models to understand the impact of branch mispredictions and indirect scalar lookups. Then, we study sparse machine learning models to understand the impact of indirect vector lookups with different spatial and temporal locality. We use these insights to design the TMU-CPU system introduced in the next chapter.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Scientific Computing} \label{sec:architectural-implications-of-sparsity-scientific-computing} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -17,7 +17,7 @@ We study sparsity in scientific computing by analyzing three proxy kernels:
 \subsection{Experimental Methodology} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We profile high-performance implementations of these kernels---from the Kokkos library~\cite{kokkos2014carter}---both on an HPC processor, the Fujitsu A64FX~\cite{sato20a64fx}, and on a data-center processor, the AWS Graviton 3. While the A64FX has more memory bandwidth per core (1~TB/s for 48 cores vs.\ 300~GB/s for 64 cores), Graviton 3 has cores with more out-of-order resources and larger caches. In order to understand the implications of these architectural choices on different domains, we test these kernels on the largest 1000 matrices drawn from different domains from the SuiteSparse Matrix Collection~\cite{suitesparse2011acm}.
+We profile high-performance implementations of these kernels---from the Kokkos library~\cite{kokkos2014carter}---both on an HPC processor, the Fujitsu A64FX~\cite{sato20a64fx}, and on a data-center processor, the AWS Graviton 3. While the A64FX has more memory bandwidth per core (1~TB/s for 48 cores vs.\ 300~GB/s for 64 cores), Graviton 3 has cores with more out-of-order resources and larger caches. To understand the implications of these architectural choices across domains, we test these kernels on the largest 1000 matrices drawn from different domains in the SuiteSparse Matrix Collection~\cite{suitesparse2011acm}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{CPU Benchmarking} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -70,7 +70,7 @@ Overall, these results indicate that (i)~modern general-purpose processors typic
 \section{Machine Learning} \label{sec:architectural-implications-of-sparsity-in-machine-learning} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-As discussed in \Cref{sec:sparsity-in-machine-learning}, embedding operations are also heavily characterized by irregular lookup operations. However, besides having vary temporal locality characteristics, their spatial locality can also vary substantially, since the size of embedding vectors can range from tens to hundreds of elements. For this reason, we use embedding operations to study the architectural implications of irregular memory accesses with both different spatial and temporal locality characteristics. In this section, we first characterize embedding operations from different machine learning models. We then discuss the performance of these operations on traditional architectures. Finally, we highlight their scaling limitations of traditional architectures, and the need for alternative solutions.
+As discussed in \Cref{sec:sparsity-in-machine-learning}, embedding operations are also dominated by irregular lookup operations. However, in addition to varying in temporal locality, they can also vary substantially in spatial locality, since embedding vectors can range from tens to hundreds of elements. For this reason, we use embedding operations to study the architectural implications of irregular memory accesses with different spatial and temporal locality characteristics. In this section, we first characterize embedding operations from different machine learning models. We then discuss the performance of these operations on traditional architectures. Finally, we highlight the scaling limitations of traditional architectures and the need for alternative solutions.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Experimental Methodology} \label{sec:experimental-methodology-embedding} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -82,7 +82,7 @@ As discussed in \Cref{sec:sparsity-in-machine-learning}, embedding operations ar
 \begin{table}
   \centering
   %\footnotesize
-  \caption[Tested Deep Learning Recommendation Models (DLRMs).]{Tested DLRMs. RM1 has larger batch size, smaller embeddings, and fewer lookups per segments. RM2 has smaller batch size, larger embeddings, and more lookups per segments. Larger batches can better amortize startup overhead. Larger embedding vectors have better spatial locality, but generate more cache eviction. More lookups per segment better amortize control overhead generated from the loops.}
+  \caption[Tested Deep Learning Recommendation Models (DLRMs).]{Tested DLRMs. RM1 has a larger batch size, smaller embeddings, and fewer lookups per segment. RM2 has a smaller batch size, larger embeddings, and more lookups per segment. Larger batches better amortize startup overhead. Larger embedding vectors have better spatial locality but generate more cache evictions. More lookups per segment better amortize loop control overhead.}
   \vspace{-1em}
 \[
 \begin{tabular}{rccc}
@@ -109,7 +109,7 @@ All embedding operations we tested are high-performance multicore implementation
 
 \input{tab_cpu_specs}
 
-We simulated the off-the-shelf CPU with gem5~\cite{lowepower2020gem5} in order to access detailed statistics and be able to test different system configurations. The CPU system is dimensioned as in \Cref{tab:cpu-specs-embedding}. The power consumption of the off-the-shelf CPU is estimated with McPat~\cite{li2009mcpat}. For the GPU, we used Nvidia Nsys~\cite{nvidiansys} and only included the kernel execution time, excluding host-to-device transfers.
+We simulated the off-the-shelf CPU with gem5~\cite{lowepower2020gem5} to access detailed statistics and test different system configurations. The CPU system is dimensioned as in \Cref{tab:cpu-specs-embedding}. The power consumption of the off-the-shelf CPU is estimated with McPat~\cite{li2009mcpat}. For the GPU, we used Nvidia Nsys~\cite{nvidiansys} and included only kernel execution time, excluding host-to-device transfers.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Characterization and Implications} \label{sec:characterization-and-implications} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -117,7 +117,7 @@ We simulated the off-the-shelf CPU with gem5~\cite{lowepower2020gem5} in order t
 
 \input{tab_characterization_split}
 
-\Cref{tab:characterization-code} characterizes the code of embedding operations across various machine learning models, whereas \Cref{tab:characterization-embedding} characterizes its memory requirements. For each model, we first analyze its loop hierarchy (column~1 in \Cref{tab:characterization-code}) and compute-per-lookup ratio (column~2 in \Cref{tab:characterization-code}), which proxy compute requirements. Then, we compute the memory footprint of their embedding tables to understand their storage demands (column~1 in \Cref{tab:characterization-embedding}). Finally, we characterize their spatio-temporal locality to gauge the effectiveness of caches and prefetchers for embedding lookups (column~2 and 3 in \Cref{tab:characterization-embedding}). 
+\Cref{tab:characterization-code} characterizes the code of embedding operations across various machine learning models, whereas \Cref{tab:characterization-embedding} characterizes their memory requirements. For each model, we first analyze its loop hierarchy (column~1 in \Cref{tab:characterization-code}) and compute-per-lookup ratio (column~2 in \Cref{tab:characterization-code}), which approximate compute requirements. Then, we compute the memory footprint of the embedding tables to understand their storage demands (column~1 in \Cref{tab:characterization-embedding}). Finally, we characterize their spatio-temporal locality to gauge the effectiveness of caches and prefetchers for embedding lookups (columns~2 and 3 in \Cref{tab:characterization-embedding}).
 
 We characterize temporal locality through the concept of \emph{reuse distance}---the number of other vectors accessed before a vector is accessed again~\cite{recshard2022asplos}. If a cache can hold $x$ vectors, an access with reuse distance greater than $x$ will likely result in eviction. For a given input, we first construct a histogram of all reuse distances, which we then integrate and normalize to obtain the Cumulative Distribution Function ($CDF$). Hence, $CDF(x)$ approximates the hit probability for a cache that can hold $x$ vectors. Spatial locality, instead, is characterized by the size of the embedding vector. In \Cref{sec:analytical-model-embedding} we use spatial and temporal locality to estimate the ideal memory-level parallelism required to run at peak throughput.
 
@@ -171,18 +171,18 @@ Sparse attention mechanisms replicate blocks of embeddings from the key tensor i
         \caption{Roofline model}
         \label{fig:gpu-benchmark-roofline}
     \end{subfigure}
-    \caption[Performance bottleneck of sparse ML models on GPU.]{Execution time breakdown and architectural utilization of machine learning models on GPU. Deep-learning recommendation models (\texttt{dlrm}), large language models (\texttt{llm}) with sparse attention, knowledge graphs (\texttt{kg}), and graph neural networks (\texttt{gnn}) heavily rely on embedding operations that underperform even on modern Nvidia H100 GPUs~\cite{nvidiah100}.}
+    \caption[Performance bottleneck of sparse ML models on GPU.]{Execution time breakdown and architectural utilization of machine learning models on GPU. Deep learning recommendation models (\texttt{dlrm}), large language models (\texttt{llm}) with sparse attention, knowledge graphs (\texttt{kg}), and graph neural networks (\texttt{gnn}) heavily rely on embedding operations that underperform even on modern Nvidia H100 GPUs~\cite{nvidiah100}.}
     \label{fig:gpu-benchmark}
 \end{figure}
 %+++++++++++++++++++++++++++++++++++++++
 %++++++++++ END GPU BENCHMARK ++++++++++
 %+++++++++++++++++++++++++++++++++++++++
 
-\Cref{fig:gpu-benchmark-runtime} shows the runtime breakdown of these models running on GPUs, which are the most used accelerators for machine learning applications. Embedding operations consume the majority of cycles, especially in GNNs and DLRMs. Because both GNNs and DLRMs must pool the embedding vectors of each neighbor, their embedding runtime scales roughly with the average number of neighbors (i.e., vertices per edge).
+\Cref{fig:gpu-benchmark-runtime} shows the runtime breakdown of these models running on GPUs, which are the most widely used accelerators for machine learning applications. Embedding operations consume the majority of cycles, especially in GNNs and DLRMs. Because both GNNs and DLRMs must pool the embedding vectors of each neighbor, their embedding runtime scales roughly with the average number of neighbors (i.e., vertices per edge).
 
 The second most critical operation is matrix multiplication, particularly in LLMs and DLRMs. While DLRMs and GNNs have similar embedding operations, DLRMs include more matrix multiplication layers, which account for more than 20\% of total cycles. In addition, DLRMs compute interactions among all pooled sparse features and dense features, further increasing their compute requirements. Consequently, after embedding operations, matrix multiplications are also a key component to consider when designing efficient architectures for these models.
 
-Finally, elemental vector and scalar operations are most relevant for KGs, which rely on elementwise operations to compute norms. It is also worth noting that high-performance GPU implementations spend a sizable fraction of time in ``other’’ operations, such as input sorting and related preprocessing.
+Finally, elementwise vector and scalar operations are most relevant for KGs, which rely on elementwise operations to compute norms. It is also worth noting that high-performance GPU implementations spend a sizable fraction of time in ``other'' operations, such as input sorting and related preprocessing.
 
 \Cref{fig:gpu-benchmark-roofline} shows the Roofline model~\cite{roofline2009acm} for embedding operations. Overall, although these operations are critical, they achieve less than 30\% of peak compute utilization. As reported in \Cref{tab:characterization-embedding}, GNNs and KGs exhibit the lowest temporal locality and therefore the highest memory bandwidth utilization---yet even in these cases, bandwidth utilization remains below 55\%.
 
@@ -204,7 +204,7 @@ Overall, CPU cores are designed to access data primarily from local caches, whic
 
 As a result, embedding lookups generate a high volume of long-latency memory requests. For instance, as shown in \Cref{fig:ltu-gnn}, up to 86\% of the memory requests in GNN embedding operations take more than $10\times$ the latency of an L1D cache access, and up to 36\% exceed $100\times$ that latency because they must reach HBM.
 
-When a core issues a memory request, it must allocate entries in the Reorder Buffer (ROB), Load–Store Queue (LSQ), and Miss-Status Handling Registers (MSHRs) at each cache level. The longer the memory access, the more entries are required to sustain multiple outstanding requests---which is generally defined as memory-level parallelism. However, as these structures do not scale easily, traditional architectures provision just enough capacity to efficiently load data from local caches, not from HBM. As shown in \Cref{fig:embedding-implications}, off-the-shelf CPU cores can track only a small number of such long-latency requests, which results in low achievable throughput (i.e., loads per cycle) and low HBM utilization (details in caption).
+When a core issues a memory request, it must allocate entries in the Reorder Buffer (ROB), Load–Store Queue (LSQ), and Miss-Status Handling Registers (MSHRs) at each cache level. The longer the memory access, the more entries are required to sustain multiple outstanding requests, a property generally known as memory-level parallelism. However, as these structures do not scale easily, traditional architectures provision just enough capacity to efficiently load data from local caches, not from HBM. As shown in \Cref{fig:embedding-implications}, off-the-shelf CPU cores can track only a small number of such long-latency requests, which results in low achievable throughput (i.e., loads per cycle) and low HBM utilization (details in caption).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Ideal Memory-Level Parallelism for Different Spatio-Temporal Locality Characteristics} \label{sec:analytical-model-embedding} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -224,7 +224,7 @@ This section introduces the analytical models we designed to understand the requ
         \caption{Reuse distance CDF}
         \label{fig:cdf}
     \end{subfigure}
-\caption[System abstraction that our analytical model is built upon.]{On the left (a), out system abstraction. On the right (b), an example of CDF curve, and how we use it to compute the hit and miss probabilities across all levels. Specifically, the x-axis is the number of embedding vectors that can fit in a cache level (i.e., cache size at a given level divided by the embedding vector byte size) whereas the y-axis shows probabilities.}
+\caption[System abstraction that our analytical model is built upon.]{On the left (a), our system abstraction. On the right (b), an example CDF curve and how we use it to compute hit and miss probabilities across all levels. Specifically, the x-axis is the number of embedding vectors that fit in a cache level (i.e., cache size at a given level divided by the embedding vector byte size), whereas the y-axis shows probabilities.}
 \label{fig:model}
 \end{figure}
 
@@ -295,7 +295,7 @@ As discussed in \Cref{sec:characterization-and-implications}, we model spatial l
         \caption{}
         \label{fig:latency_error}
     \end{subfigure}
-\caption[Accuracy of our analytical model compared to gem5.]{Accuracy of our analytical model compared to gem5. The leftmost plot (a) shows L2 hit accuracy for the GNN layers in \Cref{tab:graph-inputs} whereas the middle plot (b) shows L3 miss correlation. The rightmost plot (c) shows the end-to-end GNN inference latency. Overall,our model achieves more than 23\% accuracy for L2 accesses, and similar accuracy for L3 accesses, especially for high miss rates, which are the most relevant for our analysis. In this way, our model achieves comparable results to other analytical models in the literature~\cite{cabezas2014iisw}.}
+\caption[Accuracy of our analytical model compared to gem5.]{Accuracy of our analytical model compared to gem5. The leftmost plot (a) shows L2 hit accuracy for the GNN layers in \Cref{tab:graph-inputs}, whereas the middle plot (b) shows L3 miss correlation. The rightmost plot (c) shows end-to-end GNN inference latency. Overall, our model achieves more than 23\% accuracy for L2 accesses and similar accuracy for L3 accesses, especially for high miss rates, which are the most relevant for our analysis. In this way, our model achieves comparable results to other analytical models in the literature~\cite{cabezas2014iisw}.}
 \label{fig:hit_accuracy}
 \end{figure}
 
@@ -327,12 +327,12 @@ L^a = \min \left( \min_l PL^{t}_l, \min_l PL^{r}_l \right) \times L^i.
 \begin{figure}
 \includegraphics[width=1\linewidth]{img_max_mlp_stacked.pdf} % L B R T
 \vspace{-2em}
-\caption[Ideal memory-level parallelism on CPU.]{Number of outstanding requests required to sustain throughput of one request per cycle. Each set of bars indicates metrics for a given layer (i.e., input and embedding size). For each set of bars, the first column indicates the memory requests to be tracked at the reorder buffer level, whereas the other bars indicate the miss-status handling registers required at different cache levels. Inputs with lower locality (e.g., \texttt{products}) and larger embedding sizes require more outstanding requests, requiring up to 368 outstanding requests per core, 241 on average. This number is practically higher since fetching an embedding vector requires multiple vector loads.}
+\caption[Ideal memory-level parallelism on CPU.]{Number of outstanding requests required to sustain throughput of one request per cycle. Each set of bars indicates metrics for a given layer (i.e., input and embedding size). For each set of bars, the first column indicates the memory requests to be tracked at the reorder buffer level, whereas the other bars indicate the miss-status handling registers required at different cache levels. Inputs with lower locality (e.g., \texttt{products}) and larger embedding sizes require more outstanding requests, reaching up to 368 outstanding requests per core and 241 on average. This number is higher in practice, since fetching an embedding vector requires multiple vector loads.}
 \label{fig:max_mlp}
 %\vspace{-0.5em}
 \end{figure}
 
-We now leverage \Cref{eq:little-rule} to estimate the required number of outstanding requests per core needed to run at peak throughput (one load per cycle per port). \Cref{fig:max_mlp} shows that we would need up to 368 outstanding requests per core, 241 on average. This number is practically higher since fetching an embedding vector requires multiple vector loads. In the reminder of this chapter we demonstrate that traditional cores cannot achieve such memory-level parallelism.
+We now leverage \Cref{eq:little-rule} to estimate the number of outstanding requests per core required to run at peak throughput (one load per cycle per port). \Cref{fig:max_mlp} shows that this would require up to 368 outstanding requests per core, 241 on average. In the remainder of this chapter, we demonstrate that traditional cores cannot achieve such memory-level parallelism.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -343,11 +343,11 @@ We now leverage \Cref{eq:little-rule} to estimate the required number of outstan
     \centering
     \includegraphics[width=\linewidth]{img_dse_cpu.pdf}
     \vspace{-1em}
-    \caption[The cost of scaling memory-level parallelism on CPU.]{Implications of scaling up the memory-level parallelism of a traditional CPU core for GNNs embedding operations. In our notation, \texttt{R} indicates reorder buffer and register file, \texttt{L} indicates load-store queue, and \texttt{M} indicates L1D miss-status handling registers. The notation \texttt{1R.1L.1M} is the baseline off-the-shelf core, and \texttt{2R.2L.2M} is a core with double resources. Overall, even doubling all of these resources (\texttt{2R.2L.2M}) provides limited performance improvements than off-the-shelf cores (\texttt{1R.1L.1M}), and worse performance/watt.}
+    \caption[The cost of scaling memory-level parallelism on CPU.]{Implications of scaling up the memory-level parallelism of a traditional CPU core for GNN embedding operations. In our notation, \texttt{R} indicates reorder buffer and register file, \texttt{L} indicates load-store queue, and \texttt{M} indicates L1D miss-status handling registers. The notation \texttt{1R.1L.1M} is the baseline off-the-shelf core, and \texttt{2R.2L.2M} is a core with double the resources. Overall, even doubling all of these resources (\texttt{2R.2L.2M}) provides limited performance improvements over off-the-shelf cores (\texttt{1R.1L.1M}) and worse performance/watt.}
     \label{fig:dse-cpu}
 \end{figure}
 
-Increasing the memory-level parallelism of a CPU core to track more in-flight requests requires scaling up the reorder buffer, load-store queue, and miss-status handling registers~\cite{spchar2024jpdc}. However, these resources scale inefficiently. As shown in \Cref{fig:dse-cpu}, for datasets with high reuse, doubling them only improves performance by 12\% while increasing power consumption by 25\% whereas for datasets with low reuse, it improves performance by 3\% while increasing power consumption by 18\%. Besides degrading performance per watt, scaling up these resources introduces challenges in timing closure~\cite{cad2022tc}, which would require lowering the core's frequency and, consequently, overall performance.
+Increasing the memory-level parallelism of a CPU core to track more in-flight requests requires scaling up the reorder buffer, load-store queue, and miss-status handling registers~\cite{spchar2024jpdc}. However, these resources scale inefficiently. As shown in \Cref{fig:dse-cpu}, for datasets with high reuse, doubling them improves performance by only 12\% while increasing power consumption by 25\%, whereas for datasets with low reuse, it improves performance by 3\% while increasing power consumption by 18\%. Besides degrading performance per watt, scaling up these resources introduces timing closure challenges~\cite{cad2022tc}, which would require lowering the core's frequency and, consequently, overall performance.
 
 A common solution is to scale out the number of cores. However, this is also ineffective. As shown in column~4 in \Cref{fig:embedding-implications}, we would need 43---72 traditional CPU cores to saturate a single HBM stack, depending on the input reuse. Hence, we would need an unfeasible amount of cores to saturate the large memory bandwidth of current architectures. Therefore, traditional architectures cannot scale to that level of memory-level parallelism.
 

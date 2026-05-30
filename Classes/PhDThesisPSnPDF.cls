@@ -556,18 +556,47 @@ supported!}
   \usepackage{amsmath}
   \usepackage{fontspec}
   \usepackage[]{unicode-math}
-  \setmainfont[
-    Extension = .otf,
-    UprightFont = *-regular,
-    BoldFont = *-bold,
-    ItalicFont = *-italic,
-    BoldItalicFont = *-bolditalic,
-  ]{xits}
-  
-  \setmathfont[ 
-    Extension = .otf,
-    BoldFont = *bold,
-  ]{xits-math}
+  \IfFileExists{Fonts/xits/XITS-Regular.otf}{
+    \setmainfont[
+      Path = Fonts/xits/,
+      Extension = .otf,
+      UprightFont = *-Regular,
+      BoldFont = *-Bold,
+      ItalicFont = *-Italic,
+      BoldItalicFont = *-BoldItalic,
+    ]{XITS}
+
+    \setmathfont[
+      Path = Fonts/xits/,
+      Extension = .otf,
+      BoldFont = XITSMath-Bold,
+    ]{XITSMath-Regular}
+  }{\IfFontExistsTF{xits-regular.otf}{
+    \setmainfont[
+      Extension = .otf,
+      UprightFont = *-regular,
+      BoldFont = *-bold,
+      ItalicFont = *-italic,
+      BoldItalicFont = *-bolditalic,
+    ]{xits}
+
+    \setmathfont[
+      Extension = .otf,
+      BoldFont = *bold,
+    ]{xits-math}
+  }{
+    \setmainfont[
+      Path = /System/Library/Fonts/Supplemental/,
+      UprightFont = {Times New Roman.ttf},
+      BoldFont = {Times New Roman Bold.ttf},
+      ItalicFont = {Times New Roman Italic.ttf},
+      BoldItalicFont = {Times New Roman Bold Italic.ttf},
+    ]{Times New Roman}
+
+    \setmathfont[
+      Path = /System/Library/Fonts/Supplemental/,
+    ]{STIXTwoMath.otf}
+  }}
   
 \else
   % default: pdfLaTeX
@@ -674,8 +703,12 @@ supported!}
 \ifpdf
   % PDFLaTeX does it automatically.
 \else
-  % dvips
-  \RequirePackage{breakurl} % to split the url over multiple lines
+  \ifxetex
+    % XeLaTeX handles URL breaks through hyperref.
+  \else
+    % dvips
+    \RequirePackage{breakurl} % to split the url over multiple lines
+  \fi
 \fi
   
 % ******************************************************************************
@@ -1266,4 +1299,3 @@ wish to left align your text}
 			- \totalheightof{\usebox{\PHD@collegedate}}
 }
 }
-
