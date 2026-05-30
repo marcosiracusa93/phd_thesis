@@ -20,11 +20,11 @@ Taken together, these contributions show that sparse tensor algebra can be accel
 
 The contributions of this thesis led to the following research outputs:
 \begin{itemize}
-\item The architectural analysis of sparse tensor algebra for scientific computation presented in \Cref{sec:architectural-implications-of-sparsity-scientific-computing} formed the basis of SpChar, published in the \textit{Journal of Parallel and Distributed Computing}~\cite{spchar2024jpdc}.
+\item The architectural analysis of sparse tensor algebra for scientific computation presented in \Cref{sec:architectural-implications-of-sparsity-scientific-computing} formed the basis of SpChar, published in the \textit{Journal of Parallel and Distributed Computing}~\cite{sgherzi2024jpdc}.
 \item The architectural analysis of sparse tensor algebra for machine learning presented in \Cref{sec:architectural-implications-of-sparsity-in-machine-learning} is currently under submission.
-\item The TMU design described in \Cref{sec:the-tmu} was published at the \textit{56th IEEE/ACM International Symposium on Microarchitecture (MICRO)}~\cite{tmu2023micro}.
-\item The TMU design presented in \Cref{sec:the-tmu} has also been patented~\cite{siracusa2025dsmu}.
-\item The Ember compiler presented in \Cref{sec:dae-compilation}, developed in collaboration with researchers at Stanford University, appeared at the \textit{24th IEEE/ACM International Symposium on Code Generation and Optimization (CGO)}~\cite{ember2026cgo}.
+\item The TMU design described in \Cref{sec:the-tmu} was published at the \textit{56th IEEE/ACM International Symposium on Microarchitecture (MICRO)}~\cite{siracusa2023micro}.
+\item The TMU design presented in \Cref{sec:the-tmu} has also been patented~\cite{siracusa2025patent}.
+\item The Ember compiler presented in \Cref{sec:dae-compilation}, developed in collaboration with researchers at Stanford University, appeared at the \textit{24th IEEE/ACM International Symposium on Code Generation and Optimization (CGO)}~\cite{siracusa2026cgo}.
 \end{itemize}
 
 \subsection{Awards}
@@ -32,14 +32,14 @@ The contributions of this thesis led to the following research outputs:
 This work was recognized through the following awards:
 \begin{itemize}
 \item 2025 Machine Learning and Systems Rising Star Award by MLCommons~\cite{mlcommons2025risingstars}.
-\item A scholarship from the Government of Catalonia (AGAUR FI grant)~\cite{agaurPhdGrants}.
+\item A scholarship from the Government of Catalonia (AGAUR FI grant)~\cite{agaur2026grants}.
 \end{itemize}
 
 \subsection{Research Spinoffs}
 Beyond the thesis contributions themselves, this work catalyzed several follow-on projects:
 \begin{itemize}
-\item Francisco (Xicu) Marí Prats's master's thesis, \textit{Integrating the Tensor Marshaling Unit for Sparse Tensor Algebra with a RISC-V Processor}, presented the first RTL implementation and SoC integration of the Tensor Marshaling Unit (TMU)~\cite{mari2025tmuintegration}. The prototype integrated the TMU with a CVA6 RISC-V core in an OpenPiton-based system, demonstrated the feasibility of the TMU in a real SoC, and established the first milestone of a larger effort toward enabling the TMU in production systems.
-\item Diego Gorfini's master's thesis builds on Xicu Marí Prats's first TMU SoC prototype by improving the communication path between the core and the TMU~\cite{mari2026cohort}. This work integrates the decoupled SpMV access unit with Cohort's coherent shared-memory queues, avoiding memory-mapped I/O and ISA extensions. It also introduces a hybrid tile organization that co-locates the core, Cohort, and the TMU, allowing the accelerator to deliver operands directly into the tile's private L2 cache through a custom arbiter. RTL simulations show that this organization reduces inter-tile communication overhead and improves performance over the original multi-tile integration.
+\item Francisco (Xicu) Marí Prats's master's thesis, \textit{Integrating the Tensor Marshaling Unit for Sparse Tensor Algebra with a RISC-V Processor}, presented the first RTL implementation and SoC integration of the Tensor Marshaling Unit (TMU)~\cite{mariprats2025mastersthesis}. The prototype integrated the TMU with a CVA6 RISC-V core in an OpenPiton-based system, demonstrated the feasibility of the TMU in a real SoC, and established the first milestone of a larger effort toward enabling the TMU in production systems.
+\item Diego Gorfini's master's thesis builds on Xicu Marí Prats's first TMU SoC prototype by improving the communication path between the core and the TMU~\cite{mariprats2026bscsymposium}. This work integrates the decoupled SpMV access unit with Cohort's coherent shared-memory queues, avoiding memory-mapped I/O and ISA extensions. It also introduces a hybrid tile organization that co-locates the core, Cohort, and the TMU, allowing the accelerator to deliver operands directly into the tile's private L2 cache through a custom arbiter. RTL simulations show that this organization reduces inter-tile communication overhead and improves performance over the original multi-tile integration.
 \item A collaboration between the Barcelona Supercomputing Center and UC Santa Barbara to improve OpenPiton as a research platform for accelerator integration, with a particular focus on supporting future TMU prototypes in many-core RISC-V systems.
 \end{itemize}
 

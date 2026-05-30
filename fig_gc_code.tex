@@ -19,6 +19,6 @@ void spmm(row_ptrs: mref<? x idx>, // adj matrix CSR pointers
         out_vals[mtx_row_idx,emb_col_idx] += mtx_nnz_val * emb_val; }}}}
     \end{lstlisting}
     \vspace{-1em}
-    \caption[Pseudocode of graph convolution.]{Pseudocode of the SpMM graph convolution in \Cref{fig:gnn-lookup}. The outer loop goes through the rows of the sparse adjacency matrix, which are the graph's nodes. The middle loop goes through all nonzeros in a row, which are the adjacent nodes of that node. The inner loop goes through the embedding elements associated with that adjacent node. The inner loop is generally vectorized, as discussed later.} %This operation is similar to CSR sparse-dense matrix multiplication~\cite{spmm2014aktulga}, although embedding vectors are not rescaled by the matrix values.}
+    \caption[Pseudocode of graph convolution.]{Pseudocode of the SpMM graph convolution in \Cref{fig:gnn-lookup}. The outer loop goes through the rows of the sparse adjacency matrix, which are the graph's nodes. The middle loop goes through all nonzeros in a row, which are the adjacent nodes of that node. The inner loop goes through the embedding elements associated with that adjacent node. The inner loop is generally vectorized, as discussed later.} %This operation is similar to CSR sparse-dense matrix multiplication~\cite{aktulga2014ipdps}, although embedding vectors are not rescaled by the matrix values.}
     \label{fig:gc-code}
 \end{figure}
