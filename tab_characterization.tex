@@ -1,7 +1,7 @@
 \begin{table}[]
     \centering
     \footnotesize
-    \caption[Characterization of some popular embedding operations.]{Characterization of the embedding operations in \Cref{sec:characterization-and-implications}. The compute-per-lookup ratio captures code complexity. The memory footprint defines storage requirements for all embedding vectors. The temporal locality proxies cache efficiency through the Cumulative Distribution Function ($CDF$) of the vector reuse distance. The spatial locality proxies prefetcher efficiency through the number of embedding elements in each vector.}
+    \caption[Characterization of some popular embedding operations.]{Characterization of the embedding operations in \Cref{sec:embedding-workload-characterization}. The compute-per-lookup ratio captures code complexity. The memory footprint defines storage requirements for all embedding vectors. The temporal locality proxies cache efficiency through the Cumulative Distribution Function ($CDF$) of the vector reuse distance. The spatial locality proxies prefetcher efficiency through the number of embedding elements in each vector.}
     \resizebox{\columnwidth}{!}{%
     \begin{tabular}{clccccc}
         \toprule
@@ -12,7 +12,7 @@
             \makecell[c]{\textbf{Temporal locality} \\ \textbf{(reuse distance CDF)}} &
             \makecell[c]{\textbf{Spatial locality} \\ \textbf{(vector dim.)}}\\
         \toprule
-            \makecell[c]{SpMM \\(GNNs)} &% \\ (\Cref{sec:characterization-and-implications-graph-learning})} &
+            \makecell[c]{SpMM \\(GNNs)} &% \\ (\Cref{sec:embedding-characterization-graph-learning})} &
             \makecell[l]{$\forall$ vertex in graph\\
                         \hspace{0.5em}$\forall$ neighbor of vertex\\
                             \hspace{1em}\textbf{lookup} vector\\
@@ -23,7 +23,7 @@
             \vcentered{\includegraphics[width=.3\linewidth]{img_cdf_gnn.pdf}} &
             8-349\\ 
         \hline
-            \makecell[c]{MP} &% \\ (\Cref{sec:characterization-and-implications-graph-learning})} &
+            \makecell[c]{MP} &% \\ (\Cref{sec:embedding-characterization-graph-learning})} &
             \makecell[l]{$\forall$ vertex in graph\\
                         \hspace{0.5em}\textbf{lookup} vertex vector\\
                         \hspace{0.5em}$\forall$ neighbor of vertex\\
@@ -36,7 +36,7 @@
             \vcentered{\includegraphics[width=.3\linewidth]{img_cdf_mp.pdf}} &
             128\\
         \hline
-            \makecell[c]{KGs} &% \\ (\Cref{sec:characterization-and-implications-graph-learning})} &
+            \makecell[c]{KGs} &% \\ (\Cref{sec:embedding-characterization-graph-learning})} &
             \makecell[l]{$\forall$ sample in batch\\
                             \hspace{0.5em}\textbf{lookup} vector\\
                             \hspace{0.5em}\textbf{compute} h-r-l norm} &
@@ -45,7 +45,7 @@
             \vcentered{\includegraphics[width=.3\linewidth]{img_cdf_kg.pdf}} &
             512\\
         \hline
-            \makecell[c]{EB \\ (DLRMs)} &% \\ (\Cref{sec:characterization-and-implications-dlrms})} &
+            \makecell[c]{EB \\ (DLRMs)} &% \\ (\Cref{sec:embedding-characterization-dlrms})} &
             \makecell[l]{$\forall$ segment in batch\\
                             \hspace{0.5em}$\forall$ category in segment\\
                                 \hspace{1.0em}\textbf{lookup} vector\\
@@ -55,7 +55,7 @@
             \vcentered{\includegraphics[width=.3\linewidth]{img_cdf_dlrm.pdf}} &
             32-256\\
         \hline
-            \makecell[c]{SpAttn \\ (LLMs)} &% \\ (\Cref{sec:characterization-and-implications-llms})} &
+            \makecell[c]{SpAttn \\ (LLMs)} &% \\ (\Cref{sec:embedding-characterization-llms})} &
             \makecell[l]{$\forall$ block in Q input\\
                         \hspace{0.5em}$\forall$ block in K input\\
                             \hspace{1.0em}$\forall$ token in K block\\

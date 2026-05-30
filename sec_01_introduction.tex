@@ -1,6 +1,6 @@
 \chapter{Introduction} \label{sec:introduction}
 
-\section{Motivation}
+\section{Motivation} \label{sec:introduction-motivation}
 
 Many of today’s scientific and machine learning models---including billion-dollar recommendation models and large-scale scientific solvers and simulators---are inherently sparse~\cite{gupta2020hpca,gupta2020isca,williams2007sc}. Yet modern datacenters and supercomputers are optimized for dense computation. This fundamental mismatch calls for architectures and systems that can execute sparse workloads efficiently.
 
@@ -16,25 +16,25 @@ Decoupled Access--Execute (DAE) architectures~\cite{smith1982isca} offer a promi
 
 Motivated by this potential, hyperscalers have begun adopting DAE-like designs to accelerate irregular memory accesses in recommendation models~\cite{jouppi2023isca,firoozshahian2023isca}. Prior work has similarly shown that DAE architectures can accelerate irregular memory accesses in scientific workloads~\cite{yang2021isca,orenesvera2022isca,barredo2021sc}. However, existing DAE-like systems cover only part of this design space. Some target narrow production lookup patterns, while others support broader sparse linear-algebra streams but primarily pair access offload with scalar execution and expose a programming model that remains visible to the user. As a result, it remains unclear how to build a DAE system that simultaneously supports general sparse traversal and coordinate merging, preserves the throughput of modern vector execution, and hides DAE programming complexity from end users. This thesis addresses this gap.
 
-\section{Objectives}
+\section{Objectives} \label{sec:introduction-objectives}
 
 The primary goal of this thesis is to overcome the fundamental challenges of general sparse tensor algebra and enable its efficient execution at scale. To achieve this goal, we propose a hardware--software co-design based on a DAE architecture that spans both processor microarchitecture and the compiler stack. Unlike other solutions in the literature, we aim to design a DAE system that can efficiently accelerate a broad range of sparse and dense tensor algebra operations. We identify the following specific research objectives:
 
 \begin{itemize}
-    \item \textbf{Understand the microarchitectural implications of sparsity:} To design efficient hardware, we must first quantify how irregular control flow and memory access impact the performance of sparse tensor operations in scientific and machine learning workloads. Although it is well known that sparse kernels such as sparse matrix-vector multiplication perform poorly on traditional architectures~\cite{lin2010design,bell2009implementing,sadi2019micro,fowers2014fccm,alappat2022ccpe,grigoras2015fccm,umuroglu2014energy,williams2007sc,nurvitadhi2015sparse}, our objective is to generalize this understanding to a broader class of sparse tensor algebra operations in different domains, each with distinct characteristics and performance challenges, and to delve deeper into the fundamental causes of their inefficiency. By characterizing how these workloads stress modern processors, we establish a detailed understanding of why existing architectures fall short and what requirements future designs must satisfy to scale effectively.
+    \item \textbf{Characterize the microarchitectural implications of sparsity:} To design efficient hardware, we must first quantify how irregular control flow and memory access impact the performance of sparse tensor operations in scientific and machine learning workloads. Although it is well known that sparse kernels such as sparse matrix-vector multiplication perform poorly on traditional architectures~\cite{lin2010design,bell2009implementing,sadi2019micro,fowers2014fccm,alappat2022ccpe,grigoras2015fccm,umuroglu2014energy,williams2007sc,nurvitadhi2015sparse}, our objective is to generalize this understanding to a broader class of sparse tensor algebra operations in different domains, each with distinct characteristics and performance challenges, and to delve deeper into the fundamental causes of their inefficiency. By characterizing how these workloads stress modern processors, we establish a detailed understanding of why existing architectures fall short and what requirements future designs must satisfy to scale effectively.
 
-    \item \textbf{Design an efficient DAE architecture for sparse tensor algebra:} Building on this analysis, we aim to develop a DAE architecture capable of overcoming all the identified bottlenecks. Our objective is to design a general and scalable solution that accelerates a broad class of sparse tensor algebra workloads while preserving the throughput of modern vector execution and outperforming traditional CPUs and GPUs in both raw performance and performance per watt.
+    \item \textbf{Design an efficient vector-friendly DAE architecture for sparse tensor algebra:} Building on this analysis, we aim to develop a DAE architecture capable of overcoming all the identified bottlenecks. Our objective is to design a general and scalable solution that accelerates a broad class of sparse tensor algebra workloads while preserving the throughput of modern vector execution and outperforming traditional CPUs and GPUs in both raw performance and performance per watt.
 
-    \item \textbf{Abstract the complexity of DAE programs from the end user:} To facilitate widespread adoption of the proposed architecture, we aim to hide the complexity of the DAE programming model from end users. In scientific computing, this complexity can often be hidden behind small hand-written libraries, such as DAE implementations of BLAS-like routines. This approach, however, does not scale to machine learning models. Modern machine learning compilers explore a wide range of formats, precisions, optimizations, and fusion opportunities, making it impractical to hand-write DAE kernels for every variant. Therefore, to fully unlock the benefits of the proposed architecture, we aim to design a generic compiler stack that lowers sparse machine learning operations to DAE code while integrating with frameworks such as PyTorch and TensorFlow~\cite{paszke2019neurips,abadi2015tensorflow}.
+    \item \textbf{Hide DAE programming complexity from end users:} To facilitate widespread adoption of the proposed architecture, we aim to hide the complexity of the DAE programming model from end users. In scientific computing, this complexity can often be hidden behind small hand-written libraries, such as DAE implementations of BLAS-like routines. This approach, however, does not scale to machine learning models. Modern machine learning compilers explore a wide range of formats, precisions, optimizations, and fusion opportunities, making it impractical to hand-write DAE kernels for every variant. Therefore, to fully unlock the benefits of the proposed architecture, we aim to design a generic compiler stack that lowers sparse machine learning operations to DAE code while integrating with frameworks such as PyTorch and TensorFlow~\cite{paszke2019neurips,abadi2015tensorflow}.
 \end{itemize}
 
-\section{Contributions}
+\section{Contributions} \label{sec:introduction-contributions}
 
 This thesis addresses these research objectives through the following contributions.
 
-\subsection{Performance Analysis of Sparse Workloads}
+\subsection{Performance Characterization of Sparse Workloads} \label{sec:introduction-performance-characterization}
 
-The first contribution of this thesis is a comprehensive analysis of sparse tensor algebra operations across scientific and machine learning workloads. In \Cref{sec:architectural-implications-of-sparsity}, we show that irregular tensor traversal and merging are fundamental bottlenecks in traditional architectures. We first benchmark off-the-shelf CPUs and GPUs and demonstrate that irregular memory accesses and control flow can stall computation in several sparse tensor algebra workloads for up to 99\% of the time. We then characterize representative algorithms and inputs, demonstrating how characteristics such as spatio-temporal locality relate to these bottlenecks. Finally, we model the scaling of performance, power, and area to demonstrate that scaling up and out traditional compute cores is not a viable path toward efficient sparse tensor algebra.
+The first contribution of this thesis is a comprehensive analysis of sparse tensor algebra operations across scientific and machine learning workloads. In \Cref{sec:architectural-implications}, we show that irregular tensor traversal and merging are fundamental bottlenecks in traditional architectures. We first benchmark off-the-shelf CPUs and GPUs and demonstrate that irregular memory accesses and control flow can stall computation in several sparse tensor algebra workloads for up to 99\% of the time. We then characterize representative algorithms and inputs, demonstrating how characteristics such as spatio-temporal locality relate to these bottlenecks. Finally, we model the scaling of performance, power, and area to demonstrate that scaling up and out traditional compute cores is not a viable path toward efficient sparse tensor algebra.
 
 This contribution led to the following publications:
 \begin{itemize}
@@ -42,9 +42,9 @@ This contribution led to the following publications:
 \item \textbf{Marco Siracusa}, Miquel Moretó, Adrià Armejach. Accelerating Graph Machine Learning with Decoupled Memory-Access--Execute Architectures. \textit{Under submission}.
 \end{itemize}
 
-\subsection{The Tensor Marshaling Unit}
+\subsection{The Tensor Marshaling Unit} \label{sec:introduction-tmu}
 
-The second contribution is the \emph{Tensor Marshaling Unit} (TMU), a specialized hardware unit that offloads and decouples tensor traversal and merging from the compute core, enabling scalable execution. Unlike prior DAE designs, the TMU (1)~supports a broad class of sparse and dense tensor algebra expressions, and (2)~integrates seamlessly with modern vector units to exploit structured and unstructured parallelism. In \Cref{sec:the-tmu}, we present the TMU architecture, its integration into a multicore DAE processor composed of TMUs and CPUs, and a detailed evaluation of performance, power, and area. The resulting DAE processor outperforms traditional CPUs by up to an order of magnitude and GPUs by up to 6$\times$ in both performance and performance per watt.
+The second contribution is the \emph{Tensor Marshaling Unit} (TMU), a specialized hardware unit that offloads and decouples tensor traversal and merging from the compute core, enabling scalable execution. Unlike prior DAE designs, the TMU (1)~supports a broad class of sparse and dense tensor algebra expressions, and (2)~integrates seamlessly with modern vector units to exploit structured and unstructured parallelism. In \Cref{sec:tmu}, we present the TMU architecture, its integration into a multicore DAE processor composed of TMUs and CPUs, and a detailed evaluation of performance, power, and area. The resulting DAE processor outperforms traditional CPUs by up to an order of magnitude and GPUs by up to 6$\times$ in both performance and performance per watt.
 
 This contribution led to the following publication:
 \begin{itemize}
@@ -55,7 +55,7 @@ and the following patent:
     \item \textbf{Marco Siracusa}, Joshua Randall, Douglas James Joseph, Miquel Moretó Planas, Adrià Armejach Sanosa. March 6, 2025. \textit{Data structure marshalling unit}. US 20250077499A1. Barcelona Supercomputing Center; Arm Ltd.~\cite{siracusa2025patent}.
 \end{itemize}
 
-\subsection{The Ember Compiler}
+\subsection{The Ember Compiler} \label{sec:introduction-ember}
 
 The third contribution is the \emph{Ember compiler}, a generic compiler that lowers sparse machine learning operations to optimized DAE code. Ember is implemented in MLIR, enabling integration with PyTorch through torch-mlir and with TensorFlow through its native MLIR compiler stack. In \Cref{sec:dae-compilation}, we first show why manually writing and optimizing DAE programs for machine learning workloads is challenging. We then present Ember’s intermediate representations and compilation strategies, which are designed for automated DAE optimization and integrate tightly with modern tensor compilers. Finally, we demonstrate that Ember achieves performance comparable to hand-optimized implementations, unlocking the TMU’s potential without imposing additional programmability burden on users.
 
@@ -64,14 +64,14 @@ This contribution led to the following publication:
     \item \textbf{Marco Siracusa}, Olivia Hsu, Víctor Soria-Pardos, Joshua Randall, Arnaud Grasset, Eric Biscondi, Doug Joseph, Randy Allen, Fredrik Kjolstad, Miquel Moretó Planas, Adrià Armejach. 2026. \textit{Ember: A Compiler for Embedding Operations on Decoupled Access--Execute Architectures}. In Proceedings of the \textit{24th Annual ACM/IEEE International Symposium on Code Generation and Optimization} (CGO '26)~\cite{siracusa2026cgo}.
 \end{itemize}
 
-\section{Thesis Structure}
+\section{Thesis Structure} \label{sec:introduction-structure}
 
 The remainder of this thesis is organized as follows:
 \begin{itemize}
-\item \Cref{sec:background-and-motivation} provides background on sparse tensor algebra and its role in scientific and machine learning workloads.
-\item \Cref{sec:related_work} reviews prior hardware and software approaches for sparse tensor algebra and motivates the need for new DAE systems such as the TMU--CPU architecture proposed in this thesis.
-\item \Cref{sec:architectural-implications-of-sparsity} presents the first contribution: a quantitative characterization of sparse workloads and the architectural insights that guide our co-design.
-\item \Cref{sec:the-tmu} presents the Tensor Marshaling Unit, its integration into a DAE multicore processor, and a comprehensive evaluation.
+\item \Cref{sec:background} provides background on sparse tensor algebra and its role in scientific and machine learning workloads.
+\item \Cref{sec:related-work} reviews prior hardware and software approaches for sparse tensor algebra and motivates the need for new DAE systems such as the TMU--CPU architecture proposed in this thesis.
+\item \Cref{sec:architectural-implications} presents the first contribution: a quantitative characterization of sparse workloads and the architectural insights that guide our co-design.
+\item \Cref{sec:tmu} presents the Tensor Marshaling Unit, its integration into a DAE multicore processor, and a comprehensive evaluation.
 \item \Cref{sec:dae-compilation} presents the Ember compiler, the challenges of decoupled execution, and the corresponding compilation techniques and evaluation.
 \item \Cref{sec:conclusions} summarizes the key findings of this thesis.
 \item \Cref{sec:future-work} outlines promising directions for future research.
