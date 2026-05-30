@@ -1,22 +1,24 @@
 \chapter{Conclusions} \label{sec:conclusions}
 
-This chapter summarizes the contributions of this thesis and its impact on the research community, including papers and patents, awards, spinoff projects, and collaborations.
+This chapter summarizes the main contributions of this thesis and the research activities that grew out of them, including publications, patents, awards, follow-on projects, and collaborations.
 
 \section{Summary of Key Contributions}
-In this thesis, we proposed a hardware--software co-design for efficient sparse tensor algebra. The main contributions are summarized as follows:
+This thesis argues that efficient sparse tensor algebra requires treating irregular tensor traversal and coordinate merging as first-class architectural problems. Rather than attempting to scale conventional cores or relying on fixed-function accelerators, this work proposes a hardware--software co-design based on decoupled access--execute (DAE) execution. The main contributions are summarized as follows:
 \begin{itemize}
-    \item In \Cref{sec:architectural-implications-of-sparsity}, we first demonstrated that \emph{sparse tensor traversal} and \emph{sparse tensor merging} constitute the two primary bottlenecks of sparse tensor algebra on traditional architectures. Specifically, we showed that existing systems lack sufficient memory-level parallelism (MLP) to handle the irregular memory accesses generated during sparse tensor traversal, and that speculative mechanisms tuned for dense workloads are ineffective for the irregular control-flow patterns required by sparse tensor merging. We further showed that increasing MLP on conventional architectures---for example, by scaling the reorder buffer, load--store queues, or miss-status handling registers---yields diminishing performance returns while incurring exponential growth in area and power. Finally, we developed an analytical model demonstrating that the level of MLP required to sustain full-core throughput is fundamentally infeasible on architectures that tightly couple memory access and computation within the same compute unit.
+    \item In \Cref{sec:architectural-implications-of-sparsity}, we showed that \emph{sparse tensor traversal} and \emph{sparse tensor merging} are the two primary bottlenecks of sparse tensor algebra on traditional architectures. Sparse tensor traversal generates irregular memory accesses that require substantially more memory-level parallelism (MLP) than conventional cores can efficiently sustain. Sparse tensor merging, in turn, introduces irregular control flow that defeats speculative mechanisms tuned for dense and regular workloads. We further showed that scaling conventional structures such as reorder buffers, load--store queues, and miss-status handling registers yields diminishing performance returns while incurring steep area and power costs. Finally, we developed an analytical model showing that the MLP required to sustain full-core throughput is fundamentally impractical when memory access and computation remain tightly coupled within the same compute unit.
     
-    \item In \Cref{sec:the-tmu}, we demonstrated that \emph{decoupling} sparse tensor traversal and merging from computation, and offloading them to a specialized unit such as the Tensor Marshaling Unit (TMU), enables efficient scaling of these operations and significantly improves performance and efficiency. Owing to its multidimensional design, the TMU can perform parallel data loading and merging for all sparse tensor algebra operations while fully utilizing the SIMD capabilities of the compute core. For machine learning workloads, the TMU efficiently performs high-MLP embedding lookups; for scientific workloads, which primarily require scalar lookups or merges, it efficiently packs scalars into vector operands for the compute core. As a result, a TMU--CPU Decoupled Access--Execute (DAE) processor can outperform both traditional CPUs and GPUs in performance and energy efficiency across scientific and machine learning applications.
+    \item In \Cref{sec:the-tmu}, we introduced the \emph{Tensor Marshaling Unit} (TMU), a near-core access unit that decouples tensor traversal, coordinate merging, and data marshaling from computation. The TMU exposes MLP outside the core, performs sparse coordinate merging in specialized hardware, and marshals scalar, vector, and predicate operands into a form that preserves the throughput of modern SIMD execution. For scientific sparse tensor algebra, the TMU packs irregular scalar traversals and merges into SIMD-friendly operand streams. For machine learning workloads, it efficiently performs high-MLP embedding lookups. Across these domains, the resulting TMU--CPU DAE processor improves both performance and energy efficiency over traditional CPUs and GPUs.
     
-    \item \Cref{sec:dae-compilation} presented the programmability challenges inherent to decoupling tensor traversal and merging from computation, and introduced the \emph{Ember} compiler as a solution. Ember employs multiple intermediate representations (IRs) designed specifically for DAE compilation. Our low-level IR, the Decoupled Lookup--Compute (DLC) IR, abstracts general DAE programs into access code for the access unit, compute code for the compute unit, and marshaling code for (de)serializing data between them. Since such an abstraction cannot optimize across the access and execute units once decoupled, we introduced a higher-level IR, the Structured Lookup--Compute (SLC) IR, which wraps access, execute, and marshaling code within a structured loop hierarchy. This preserves both data flow and control flow, enabling global DAE optimizations, code motion across units, and marshaling refinements. Using this IR stack, Ember can generate highly optimized DAE code from PyTorch and TensorFlow, achieving performance on par with hand-optimized implementations.
+    \item In \Cref{sec:dae-compilation}, we addressed the programmability challenge introduced by DAE execution with the \emph{Ember} compiler. Ember lowers sparse machine learning operations to optimized DAE code and is implemented in MLIR, enabling integration with PyTorch through torch-mlir and with TensorFlow through its native MLIR compiler stack. The low-level Decoupled Lookup--Compute (DLC) IR represents access code, compute code, and queue-based marshaling explicitly. Because this representation is too decoupled for global optimization, Ember introduces the Structured Lookup--Compute (SLC) IR, which preserves structured control flow and data flow while exposing access streams, compute callbacks, and stream-to-value uses. This enables DAE-specific optimizations such as vectorization, embedding buffering, queue alignment, and model-specific marshaling refinements before lowering to target-specific TMU--CPU code. Using this IR stack, Ember generates optimized DAE code with performance comparable to hand-written implementations.
 \end{itemize}
+
+Taken together, these contributions show that sparse tensor algebra can be accelerated without abandoning general-purpose computation. By moving irregular traversal and merging into a programmable access unit, preserving vector execution for arithmetic, and automating the mapping through a compiler stack, this thesis demonstrates a practical path toward efficient and programmable sparse computation.
 
 \section{Research Output and Awards}
 
 \subsection{Papers and Patents}
 
-This thesis has produced the following research outputs:
+The contributions of this thesis led to the following research outputs:
 \begin{itemize}
 \item The architectural analysis of sparse tensor algebra for scientific computation presented in \Cref{sec:architectural-implications-of-sparsity-scientific-computing} formed the basis of SpChar, published in the \textit{Journal of Parallel and Distributed Computing}~\cite{spchar2024jpdc}.
 \item The architectural analysis of sparse tensor algebra for machine learning presented in \Cref{sec:architectural-implications-of-sparsity-in-machine-learning} is currently under submission.
@@ -27,18 +29,18 @@ This thesis has produced the following research outputs:
 
 \subsection{Awards}
 
-Through this work, Marco received the following awards:
+This work was recognized through the following awards:
 \begin{itemize}
-\item 2025 Machine Learning and Systems Rising Star Award by MLCommons.
-\item A scholarship from the government of Catalonia (AGAUR FI grant).
+\item 2025 Machine Learning and Systems Rising Star Award by MLCommons~\cite{mlcommons2025risingstars}.
+\item A scholarship from the Government of Catalonia (AGAUR FI grant)~\cite{agaurPhdGrants}.
 \end{itemize}
 
 \subsection{Research Spinoffs}
-This work also catalyzed the following projects:
+Beyond the thesis contributions themselves, this work catalyzed several follow-on projects:
 \begin{itemize}
-\item Xicu Mari’s master's thesis, which proposes the first RTL implementation and integration of a Tensor Marshaling Unit (TMU) in a System on Chip. The obtained results demonstrated the feasibility of the TMU in a real SoC and established the first milestone of a larger effort toward enabling the TMU in production systems.
-\item A collaboration between the Barcelona Supercomputing Center and UC Santa Barbara to integrate the TMU into an OpenPiton-based SoC with the CVA6 RISC-V core, and to propose optimizations for the OpenPiton framework.
-\item Diego Gorfini’s master's thesis, which optimizes the integration of the TMU in BSC cores.
+\item Francisco (Xicu) Marí Prats's master's thesis, \textit{Integrating the Tensor Marshaling Unit for Sparse Tensor Algebra with a RISC-V Processor}, presented the first RTL implementation and SoC integration of the Tensor Marshaling Unit (TMU)~\cite{mari2025tmuintegration}. The prototype integrated the TMU with a CVA6 RISC-V core in an OpenPiton-based system, demonstrated the feasibility of the TMU in a real SoC, and established the first milestone of a larger effort toward enabling the TMU in production systems.
+\item Diego Gorfini's master's thesis builds on Xicu Marí Prats's first TMU SoC prototype by improving the communication path between the core and the TMU~\cite{mari2026cohort}. This work integrates the decoupled SpMV access unit with Cohort's coherent shared-memory queues, avoiding memory-mapped I/O and ISA extensions. It also introduces a hybrid tile organization that co-locates the core, Cohort, and the TMU, allowing the accelerator to deliver operands directly into the tile's private L2 cache through a custom arbiter. RTL simulations show that this organization reduces inter-tile communication overhead and improves performance over the original multi-tile integration.
+\item A collaboration between the Barcelona Supercomputing Center and UC Santa Barbara to improve OpenPiton as a research platform for accelerator integration, with a particular focus on supporting future TMU prototypes in many-core RISC-V systems.
 \end{itemize}
 
 \subsection{Visiting Research Appointments and Other Contributions}

@@ -25,22 +25,22 @@ void eb(idxs, ptrs, vals, out){
 
     \begin{minipage}{\columnwidth}
     \begin{lstlisting}[xleftmargin=8pt]
- tu b_tr=loop_tr(0, num_batches, 1) // iterate thru batch
+ tr b_tr=loop_tr(0, num_batches, 1) // iterate thru batch
  str beg_ptr=b_tr.mem_str(ptrs, b_tr.ite) // load segment beg ptr
  str end_pos=b_tr.alu_str('+', b_tr.ite, 1) // compute next ptr pos
  str end_ptr=b_tr.mem_str(ptrs, end_pos) // load segment end ptr
 
- tu s_tr=loop_tr(beg_ptr, end_ptr, 1) // iterate thru segment
+ tr s_tr=loop_tr(beg_ptr, end_ptr, 1) // iterate thru segment
  str emb_idx=s_tr.mem_str(s_tr, idxs, s_tr.ite) // load emb idx
  str emb_beg=s_tr.alu_str(s_tr, '*', emb_idx, emb_len) // emb addr
 
- tu e_tr=loop_tr(0, emb_len, 1) // iterate thru emb vec
+ tr e_tr=loop_tr(0, emb_len, 1) // iterate thru emb vec
  str emb_pos=alu_str('+', emb_beg, e_tr.ite) // element addr
  str emb_val=mem_str(vals, emb_pos) // load emb element
 
- push_op(b_tr.ite, e_tr, ite) // push batch position
- push_op(e_tr.ite, e_tr, ite) // push emb el position
- push_op(emb_val, e_tr, ite) // push emb el value
+ enq_op(b_tr.ite, e_tr, ite) // push batch position
+ enq_op(e_tr.ite, e_tr, ite) // push emb el position
+ enq_op(emb_val, e_tr, ite) // push emb el value
  callback(e_tr, ite) //trigger call on every emb iter
     \end{lstlisting}
     \vspace{-0.5em}

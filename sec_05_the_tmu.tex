@@ -7,19 +7,19 @@
   \label{fig:engine_overview}
 \end{figure}
 
-We overcome the challenges discussed above by offloading critical tensor traversal and merging operations to a specialized unit, which we call the Tensor Marshaling Unit (TMU). This chapter introduces the TMU, its instruction set, its use in accelerating sparse tensor algebra operations, its microarchitecture, and a comprehensive evaluation of its performance and power efficiency.
+We address the bottlenecks identified in \Cref{sec:architectural-implications-of-sparsity} with the Tensor Marshaling Unit (TMU), a near-core access unit that offloads sparse traversal, coordinate merging, and data marshaling while leaving arithmetic on the CPU vector unit. This chapter first introduces the TMU programming model and microarchitecture, then evaluates its performance and efficiency on scientific sparse tensor algebra and machine learning embedding workloads. Finally, it explores how the same decoupling principle enables more specialized DAE organizations for low-reuse embedding operations.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{TMU Architecture} \label{sec:tmu-architecture} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-This section introduces the TMU, its instruction set, and its usage to accelerate sparse tensor algebra operations.
+This section introduces the TMU, its instruction set, and its usage to accelerate sparse tensor algebra operations. The architecture follows directly from the requirements derived in the previous chapter: Traversal Units (TUs) expose memory-level parallelism for irregular scan-and-lookup operations, Traversal Groups (TGs) perform coordinate merging and loop synchronization, the memory arbiter and TU queues track long-latency requests outside the core, and the outQ marshals scalar, vector, and predicate operands into the core so computation can still use standard vector execution.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{TMU Overview} \label{sec:tmu-overview} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\Cref{fig:engine_overview} shows a general-purpose processor that features a TMU per core. Such a system---which decouples memory access and computation into two separate units---is formally defined as a Decoupled Access-Execute (DAE) architecture. Overall, the TMU can be \textcircled{1} programmed to \textcircled{2} traverse and merge tensor operands and \textcircled{3} marshal the aggregated data to the core via a memory-mapped output queue (outQ) that the core can \textcircled{4} process. TMU traversal, merging, and marshaling are programmed with dataflow primitives, whereas the compute code is wrapped in callback functions that the TMU triggers on traversal/merging events.
+\Cref{fig:engine_overview} shows a general-purpose processor that features a TMU per core. Such a system---which decouples memory access and computation into two separate units---is formally defined as a Decoupled Access-Execute (DAE) architecture. Overall, the TMU can be \textcircled{1} programmed to \textcircled{2} traverse and merge tensor operands and \textcircled{3} marshal the aggregated data to the core via a memory-mapped output queue (outQ) that the core can \textcircled{4} process. TMU traversal, merging, and marshaling are programmed with dataflow primitives, whereas the compute code is wrapped in callback functions that the TMU triggers on traversal/merging events. The programming contract is intentionally narrow: the TMU does not execute arbitrary arithmetic, but instead emits an ordered stream of callback IDs and operands. The host core consumes this stream and executes the corresponding callback code, so the TMU preserves the traversal and event order of the original loop nest.
 
 \begin{figure}
 \centering
@@ -53,7 +53,7 @@ For instance, running a two-lane SpMV on the CSR matrix in \Cref{fig:sparse_form
 ri AB ab ri C0 c0 re re ri DE cd re re ri FG de ri H0 f0 re
 \end{verbatim}
 \end{small}
-triggering two accumulations for the first row, none for the second row (since empty), and so on.
+In this notation, \texttt{ri} and \texttt{re} are callback IDs, uppercase letters denote nonzero matrix values, lowercase letters denote dense-vector values, and \texttt{0} marks an inactive lane introduced by padding or masking. This sequence triggers two accumulations for the first row, none for the second row (since empty), and so on.
 
 The remainder of this section illustrates how to program the TMU to run parallel traversal and merging of Einsum expressions.
 
@@ -109,7 +109,7 @@ Boundary conditions can be handled by padding or marshaling the \texttt{msk} str
 \begin{figure}
 \centering
   \includegraphics[width=.8\columnwidth]{img_spkadd_callbacks.pdf}
-  \caption[SpKAdd callback.]{SpKAdd callback. It just reduces all vector elements.}
+  \caption[SpKAdd callback.]{SpKAdd callback. The callback reduces the active vector elements produced by the TMU.}
   \label{fig:spkadd_callbacks}
 \end{figure}
 
@@ -239,10 +239,7 @@ By default, memory requests within a stream are spawned \emph{eager}ly, meaning 
 \subsection{TU Queue Sizing} \label{sec:tu-queue-sizing} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-All TUs of a layer instantiate, at configuration time, the same amount of streams with the same size. However, since nested loops are mapped from left to right, the rightmost layers load and merge more data than the leftmost ones, leading to different storage requirements. To provide flexibility, all TUs within a lane share the same storage and queues are allocated at configuration time using this shared per-lane storage. This permits shorter queues on leftmost TUs while making full utilization of the available storage, even if some TUs within a lane are not used at all.
-Since nested loops are mapped from left to right, the rightmost layers are more utilized than the leftmost ones.
-While each TU implements a finite amount of queues with fixed and equal size, we coalesce and multiplex physical layers to meet the performance demand of each logical layer.
-Queues are sized with an analytical model that allocates space to layers according to the amount of data to load, which can be statically estimated from the number of nnzs per tensor fiber.
+Queue storage is provisioned from shared per-lane storage at configuration time. Although TUs expose queues of fixed width internally, different logical layers require different depths: outer layers mostly produce loop bounds, whereas inner layers issue most memory requests and merges. The TMU therefore allocates shorter queues to lightly used leftmost layers and deeper queues to heavily used rightmost layers, coalescing unused physical storage across TUs in the same lane. An analytical model sizes these queues using statically estimated fiber lengths and nonzero counts.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{System Integration} \label{sec:system-integration} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -254,11 +251,11 @@ As shown in \Cref{fig:engine_overview}, each core in a multicore system features
 \noindent\textbf{Memory subsystem integration:} 
 Like prior general-purpose processor engines, the TMU operates with virtual addresses and uses the host core's address translation hardware (MMU)~\cite{spzip2021isca, walkers, AinsworthJ16, hats, yu2015}. In particular, it queries the L2 TLB, and if a page fault occurs, it interrupts the core so the OS can handle the page fault. Once the missing translation is available, the MMU signals the TMU to retry the memory access.
 
-The TMU operates decoupled from the host core, issuing coherent read-only memory requests (fiber traversals) that do not affect coherence or consistency. TMU produces the outQ that is written (write-only) into the private L2 cache of the host core. While the outQ data may be evicted into shared cache levels, this data is not shared across cores. Therefore, there is no shared read-write data between the TMU and the host core or other cores in the system.
+The TMU operates decoupled from the host core by issuing coherent read-only traversal requests and writing the resulting outQ into the host core's private L2 cache. The outQ is a core-private producer-consumer buffer: the TMU writes it and the host core reads it, but no other core observes or modifies it. Thus, the TMU does not introduce new shared read-write data across cores beyond ordinary coherent cache behavior.
 
 \noindent\textbf{Context switching and exceptions:}
 TMU architectural state must be saved and restored when a thread is context-switched. When the OS deschedules a thread that uses the TMU, it quiesces the TMU, saves its context, and restores it when the thread is rescheduled. 
-On exceptions or syscalls, this is not necessary, as the TMU is not used by the OS; similarly, the FPU state is not saved.
+On exceptions or syscalls that return to the same thread without descheduling it, the OS does not need to save TMU state. If handling the event deschedules the thread, the normal context-switch path quiesces and saves the TMU before another thread uses it.
 The minimum context state that needs to be saved is the initial TMU configuration (e.g., queue types and sizes, \texttt{beg} and \texttt{end} iteration boundaries), the head of each TU \texttt{ite} stream, and some control registers such as the base outQ address and current writing offset. The memory-mapped outQ is private per thread.
 Fortunately, support for efficiently saving large state is already implemented in the Linux kernel via on-demand expansion of per-task context switch buffers. This is used by the new Intel Advanced Matrix eXtensions (AMX)~\cite{amx}, which employ tile registers that already occupy 8KB in current implementations.
 
@@ -266,14 +263,14 @@ Fortunately, support for efficiently saving large state is already implemented i
 \subsection{Step-by-Step Example} \label{sec:step-by-step-example} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\Cref{fig:spmv_example_1} and \ref{fig:spmv_example_2} depict a step-by-step example for SpMV (\Cref{fig:spmv_decomposition}) where the TMU has been programmed using the code in \Cref{fig:spmv_programmability}. The example loads the CSR matrix shown in \Cref{fig:sparse_formats} and assumes a two-lane design.
+\Cref{fig:spmv_example_1} and \Cref{fig:spmv_example_2} depict a step-by-step example for SpMV (\Cref{fig:spmv_decomposition}) where the TMU has been programmed using the code in \Cref{fig:spmv_programmability}. The example loads the CSR matrix shown in \Cref{fig:sparse_formats} and assumes a two-lane design.
 
 The remainder of this chapter demonstrates the performance potential of the TMU for accelerating sparse tensor algebra kernels in scientific and machine learning models.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{The Potential of Accelerating Scientific Computation with the TMU} \label{sec:dae-potential-scientific} %%%%%%%%%%%%%%
+\section{Evaluation on Scientific Sparse Tensor Algebra} \label{sec:dae-potential-scientific} %%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-In this section, we first evaluate TMU performance on scientific sparse tensor algebra kernels with respect to traditional architectures. Then, we provide a sensitivity analysis on TMU storage and SVE vector length. Finally, we compare the TMU to existing scalar engines. The next section evaluates the TMU for accelerating machine learning models.
+This section evaluates the TMU on scientific sparse tensor algebra kernels. We first compare TMU performance against optimized CPU baselines, then analyze sensitivity to TMU storage and SVE vector length, and finally compare against representative prefetching and scalar traversal-engine designs. The next section evaluates the same decoupling principle on machine learning embedding operations.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Experimental Methodology} \label{sec:experimental-methodology-sparse} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -382,11 +379,11 @@ Our evaluation demonstrates that the TMU successfully accelerates tensor travers
 \begin{figure}
     \centering
     \includegraphics[width=.8\columnwidth]{img_imp_single_multi.pdf}
-    \caption[TMU vs. other architectural solutions for accelerating scientific models.]{Speedup of different state-of-the-art solutions with respect to baseline. \emph{IMP} is the baseline plus the IMP prefetcher. \emph{Single-Lane} is the baseline plus a single-lane TMU per core (which proxies scalar vector engines in the literature). \emph{TMU} is the baseline plus full TMUs.}
+    \caption[TMU vs. other architectural solutions for accelerating scientific models.]{Speedup of different state-of-the-art solutions with respect to baseline. \emph{IMP} is the baseline plus the IMP prefetcher. \emph{Single-Lane} is the baseline plus a single-lane TMU per core, which proxies scalar traversal engines in the literature. \emph{TMU} is the baseline plus full TMUs.}
     \label{fig:speedups_wrt_soa}
 \end{figure}
 
-Existing traversal engines integrated into multicore systems are designed for graph analytics~\cite{spzip2021isca, hats}. For this reason, they feature architectures similar to a single TMU lane, but with fewer primitives (i.e., stream types) and no support for parallel data loading or merging, limiting their applicability to simple linear algebra kernels. Two prominent examples are HATS~\cite{hats} and SpZip~\cite{spzip2021isca}: the former exploits locality in graph communities, and the latter implements de(compression) techniques. Both optimizations are orthogonal to TMU operation. Therefore, we evaluate a \emph{Single-Lane} TMU with the same storage as the multi-lane \emph{TMU} employed throughout the evaluation. \Cref{fig:speedups_wrt_soa} shows that \emph{Single-Lane} achieves 1.59$\times$ and 1.50$\times$ geomean speedups on SpMV and SpMSpM, while \emph{TMU} achieves 3.32$\times$ and 2.82$\times$, respectively. This indicates that traversal engines for graph analytics would also benefit from parallel data loading.
+The graph-oriented traversal engines we compare against are integrated into multicore systems and are primarily designed for graph analytics~\cite{spzip2021isca, hats}. They feature architectures similar to a single TMU lane, but with fewer primitives (i.e., stream types) and no support for parallel data loading or merging, limiting their applicability to simple linear algebra kernels. Two prominent examples are HATS~\cite{hats} and SpZip~\cite{spzip2021isca}: the former exploits locality in graph communities, and the latter implements de(compression) techniques. Both optimizations are orthogonal to TMU operation. Therefore, we evaluate a \emph{Single-Lane} TMU with the same storage as the multi-lane \emph{TMU} employed throughout the evaluation. \Cref{fig:speedups_wrt_soa} shows that \emph{Single-Lane} achieves 1.59$\times$ and 1.50$\times$ geomean speedups on SpMV and SpMSpM, while \emph{TMU} achieves 3.32$\times$ and 2.82$\times$, respectively. This indicates that graph-oriented traversal engines would also benefit from parallel data loading.
 
 We also evaluate the Indirect Memory Prefetcher (IMP)~\cite{yu2015}, configured as recommended by the paper's authors, including the use of virtual addresses to prefetch across memory page boundaries. IMP performs well on SpMV, with an average speedup of 1.25$\times$, but fails to deliver performance improvements on SpMSpM due to thrashing of partial results. Overall, \emph{Single-Lane} and \emph{TMU} obtain better performance because they unlock more MLP while always fetching useful data.
 
@@ -399,10 +396,10 @@ The area cost of the TMU is $0.0704$mm$^2$, where each lane occupies just $0.008
 Moreover, the entire sparse engine is $0.5\times$ smaller than a 32 KB, 8-way L1 data cache in 22nm technology.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{The Potential of Accelerating Machine Learning Models with the TMU} \label{sec:dae-potential-machine-learning} %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Evaluation on Machine Learning Embedding Operations} \label{sec:dae-potential-machine-learning} %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-This section discusses how the TMU can accelerate the embedding operations in \Cref{sec:sparsity-in-machine-learning}.
+This section evaluates the TMU as a near-core access unit for the embedding operations introduced in \Cref{sec:sparsity-in-machine-learning}. We first show that decoupling lookup from computation improves memory-level parallelism and bandwidth utilization, then compare the resulting DAE processor against CPUs and GPUs, and finally explore specialized DAE organizations that simplify or relocate the compute side for embedding-heavy workloads.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Experimental Methodology} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -490,7 +487,11 @@ This section discusses how the TMU can accelerate the embedding operations in \C
 
 The main advantage of DAE designs is that, by decoupling embedding lookup and computation into two distinct units, these units can be specialized and optimized independently.
 
-For instance, as the TMU implements all the logic to traverse and load tensor operands using specialized dataflow hardware, it can issue memory requests with higher throughput and efficiency than the core. Moreover, because the TMU can run at a lower frequency, it can track 8$\times$ more outstanding requests without timing issues and with low power consumption (less than 2\% overhead, as in \Cref{sec:dae-potential-scientific}). \Cref{fig:bw-per-miss} demonstrates that the TMU can track 82\% of the outstanding memory requests required to achieve full throughput (one request per cycle), whereas the CPU can track only 16\%. Hence, as shown in \Cref{fig:ppw-scatter-plot} and \ref{fig:ppw-dae-improvement}, the TMU achieves 5.7$\times$ and 5.6$\times$ higher requests/s and requests/s/W than traditional cores, 5.2$\times$ and 6.3$\times$ better than doubling the core resources for outstanding requests (\Cref{fig:dse-cpu}). In this way, as shown in \Cref{fig:hbm-dae-improvement}, the TMU utilizes 4$\times$---8$\times$ more memory bandwidth than a traditional core. Hence, as shown in \Cref{fig:bw-scaling}, DAE architectures (1)~achieve higher performance with the same core count, and (2)~require fewer cores to achieve the same performance, achieving higher efficiency.
+For instance, because the TMU implements tensor traversal and loading with specialized dataflow hardware, it can issue memory requests with higher throughput and efficiency than the core. Moreover, because the TMU can run at a lower frequency, it can track 8$\times$ more outstanding requests without timing issues and with low power consumption (less than 2\% overhead, as in \Cref{sec:dae-potential-scientific}). \Cref{fig:bw-per-miss} demonstrates that the TMU can track 82\% of the outstanding memory requests required to achieve full throughput (one request per cycle), whereas the CPU can track only 16\%.
+
+This additional memory-level parallelism translates directly into throughput and energy efficiency. As shown in \Cref{fig:ppw-scatter-plot} and \Cref{fig:ppw-dae-improvement}, the TMU achieves 5.7$\times$ higher requests/s and 5.6$\times$ higher requests/s/W than traditional cores. It also outperforms a core with doubled outstanding-request resources by 5.2$\times$ in requests/s and 6.3$\times$ in requests/s/W (\Cref{fig:dse-cpu}).
+
+Finally, these per-core improvements scale to system-level bandwidth utilization. As shown in \Cref{fig:hbm-dae-improvement}, the TMU uses 4$\times$---8$\times$ more memory bandwidth than a traditional core. Consequently, \Cref{fig:bw-scaling} shows that DAE architectures (1)~achieve higher performance with the same core count, and (2)~require fewer cores to achieve the same performance, improving efficiency.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{DAE Processor vs. CPU} \label{sec:dae-vs-cpu} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -548,7 +549,7 @@ From the core's perspective, offloading embedding lookup allows the core to full
         \label{fig:gpu-ppw}
     \end{subfigure}
     %\vspace{-1em}
-    \caption[Performance and efficiency of DAE processors vs. GPUs on GNNs.]{Performance and efficiency comparison of DAE processors with respect to GPUs on end-to-end GNN models. The leftmost plot (a) shows inference latency of our DAE system and GPU. Groups of bars correspond to inputs. The leftmost bar in each group is the inference latency of the DAE processor with respect to GPU, which is the rightmost bar. Each bar shows the breakdown across embedding operations, DNNs, elementwise operations, and other operations. All operations---including graph convolution and neural networks---are run either on the DAE processor or on the GPU. The rightmost plot shows performance per watt of the DAE processor compared to GPU. Overall, DAE processors can perform embedding operations substantially faster than GPUs, outperforming them on both inference latency and performance/watt.}
+    \caption[Performance and efficiency of DAE processors vs. GPUs on GNNs.]{Performance and efficiency comparison of DAE processors with respect to GPUs on end-to-end GNN models. The leftmost plot (a) shows inference latency of our DAE system and GPU. Groups of bars correspond to inputs. Within each group, the left bar reports DAE processor latency and the right bar reports GPU latency. Each bar shows the breakdown across embedding operations, DNNs, elementwise operations, and other operations. All operations---including graph convolution and neural networks---are run either on the DAE processor or on the GPU. The rightmost plot shows performance per watt of the DAE processor compared to GPU. Overall, DAE processors can perform embedding operations substantially faster than GPUs, outperforming them on both inference latency and performance/watt.}
     \label{fig:gpu-comparison}
 \end{figure}
 %++++++++++++++++++++++++++++++++++++++++
@@ -561,7 +562,7 @@ From the core's perspective, offloading embedding lookup allows the core to full
 \subsection{Specialized DAE Architectures} \label{sec:PNM} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-While the previous section demonstrates the potential of decoupling memory access from computation for optimizing a general-purpose processor, this section explores how that optimization enables more specialized architectures tailored for embedding operations.
+Once embedding lookup is decoupled from computation, the compute side no longer needs to be a large out-of-order core for every workload. Building on the previous section, this section explores how the same decoupling principle enables more specialized architectures tailored for embedding operations.
 
 \subsubsection{Motivation} \label{sec:pnm-motivation}
 
@@ -620,7 +621,7 @@ Our baseline is our high-performance DAE multicore processor, denoted \texttt{da
 
 The \texttt{dae-lm} system includes six PN-HBM devices, each treated as an accelerator with a private address space. The remaining processor components (cache hierarchy and host DAE cores) form the host CPU. We distribute work across PN-HBM devices using row parallelism~\cite{dlrm2022mudigere}, where embedding tables are sharded by rows and mapped across memory stacks. Each device processes its partition independently, and partial results are combined via a \texttt{reduce-scatter} operation, performed on the host CPU while PN-HBM devices execute embedding operations.
 
-As before, we evaluate performance and power using gem5~\cite{lowepower2020gem5} and McPAT~\cite{li2009mcpat} for the host CPU, and Ramulator2.0~\cite{ramulator2016cs} for PN-HBM modeling.
+As before, we evaluate performance and power using gem5~\cite{lowepower2020gem5} and McPAT~\cite{li2009mcpat} for the host CPU, and Ramulator2.0~\cite{ramulator2024cal} for PN-HBM modeling.
 
 \subsubsection{Results}
 
@@ -644,4 +645,4 @@ Overall, \texttt{dae-lh} is preferable for high-reuse workloads, while \texttt{d
 
 \section{Summary}
 
-In this chapter, we have demonstrated that DAE architectures that decouple memory access from computation achieve higher performance and efficiency. However, this optimization requires a more complex programming model and a compiler, as explained in the next chapter.
+This chapter introduced the TMU, a near-core access unit that maps sparse tensor traversal, coordinate merging, and data marshaling to specialized hardware while preserving CPU vector execution for arithmetic. Across scientific sparse tensor algebra workloads, the TMU improves performance by exposing memory-level parallelism, reducing merge overheads, and producing SIMD-friendly operand streams at low area cost. Across machine learning embedding operations, the TMU improves bandwidth utilization and performance per watt, and the same decoupling principle enables more specialized DAE organizations with simpler or near-memory compute cores. The cost of this flexibility is a more complex programming model: users or compilers must describe tensor traversal, merging, callbacks, and outQ construction. The next chapter introduces Ember, a compiler stack that automates this mapping.
