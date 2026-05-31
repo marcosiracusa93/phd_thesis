@@ -1,6 +1,6 @@
 \begin{table}
 \centering
-\caption[Specifications of the simulated DAE multicore processor.]{Specifications of the simulated DAE multicore processor composed of HBM and high-performance Arm-like HPC cores, each featuring a TMU.}
+\caption[Specifications of the simulated TMU multicore processor.]{Specifications of the simulated TMU multicore processor used for the scientific sparse-tensor evaluation. The system combines high-performance Arm-like cores, an HBM-backed memory hierarchy, a mesh interconnect, and one TMU per core. This configuration evaluates the TMU as a near-core access unit attached to otherwise conventional vector cores.}
 %\vspace{-0.3cm}
 %\resizebox{\columnwidth}{!}{%
     \begin{tabular}{@{}ll@{}}
@@ -41,6 +41,6 @@
     \bottomrule
     \end{tabular}
 %}
-\label{table:gem5}
+\label{tab:tmu-system-specs}
 %\vspace{-0.0cm}
 \end{table}

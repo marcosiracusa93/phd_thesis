@@ -1,11 +1,11 @@
 \begin{figure}
     \centering
 
-    \begin{subfigure}{\columnwidth}
+    \begin{subfigure}{0.8\columnwidth}
         \centering
-        \includegraphics[width=\columnwidth]{img_sls_example.pdf}
+        \includegraphics[width=\linewidth]{img_sls_example.pdf}
         \caption{Functional example of the EB function.}
-        \label{fig:sls-example}
+        \label{fig:eb-functional-example}
     \end{subfigure}
     
     \begin{minipage}{\columnwidth}
@@ -20,7 +20,7 @@ void eb(idxs, ptrs, vals, out){
     \end{lstlisting}
     \vspace{-0.5em}
     \subcaption{Traditional imperative code, which also acts as input to Ember.}
-    \label{fig:sls-imperative}
+    \label{fig:eb-imperative-code}
     \end{minipage}
 
     \begin{minipage}{\columnwidth}
@@ -45,14 +45,14 @@ void eb(idxs, ptrs, vals, out){
     \end{lstlisting}
     \vspace{-0.5em}
     \subcaption{DLC dataflow lookup code.}
-    \label{fig:sls-lookup-code}
+    \label{fig:dlc-lookup-code}
     \end{minipage}
     
     \begin{subfigure}{\columnwidth}
         \centering
-        \includegraphics[width=0.9\columnwidth]{img_sls_queue.pdf}
-        \caption{DAE queue content for our EB example.}
-        \label{fig:sls-queue}
+        \includegraphics[width=0.81\columnwidth]{img_sls_queue.pdf}
+        \caption{DLC queue content for the EB example.}
+        \label{fig:dlc-queue-content}
     \end{subfigure}
     
     \begin{minipage}{\columnwidth}
@@ -65,9 +65,9 @@ while(ctrlQ.pop() == (*$e_i$*)){ // while some element
     \end{lstlisting}
     \vspace{-0.5em}
     \subcaption{DLC imperative compute code.}
-    \label{fig:sls-compute-code}
+    \label{fig:dlc-compute-code}
     \end{minipage}
     %\vspace{-0.5em} % Adds vertical spacing between subfigures
-    \caption[DAE graph convolution operation.]{DAE abstraction for the EmbeddingBag (EB) operation.}
-    \label{fig:sls-abstraction}
+    \caption[DLC representation of an EB operation.]{DLC representation of an EB operation. The functional example and imperative code define the source computation, the lookup code traverses batches, segments, and embedding elements with streams, the queues serialize callback tokens and operands, and the compute code dequeues those values to update the output. Overall, DLC separates embedding lookup from accumulation while preserving the callback order of the original loop nest.}
+    \label{fig:dlc-eb-abstraction}
 \end{figure}

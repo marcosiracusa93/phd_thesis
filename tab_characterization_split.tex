@@ -1,7 +1,7 @@
 \begin{table}[]
     \centering
     %\footnotesize
-    \caption[Algorithmic characterization of some popular embedding operations.]{Algorithmic characterization of the embedding operations in \Cref{sec:embedding-workload-characterization}. The compute-per-lookup ratio captures code complexity. Code with low compute-per-lookup ratio performs worse on massively-parallel architectures like GPU that hide embedding lookups with compute instructions.}
+    \caption[Algorithmic characterization of embedding operations.]{Algorithmic characterization of the embedding operations studied in \Cref{sec:embedding-workload-characterization}. The table summarizes each operation's loop hierarchy and its compute-per-lookup ratio, defined as the number of vector compute operations performed per dense embedding-vector lookup. In general, these operations expose little arithmetic work per irregular lookup, limiting the ability of compute-oriented architectures to hide lookup latency.}
     %\resizebox{\columnwidth}{!}{%
     \begin{tabular}{clc}
         \toprule
@@ -58,7 +58,7 @@
 \begin{table}[]
     \centering
     %\footnotesize
-    \caption[Memory characterization of some popular embedding operations.]{Memory characterization of the embedding operations in \Cref{sec:embedding-workload-characterization}. The memory footprint defines storage requirements for all embedding vectors. The temporal locality proxies cache efficiency through the Cumulative Distribution Function ($CDF$) of the vector reuse distance. The spatial locality proxies prefetcher efficiency through the number of embedding elements in each vector.}
+    \caption[Memory characterization of embedding operations.]{Memory characterization of the embedding operations studied in \Cref{sec:embedding-workload-characterization}. The table reports embedding storage requirements, temporal locality measured by the reuse-distance CDF, and spatial locality measured by the number of elements in each embedding vector. Together, these properties determine how effectively caches, prefetchers, and coalescing mechanisms can serve embedding lookups.}
     %\resizebox{\columnwidth}{!}{%
     \begin{tabular}{ccccc}
         \toprule

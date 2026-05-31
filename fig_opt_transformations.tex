@@ -20,7 +20,7 @@ void eb(idxs: mref<? x idx>, offs: mref<? x idx>,
     \end{lstlisting}
     \vspace{-1em}
     \subcaption{Unoptimized code.}
-    \label{fig:opt-none}
+    \label{fig:opt-unoptimized}
     \end{minipage}
 
     \begin{minipage}{\columnwidth}
@@ -37,7 +37,7 @@ void eb(idxs: mref<? x idx>, offs: mref<? x idx>,
     \end{lstlisting}
     \vspace{-1em}
     \subcaption{Vectorized code.}
-    \label{fig:opt-vec}
+    \label{fig:opt-vectorized}
     \end{minipage}
 
     \begin{minipage}{\columnwidth}
@@ -57,7 +57,7 @@ void eb(idxs: mref<? x idx>, offs: mref<? x idx>,
     \end{lstlisting}
     \vspace{-1em}
     \subcaption{Buffered code.}
-    \label{fig:opt-buf}
+    \label{fig:opt-buffered}
     \end{minipage}
 
     \begin{minipage}{\columnwidth}
@@ -77,10 +77,10 @@ void eb(idxs: mref<? x idx>, offs: mref<? x idx>,
     \end{lstlisting}
     \vspace{-1em}
     \subcaption{Queue aligned code.}
-    \label{fig:opt-idx}
+    \label{fig:opt-aligned}
     \end{minipage}
     
     \vspace{-0.8em}
-    \caption[Progressive DAE optimization steps.]{Progressive optimization of the EB SLC IR. Gray means unchanged.}
+    \caption[Progressive SLC optimization steps.]{Progressive optimization of the EB SLC IR. The figure shows the unoptimized SLC program, the vectorized SLCV program, the buffered version that materializes embedding vectors as compound stream values, and the queue-aligned version that regenerates simple indices on the execute side. Gray code is unchanged from the previous version. Overall, each step keeps the program structured while exposing a more efficient queue protocol.}
     \label{fig:opt-transformations}
 \end{figure}

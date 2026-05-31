@@ -5,65 +5,31 @@
     %-------------------- Addition --------------------%
     \begin{subfigure}[t]{0.48\linewidth}
         \centering
-\begin{lstlisting}[]
+\begin{lstlisting}[numbers=none,xleftmargin=0em]
 CSR csr_add(const CSR& A,
-    const CSR& B,
-    CSR& C, // already allocated
-    int m) {
-  C.rowptr.resize(m + 1);
-  C.rowptr[0] = 0;
-  
-  // For each row
+            const CSR& B) {
   for (int i = 0; i < m; ++i) {
     int p = A.rowptr[i];
-    int p_end = A.rowptr[i + 1];
     int q = B.rowptr[i];
-    int q_end = B.rowptr[i + 1];
+    int pe = A.rowptr[i + 1];
+    int qe = B.rowptr[i + 1];
 
-    // Until both rows have values
-    while (p < p_end && q < q_end) {
-      int ca = A.col[p];
-      int cb = B.col[q];
-
-      // Check column indices
-      if (ca == cb) {
-        // If they match, add them
-        // and increment both pointers
-        double v = A.val[p] + B.val[q];
-        C.col.push_back(ca);
-        C.val.push_back(v);
-        ++p; ++q;
-      } else if (ca < cb) {
-        // If first is smaller
-        // push it and increment
-        // its pointer
-        C.col.push_back(ca);
-        C.val.push_back(A.val[p]);
+    while (p < pe || q < qe) {
+      int ca = (p < pe) ? A.col[p] : INF;
+      int cb = (q < qe) ? B.col[q] : INF;
+      if (ca < cb) {
+        emit(ca, A.val[p]);
         ++p;
-      } else {
-        // If first is smaller
-        // push it and increment
-        // its pointer
-        C.col.push_back(cb);
-        C.val.push_back(B.val[q]);
+      } else if (cb < ca) {
+        emit(cb, B.val[q]);
         ++q;
+      } else {
+        emit(ca, A.val[p] + B.val[q]);
+        ++p; ++q;
       }
-    } // end co-iteration
-
-    // Consume all other elements
-    while (p < p_end) {
-      C.col.push_back(A.col[p]);
-      C.val.push_back(A.val[p]);
-      ++p;
     }
-    while (q < q_end) {
-      C.col.push_back(B.col[q]);
-      C.val.push_back(B.val[q]);
-      ++q;
-    }
-
-    C.rowptr[i + 1] = C.col.size();
-  } // end for-each row loop
+    close_row();
+  }
 }
 \end{lstlisting}
         \caption{Elementwise CSR matrix addition.}
@@ -73,55 +39,35 @@ CSR csr_add(const CSR& A,
     %-------------------- Multiplication --------------------%
     \begin{subfigure}[t]{0.48\linewidth}
         \centering
-\begin{lstlisting}[]
+\begin{lstlisting}[numbers=none,xleftmargin=0em]
 CSR csr_mul(const CSR& A,
-    const CSR& B,
-    CSR& C, // already allocated
-    int m) {
-  C.rowptr.resize(m + 1);
-  C.rowptr[0] = 0;
-
-  // For each row
+            const CSR& B) {
   for (int i = 0; i < m; ++i) {
     int p = A.rowptr[i];
-    int p_end = A.rowptr[i + 1];
     int q = B.rowptr[i];
-    int q_end = B.rowptr[i + 1];
+    int pe = A.rowptr[i + 1];
+    int qe = B.rowptr[i + 1];
 
-    // Until both rows have values
-    while (p < p_end && q < q_end) {
+    while (p < pe && q < qe) {
       int ca = A.col[p];
       int cb = B.col[q];
-
-      // Check column indices
-      if (ca == cb) {
-        // If they match, multiply them
-        // and increment both pointers
-        double v = A.val[p] * B.val[q];
-        if (v != 0.0) {
-          C.col.push_back(ca);
-          C.val.push_back(v);
-        }
-        ++p; ++q;
-      } else if (ca < cb) {
-        // If first is smaller,
-        // increment its pointer
+      if (ca < cb) {
         ++p;
-      } else {
-        // If second is smaller,
-        // increment its pointer
+      } else if (cb < ca) {
         ++q;
+      } else {
+        emit(ca, A.val[p] * B.val[q]);
+        ++p; ++q;
       }
-    } // End co-iteration
-
-    C.rowptr[i + 1] = C.col.size();
-  } // End for-each row loop
+    }
+    close_row();
+  }
 }
 \end{lstlisting}
         \caption{Elementwise CSR matrix multiplication.}
         \label{fig:csr-multiplication}
     \end{subfigure}
 
-    \caption[Code for elementwise addition and multiplication of two sparse matrices.]{Code for elementwise addition and multiplication of two CSR matrices.}
+    \caption[CSR elementwise addition and multiplication.]{Pseudocode for elementwise addition and multiplication of two CSR matrices. The helper \texttt{emit} appends one coordinate--value pair to the output row, and \texttt{close\_row} updates the output row pointer. Addition and multiplication differ in their merge semantics, but both rely on data-dependent coordinate comparisons over compressed fibers to decide which inputs advance and which nonzeros are emitted.}
     \label{fig:csr-elementwise}
 \end{figure}

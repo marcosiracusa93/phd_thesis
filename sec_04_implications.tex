@@ -26,7 +26,7 @@ We profile high-performance implementations of these kernels---from the Kokkos l
 \begin{figure}
      \centering
      \includegraphics[width=0.7\columnwidth]{img_roofline_numeric.pdf}
-     \caption[Roofline model of scientific kernels.]{Roofline model of sparse scientific kernels. Different plots correspond to different processors, colors correspond to different kernels, and points correspond to different matrices. Overall, although sparse scientific kernels exhibit widely varying reuse characteristics---and consequently different operational intensities---they substantially underutilize both processors.}
+     \caption[Roofline model of scientific kernels.]{Roofline model of sparse scientific kernels. Different plots correspond to different processors, colors correspond to different kernels, and points correspond to different matrices. although sparse scientific kernels exhibit widely varying reuse characteristics---and consequently different operational intensities---they substantially underutilize both processors.}
      %\caption{Normalized cycles spent on frontend/backend stalls.}
      \label{fig:roofline_sparse}
 \end{figure}
@@ -34,7 +34,7 @@ We profile high-performance implementations of these kernels---from the Kokkos l
 \begin{figure}
      \centering
      \includegraphics[width=0.7\columnwidth]{img_peak_percent_numeric.pdf}
-     \caption[Resource utilization of scientific kernels.]{Compute and memory bandwidth utilization of sparse scientific kernels. Different plots correspond to different processors, colors correspond to different kernels, and points correspond to different matrices. Overall, sparse scientific kernels heavily underutilize both compute resources and memory bandwidth.}
+     \caption[Resource utilization of scientific kernels.]{Compute and memory bandwidth utilization of sparse scientific kernels. Different plots correspond to different processors, colors correspond to different kernels, and points correspond to different matrices. sparse scientific kernels heavily underutilize both compute resources and memory bandwidth.}
      %\caption{Normalized cycles spent on frontend/backend stalls.}
      \label{fig:utilization_sparse}
 \end{figure}
@@ -48,7 +48,7 @@ These trends are even more apparent in \Cref{fig:utilization_sparse}, which repo
 \begin{figure}
      \centering
      \includegraphics[width=0.7\columnwidth]{img_backend_vs_frontend.pdf}
-     \caption[Cycles spent stalling in scientific kernels.]{Cycles spent stalled in sparse scientific kernels, normalized to total execution cycles. Frontend stalls indicate inefficiencies in the instruction pipeline, whereas backend stalls reflect inefficiencies in compute units and the memory hierarchy. Different plots correspond to different processors, colors correspond to different kernels, and points correspond to different matrices. Overall, sparse scientific kernels heavily stress both the frontend and backend of commodity processors.}
+     \caption[Cycles spent stalling in scientific kernels.]{Cycles spent stalled in sparse scientific kernels, normalized to total execution cycles. Frontend stalls indicate inefficiencies in the instruction pipeline, whereas backend stalls reflect inefficiencies in compute units and the memory hierarchy. Different plots correspond to different processors, colors correspond to different kernels, and points correspond to different matrices. sparse scientific kernels heavily stress both the frontend and backend of commodity processors.}
      %\caption{Normalized cycles spent on frontend/backend stalls.}
      \label{fig:stalls}
 \end{figure}
@@ -82,7 +82,7 @@ As discussed in \Cref{sec:sparsity-in-machine-learning}, embedding operations ar
 \begin{table}
   \centering
   %\footnotesize
-  \caption[Tested Deep Learning Recommendation Models (DLRMs).]{Tested DLRMs. RM1 has a larger batch size, smaller embeddings, and fewer lookups per segment. RM2 has a smaller batch size, larger embeddings, and more lookups per segment. Larger batches better amortize startup overhead. Larger embedding vectors have better spatial locality but generate more cache evictions. More lookups per segment better amortize loop control overhead.}
+  \caption[Tested Deep Learning Recommendation Model configurations.]{Deep Learning Recommendation Model (DLRM) embedding configurations evaluated in this chapter. RM1, RM2, and RM3 vary the number of segments per batch per core, embedding-vector length, and lookups per segment. Larger batches amortize per-batch startup overhead, longer embedding vectors increase spatial locality but also increase cache pressure, and more lookups per segment amortize per-segment loop-control overhead.}
   \vspace{-1em}
 \[
 \begin{tabular}{rccc}
@@ -219,18 +219,18 @@ This section introduces the analytical models we designed to understand the requ
     \begin{subfigure}[b]{0.48\linewidth}
         \centering
         \caption{System abstraction}
-        \label{fig:abstraction}
+        \label{fig:mlp-system-abstraction}
     \end{subfigure}
     \begin{subfigure}[b]{0.48\linewidth}
         \centering
         \caption{Reuse distance CDF}
-        \label{fig:cdf}
+        \label{fig:mlp-reuse-cdf}
     \end{subfigure}
-\caption[System abstraction that our analytical model is built upon.]{On the left (a), our system abstraction. On the right (b), an example CDF curve and how we use it to compute hit and miss probabilities across all levels. Specifically, the x-axis is the number of embedding vectors that fit in a cache level (i.e., cache size at a given level divided by the embedding vector byte size), whereas the y-axis shows probabilities.}
-\label{fig:model}
+\caption[System abstraction for the analytical memory-level parallelism model.]{System abstraction used by the analytical memory-level parallelism model. Subfigure (a) models the core, cache hierarchy, and HBM as a sequence of levels with per-level latency and request throughput. Subfigure (b) shows how the reuse-distance CDF maps cache capacity, expressed as the number of embedding vectors that fit in each cache level, to hit and miss probabilities. This abstraction connects workload locality to the request rates and outstanding requests needed at each memory level.}
+\label{fig:mlp-model}
 \end{figure}
 
-\Cref{fig:abstraction} illustrates the system abstraction underlying our model. The system has $N$ logical levels, where $L_0$ is the core, $L_1 \ldots L_{N-2}$ are the caches, and $L_{N-1}$ is HBM. The latency to access $L_b$ from $L_a$ is $L_{L_a \rightarrow L_b}$ clock cycles. Each level sends out memory requests for the next level at a throughput $T_x$. 
+\Cref{fig:mlp-model} illustrates the system abstraction underlying our model. In \Cref{fig:mlp-system-abstraction}, the system has $N$ logical levels, where $L_0$ is the core, $L_1 \ldots L_{N-2}$ are the caches, and $L_{N-1}$ is HBM. The latency to access $L_b$ from $L_a$ is $L_{L_a \rightarrow L_b}$ clock cycles. Each level sends out memory requests for the next level at a throughput $T_x$.
 
 We compute the number of outstanding memory requests using Little's rule~\cite{little1961proof}, which states that, assuming the core issues memory requests at throughput $T_0$, the number of outstanding requests at each level is:
 \begin{equation}
@@ -268,11 +268,11 @@ We compute these probabilities from the spatio-temporal locality of the input mo
         \label{fig:cdf3}
     \end{subfigure}
     \vspace{-1em}
-\caption[Cumulative distribution functions of the reuse distance of the selected graphs.]{CDF of the inputs in \Cref{tab:graph-inputs}. Different colors represent different inputs and different markers represent different embedding sizes. As explained in \Cref{fig:cdf}, the y-axis shows hit probabilities and the x-axis the number of embedding vectors that fit in a given cache, with L2 on the left plot and L3 on the right plot. Overall, higher-locality inputs, smaller vectors, and larger caches have higher hit probability. For the considered inputs, \texttt{products} has the lowest locality (CDF increases slowly), \texttt{arxiv} has the highest locality for smaller caches (highest CDF for reuse distance less than a thousand), and \texttt{proteins} has the highest locality for larger caches (highest CDF for reuse distance more than a thousand).}
+\caption[Cumulative distribution functions of the reuse distance of the selected graphs.]{CDF of the inputs in \Cref{tab:graph-inputs}. Different colors represent different inputs and different markers represent different embedding sizes. As explained in \Cref{fig:mlp-reuse-cdf}, the y-axis shows hit probabilities and the x-axis the number of embedding vectors that fit in a given cache, with L2 on the left plot and L3 on the right plot. higher-locality inputs, smaller vectors, and larger caches have higher hit probability. For the considered inputs, \texttt{products} has the lowest locality (CDF increases slowly), \texttt{arxiv} has the highest locality for smaller caches (highest CDF for reuse distance less than a thousand), and \texttt{proteins} has the highest locality for larger caches (highest CDF for reuse distance more than a thousand).}
 \label{fig:cdf-gnn}
 \end{figure}
 
-As discussed in \Cref{sec:embedding-workload-characterization}, we model spatial locality via the embedding vector size, and temporal locality via the CDF of the reuse distance~\cite{ding2003pldi}. Recall that the reuse distance is the number of other embedding vectors accessed before a vector is accessed again. If a cache can hold $x$ vectors, an access with reuse distance greater than $x$ will likely result in eviction. Hence, we can model the hit or miss probability of a given cache as the fraction of accesses with reuse distance smaller or greater than $x$. We model such probabilities by first constructing a histogram of all reuse distances, which we then integrate and normalize to obtain the CDF. Thus, $CDF(x)$ approximates the hit probability of that cache, and \Cref{fig:cdf} shows how to derive the above probabilities starting from the CDF. \Cref{fig:cdf-gnn} characterizes the graphs in \Cref{tab:graph-inputs}.
+As discussed in \Cref{sec:embedding-workload-characterization}, we model spatial locality via the embedding vector size, and temporal locality via the CDF of the reuse distance~\cite{ding2003pldi}. Recall that the reuse distance is the number of other embedding vectors accessed before a vector is accessed again. If a cache can hold $x$ vectors, an access with reuse distance greater than $x$ will likely result in eviction. Hence, we can model the hit or miss probability of a given cache as the fraction of accesses with reuse distance smaller or greater than $x$. We model such probabilities by first constructing a histogram of all reuse distances, which we then integrate and normalize to obtain the CDF. Thus, $CDF(x)$ approximates the hit probability of that cache, and \Cref{fig:mlp-reuse-cdf} shows how to derive the above probabilities starting from the CDF. \Cref{fig:cdf-gnn} characterizes the graphs in \Cref{tab:graph-inputs}.
 
 \begin{figure}
     \centering
@@ -297,7 +297,7 @@ As discussed in \Cref{sec:embedding-workload-characterization}, we model spatial
         \caption{}
         \label{fig:latency_error}
     \end{subfigure}
-\caption[Accuracy of our analytical model compared to gem5.]{Accuracy of our analytical model compared to gem5. The leftmost plot (a) shows L2 hit accuracy for the GNN layers in \Cref{tab:graph-inputs}, whereas the middle plot (b) shows L3 miss correlation. The rightmost plot (c) shows end-to-end GNN inference latency. Overall, our model estimates L2 accesses within 23\% error and shows similar behavior for L3 accesses, especially for high miss rates, which are the most relevant for our analysis. In this way, our model achieves comparable results to other analytical models in the literature~\cite{cabezas2014iisw}.}
+\caption[Accuracy of our analytical model compared to gem5.]{Accuracy of our analytical model compared to gem5. The leftmost plot (a) shows L2 hit accuracy for the GNN layers in \Cref{tab:graph-inputs}, whereas the middle plot (b) shows L3 miss correlation. The rightmost plot (c) shows end-to-end GNN inference latency. our model estimates L2 accesses within 23\% error and shows similar behavior for L3 accesses, especially for high miss rates, which are the most relevant for our analysis. In this way, our model achieves comparable results to other analytical models in the literature~\cite{cabezas2014iisw}.}
 \label{fig:hit_accuracy}
 \end{figure}
 
@@ -348,7 +348,7 @@ We now leverage \Cref{eq:little-rule} to estimate the number of outstanding requ
     \centering
     \includegraphics[width=\linewidth]{img_dse_cpu.pdf}
     \vspace{-1em}
-    \caption[The cost of scaling memory-level parallelism on CPU.]{Implications of scaling up the memory-level parallelism of a traditional CPU core for GNN embedding operations. In our notation, \texttt{R} indicates reorder buffer and register file, \texttt{L} indicates load-store queue, and \texttt{M} indicates L1D miss-status handling registers. The notation \texttt{1R.1L.1M} is the baseline off-the-shelf core, and \texttt{2R.2L.2M} is a core with double the resources. Overall, even doubling all of these resources (\texttt{2R.2L.2M}) provides limited performance improvements over off-the-shelf cores (\texttt{1R.1L.1M}) and worse performance/watt.}
+    \caption[The cost of scaling memory-level parallelism on CPU.]{Implications of scaling up the memory-level parallelism of a traditional CPU core for GNN embedding operations. In our notation, \texttt{R} indicates reorder buffer and register file, \texttt{L} indicates load-store queue, and \texttt{M} indicates L1D miss-status handling registers. The notation \texttt{1R.1L.1M} is the baseline off-the-shelf core, and \texttt{2R.2L.2M} is a core with double the resources. even doubling all of these resources (\texttt{2R.2L.2M}) provides limited performance improvements over off-the-shelf cores (\texttt{1R.1L.1M}) and worse performance/watt.}
     \label{fig:dse-cpu}
 \end{figure}
 

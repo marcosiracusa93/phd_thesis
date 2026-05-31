@@ -25,8 +25,8 @@
         \label{fig:sbs-example-t3}
     \end{subfigure}
     %\vspace{-1em}
-  \caption[First part of step-by-step example of DAE execution.]{First part of step-by-step example of SpMV with inner-loop vectorization (see \Cref{tab:streams}, P1 version) over the first row of the CSR matrix in \Cref{fig:sparse_formats}.}
-  \label{fig:spmv_example_1}
+  \caption[Step-by-step TMU execution for SpMV, part 1.]{First part of the step-by-step TMU execution of SpMV with inner-loop vectorization (P1 in \Cref{tab:tensor-mapping}) over the CSR matrix in \Cref{fig:sparse-formats}. T1 loads the row-pointer fiber, T2 starts the compressed row traversal, and T3 has issued all requests for the first row while beginning the next row. This shows how the TMU exposes memory-level parallelism before operands are ready for computation.}
+  \label{fig:spmv-step-1}
 \end{figure}
 
 \begin{figure}
@@ -55,13 +55,13 @@
         \label{fig:sbs-example-t6}
     \end{subfigure}
     %\vspace{-1em}
-  \caption[Second part of step-by-step example of DAE execution.]{Second part of step-by-step example of SpMV with inner-loop vectorization (see \Cref{tab:streams}, P1 version) over the first row of the CSR matrix in \Cref{fig:sparse_formats}.}
-  \label{fig:spmv_example_2}
+  \caption[Step-by-step TMU execution for SpMV, part 2.]{Second part of the step-by-step TMU execution of SpMV with inner-loop vectorization (P1 in \Cref{tab:tensor-mapping}) over the CSR matrix in \Cref{fig:sparse-formats}. T4 issues dense-vector lookups, T5 begins marshaling ready operands into the outQ, and T6 has queued all operands for the first row. This shows how traversal results become ordered callback operands for the core.}
+  \label{fig:spmv-step-2}
 \end{figure}
 
 %\begin{figure}
 %\centering
 %  \includegraphics[width=\textwidth]{img_spmv_sbs_example.pdf}
-%  \caption{Example performing SpMV with inner-loop vectorization (see \Cref{tab:streams}, P1 version) over the first row of the CSR matrix in %\Cref{fig:sparse_formats}.}
+%  \caption{Example performing SpMV with inner-loop vectorization (see \Cref{tab:tmu-data-streams}, P1 version) over the first row of the CSR matrix in %\Cref{fig:sparse-formats}.}
 %  \label{fig:spmv_example}
 %\end{figure}

@@ -19,7 +19,7 @@ void eb(idxs: mref<? x idx>,
             \end{lstlisting}
             \vspace{3.2em}
             \caption{SCF IR}
-            \label{fig:lowering-scf}
+            \label{fig:scf-lowering-input}
         \end{subfigure}
         \begin{subfigure}[t]{0.635\columnwidth} % 55
             \begin{lstlisting}[xleftmargin=1.5em]
@@ -42,10 +42,10 @@ void eb(idxs: mref<? x idx>,
      (*\hlcompute{out[bv,ev]=acc+val}*); }}}}}
             \end{lstlisting}
             \caption{SLC IR}
-            \label{fig:lowering-slc}
+            \label{fig:slc-lowering-output}
         \end{subfigure}
     \end{subfigure}
     %\vspace{-1em}
-    \caption[Lowering from SCF to Ember SLC IR.]{Lowering from SCF to our SLC IR. Ember converts SCF \hlloop{for-loops} into SLC for-loops and SCF \hlmem{memory accesses} into SLC streams. Ember wraps \hlcompute{computation} into SLC callbacks that can access SLC streams with stream-to-value operations.}
-    \label{fig:lowering}
+    \caption[Lowering from SCF to Ember SLC IR.]{Lowering from SCF to Ember's SLC IR. Ember converts SCF \hlloop{for-loops} into SLC for-loops, converts read-only \hlmem{memory accesses} into SLC streams, and wraps \hlcompute{computation} into callbacks that access streams through stream-to-value operations. In this way, the lowering moves lookup work toward the access unit while preserving reductions and output updates on the execute side.}
+    \label{fig:scf-to-slc-lowering}
 \end{figure}
