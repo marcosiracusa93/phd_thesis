@@ -2,6 +2,13 @@
     \centering
     %\vspace{-1em}
     \begin{subfigure}[b]{0.4\linewidth} % 40% width
+        \includegraphics[width=\linewidth,trim=0 0 290 0,clip]{img_embedding_implications_proteins.pdf}
+        \vspace{-2em}
+        \caption{\texttt{proteins}}
+        %\vspace{0.5em}
+        %\label{fig:ltu-proteins}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.4\linewidth} % 40% width
         \includegraphics[width=\linewidth,trim=0 0 290 0,clip]{img_embedding_implications_arxiv.pdf}
         \vspace{-2em}
         \caption{\texttt{arxiv}}
@@ -22,21 +29,22 @@
         %\vspace{0.5em}
         %\label{fig:ltu-products}
     \end{subfigure}
-    \begin{subfigure}[b]{0.4\linewidth} % 40% width
-        \includegraphics[width=\linewidth,trim=0 0 290 0,clip]{img_embedding_implications_proteins.pdf}
-        \vspace{-2em}
-        \caption{\texttt{proteins}}
-        %\vspace{0.5em}
-        %\label{fig:ltu-proteins}
-    \end{subfigure}
     %\vspace{-2em}
-    \caption[Load-to-use latency of embedding lookups on CPU.]{Load-to-use latency of GNN embedding lookups. The y-axis shows the percentage of requests longer than the corresponding value on the x-axis, which is computed as request latency relative to the latency of accessing the L1D cache. a large fraction of embedding lookups in GNN models take orders of magnitude longer than L1D accesses. For \texttt{products}---the dataset with the lowest locality---more than 74\% of memory requests (y-axis) are 10$\times$ longer than an L1D access (x-axis), and 40\% are more than 100$\times$ longer, as they need to reach HBM.}
+    \caption[Load-to-use latency of embedding lookups on CPU.]{Load-to-use latency of GNN embedding lookups on the multicore CPU baseline. Each subfigure reports one input graph, and each line corresponds to one embedding-vector size. The x-axis reports request latency normalized to the latency of an L1D cache access, while the y-axis reports the fraction of requests whose latency is higher than that threshold. High-locality inputs such as \texttt{proteins} drop quickly, indicating that most requests are served close to the core. Lower-locality inputs, especially \texttt{products} and \texttt{mag}, have much longer tails. The embedding-size lines capture spatial locality effects: larger vectors expose more contiguous accesses within each lookup, but also increase the cache footprint of each embedding vector, which can lengthen the tail when temporal locality is low. Across these temporal and spatial locality regimes, up to 86\% of requests take more than $10\times$ the L1D latency, and up to 36\% take more than $100\times$ the L1D latency. Thus, many GNN embedding lookups bypass the local cache hierarchy and become long-latency HBM accesses.}
     \label{fig:ltu-gnn}
 \end{figure}
 
 \begin{figure}
     \centering
     %\vspace{-1em}
+        \begin{subfigure}[b]{0.45\linewidth} % 40% width
+        \includegraphics[width=\linewidth,trim=210 0 0 0,clip]{img_embedding_implications_proteins.pdf}
+        \vspace{-2em}
+        \caption{\texttt{proteins}}
+        %\vspace{0.5em}
+        %\label{fig:ltu-proteins}
+    \end{subfigure}
+    \hspace{1cm} % <-- increase this to spread them
     \begin{subfigure}[b]{0.45\linewidth} % 40% width
         \includegraphics[width=\linewidth,trim=210 0 0 0,clip]{img_embedding_implications_arxiv.pdf}
         \vspace{-2em}
@@ -44,7 +52,6 @@
         %\vspace{0.5em}
         %\label{fig:ltu-arxiv}
     \end{subfigure}
-    \hspace{1cm} % <-- increase this to spread them
     \begin{subfigure}[b]{0.45\linewidth} % 40% width
         \includegraphics[width=\linewidth,trim=210 0 0 0,clip]{img_embedding_implications_mag.pdf}
         \vspace{-2em}
@@ -52,6 +59,7 @@
         %\vspace{0.5em}
         %\label{fig:ltu-mag}
     \end{subfigure}
+    \hspace{1cm} % <-- increase this to spread them
     \begin{subfigure}[b]{0.45\linewidth} % 40% width
         \includegraphics[width=\linewidth,trim=210 0 0 0,clip]{img_embedding_implications_products.pdf}
         \vspace{-2em}
@@ -59,15 +67,7 @@
         %\vspace{0.5em}
         %\label{fig:ltu-products}
     \end{subfigure}
-    \hspace{1cm} % <-- increase this to spread them
-    \begin{subfigure}[b]{0.45\linewidth} % 40% width
-        \includegraphics[width=\linewidth,trim=210 0 0 0,clip]{img_embedding_implications_proteins.pdf}
-        \vspace{-2em}
-        \caption{\texttt{proteins}}
-        %\vspace{0.5em}
-        %\label{fig:ltu-proteins}
-    \end{subfigure}
     %\vspace{-2em}
-    \caption[Architectural implications of embedding lookups on CPU.]{Architectural implications of long embedding lookups on an off-the-shelf CPU core. Bars correspond to different embedding sizes. The leftmost plot shows the average number of in-flight memory requests tracked by the core. The middle plot shows request throughput utilization, computed as actual request throughput relative to the peak throughput of one request per cycle. The rightmost plot shows memory bandwidth utilization. As shown in the leftmost plots, the higher the average latency, the higher the number of in-flight requests tracked by the core. However, because of their limited memory-level parallelism, CPU cores can only track a few requests before the whole pipeline stalls. As shown in the middle plots, due to these stalls, the core issues memory requests at a fraction of its peak throughput of one request per cycle. Even \texttt{proteins}---the dataset with the highest locality---only achieves up to 12\% throughput. As shown in the rightmost plots, this results in low HBM per-core utilization. Even a low-locality dataset like \texttt{products}---with the majority of accesses reaching HBM---utilizes up to 2.4\% bandwidth. off-the-shelf traditional cores are not optimized for long memory accesses.}
+    \caption[Architectural implications of embedding lookups on CPU.]{Architectural implications of long GNN embedding lookups on the multicore CPU baseline in \Cref{tab:cpu-specs-embedding}. Each subfigure reports one input graph, and bars correspond to different embedding-vector sizes. The left plot reports the average number of in-flight memory requests tracked by the core, the middle plot reports request-throughput utilization relative to the ideal rate of one request per cycle, and the right plot reports per-core HBM bandwidth utilization. Across all inputs and embedding sizes, request throughput remains low: the core issues requests at only 4\%--12\% of peak throughput, with an average of 6.3\%. This low throughput comes from memory-level parallelism requirements that exceed what the core can sustain, together with core-side inefficiencies such as data-dependent control overhead. Consequently, HBM bandwidth utilization remains low, ranging from 0.2\% to 2.4\% per core and averaging 1.6\%, even for \texttt{products} and \texttt{mag}, where most requests miss the caches and reach HBM. Thus, off-the-shelf CPU cores cannot generate enough concurrent long-latency requests to use memory bandwidth efficiently, motivating an architecture that tracks many outstanding requests outside scarce core resources.}
     \label{fig:embedding-implications}
 \end{figure}

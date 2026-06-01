@@ -1,0 +1,36 @@
+\begin{figure}
+    \begin{lstlisting}[]
+void spmspm(row_ptrs_A: mref<? x idx>,
+            col_idxs_A: mref<? x idx>,
+            vals_A: mref<? x f32>,
+            row_ptrs_B: mref<? x idx>,
+            col_idxs_B: mref<? x idx>,
+            vals_B: mref<? x f32>,
+            out: CSR) {
+  for (idx i=0; i<n_rows; i++) {
+    clear(touched);
+    for (idx p=row_ptrs_A[i]; p<row_ptrs_A[i+1]; p++) {
+      idx k = col_idxs_A[p];
+      f32 a = vals_A[p];
+      for (idx q=row_ptrs_B[k]; q<row_ptrs_B[k+1]; q++) {
+        idx j = col_idxs_B[q];
+        if (!mark[j]) {
+          mark[j] = true;
+          touched.push(j);
+          accum[j] = 0;
+        }
+        accum[j] += a * vals_B[q];
+      }
+    }
+    sort(touched); // Optional: keep CSR columns sorted
+    for (idx j : touched) {
+      emit(out, i, j, accum[j]);
+      mark[j] = false;
+    }
+  }
+}
+    \end{lstlisting}
+    \vspace{-1em}
+    \caption[Pseudocode of sparse matrix-sparse matrix multiplication.]{Pseudocode for Gustavson-style SpMSpM. The outer loop builds one output row at a time. For each nonzero $A_{ik}$, the middle loop uses $k$ to look up row $k$ of $B$, and the inner loop scans that row. Products are accumulated in a row-local sparse accumulator: \texttt{mark} identifies whether a column has already been touched, and \texttt{touched} records the nonzero columns of the output row. The output row can therefore be emitted by iterating only over \texttt{touched}, avoiding a scan of the full dense accumulator. Compared with SpMV, SpMSpM performs scan-and-lookup over whole sparse rows and introduces accumulation of intermediate results.}
+    \label{fig:spmspm-code}
+\end{figure}

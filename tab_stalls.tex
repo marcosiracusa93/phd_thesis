@@ -1,8 +1,8 @@
 \begin{table}[htbp!]
 \centering
 \footnotesize
-\caption[Summary of stall cycles for different processors and kernels.]
-{Minimum, average, and maximum frontend and backend stalls on A64FX and Graviton 3 for SpMV, SpMSpM, SpAdd.}
+\caption[Summary of frontend and backend stalls for the sparse scientific kernels on CPU.]
+{Minimum, average, and maximum frontend and backend stalls for the sparse scientific kernels in \Cref{fig:stalls}. Values are percentages of total execution cycles across the evaluated SuiteSparse matrices. Rows group results by processor and stall source, while columns summarize the distribution for SpMV, SpMSpM, and SpAdd. On A64FX, SpMV is backend-dominated on average (63\% backend stalls), whereas SpAdd is frontend-dominated (42\% frontend stalls), and SpMSpM is more balanced (28\% frontend, 21\% backend). On Graviton~3, SpMV shifts toward frontend stalls (58\% on average), while SpMSpM has the highest average backend stalls (38\%). The extrema are also large: frontend stalls reach 98\% for SpMV on Graviton~3, and backend stalls reach 99\% for SpMV on A64FX. Thus, sparse-kernel inefficiency is not explained by memory stalls alone; data-dependent control flow and the resulting frontend stalls are also major contributors.}
 \label{tab:stalls}
 
 \begin{tabular}{cc|rrr|rrr|rrr}
