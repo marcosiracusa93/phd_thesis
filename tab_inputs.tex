@@ -1,7 +1,7 @@
 \begin{table}
 \centering
 \caption[Selected inputs for scientific sparse tensor workloads.]{Inputs for the scientific sparse tensor workloads. The table lists SuiteSparse matrices for sparse linear algebra kernels and FROSTT tensors for sparse tensor kernels, along with nonzero counts, dimensions, domains, and matrix-structure visualizations. These inputs span different sparsity patterns and domains, stressing traversal, lookup, and merging in different ways.}
-\label{tab:scientific-inputs}
+\label{tab:tmu-scientific-inputs}
 \resizebox{\columnwidth}{!}{%
 \begin{tabular}{@{}cccccc@{}}
 \toprule
@@ -22,7 +22,6 @@ T3 & NIPS pubs & 3M & \multicolumn{2}{c}{3K x 3K x 14K x 17} & text \\
 T4 & Uber pickups & 3M & \multicolumn{2}{c}{183 x 24 x 1K x 2K} & map\\
 \hline
 \textbf{M1} & \textbf{M2} & \textbf{M3} & \textbf{M4} & \textbf{M5} & \textbf{M6} \\ 
-%\hline \\
 \includegraphics[width=.2\linewidth]{img_mtx_af_0_k101-crop.png}  &
 \includegraphics[width=.2\linewidth]{img_mtx_atmosmodm-crop.png}  &
 \includegraphics[width=.2\linewidth]{img_mtx_Freescale1-crop.png}  &

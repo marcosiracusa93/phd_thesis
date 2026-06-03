@@ -19,6 +19,6 @@ void spmm(row_ptrs: mref<? x idx>, // adj matrix CSR pointers
         out_vals[mtx_row_idx,emb_col_idx] += mtx_nnz_val * emb_val; }}}}
     \end{lstlisting}
     \vspace{-1em}
-    \caption[Pseudocode of graph convolution.]{Pseudocode for the SpMM-style graph convolution in \Cref{fig:gnn-lookup}. The outer loop iterates over graph nodes, the middle loop scans the nonzeros that identify each node's neighbors, and the inner loop traverses the embedding vector fetched for each neighbor. Compared with SpMV, the additional inner loop introduces more control-flow operations and a more regular structure that is generally leveraged for vectorization.} %This operation is similar to CSR sparse-dense matrix multiplication~\cite{aktulga2014ipdps}, although embedding vectors are not rescaled by the matrix values.}
-    \label{fig:gc-code}
+    \caption[Pseudocode of graph convolution.]{Pseudocode for the SpMM-style graph convolution in \Cref{fig:background-gnn-graph-convolution-lookup}. The outer loop iterates over graph nodes, the middle loop scans the nonzeros that identify each node's neighbors, and the inner loop traverses the embedding vector fetched for each neighbor. Compared with SpMV, the additional inner loop introduces more control-flow operations and a more regular structure that is generally leveraged for vectorization.} %This operation is similar to CSR sparse-dense matrix multiplication~\cite{aktulga2014ipdps}, although embedding vectors are not rescaled by the matrix values.}
+    \label{fig:background-gnn-graph-convolution-pseudocode}
 \end{figure}

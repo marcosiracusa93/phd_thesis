@@ -2,9 +2,8 @@
 \centering
 \footnotesize
 \caption[Summary of CPU resource utilization for sparse scientific kernels.]{Minimum, average, and maximum resource utilization for the sparse scientific kernels. Values are percentages of each processor's peak compute throughput and peak memory bandwidth. Each subtable reports one kernel, rows correspond to A64FX and Graviton~3, and columns summarize the distribution across 1000 of the largest SuiteSparse matrices, spanning diverse application domains. Compute utilization is extremely low for all kernels: the maximum is 1.8e-2\% on A64FX and 5.7e-2\% on Graviton~3, both for SpMSpM. Bandwidth utilization is higher and more variable: averages range from 0.046\%--0.28\% on A64FX and 2.3\%--9.8\% on Graviton~3, with maxima of 1.7\% and 56\%, respectively. Thus, sparse scientific kernels use little of the available compute throughput, while memory-bandwidth utilization depends strongly on both architecture and input matrix.}
-\label{tab:utilization}
+\label{tab:implications-scientific-resource-utilization-summary}
 
-%==================== SpMV ====================
 \begin{subtable}{\linewidth}
 \centering
 \caption{SpMV}
@@ -23,7 +22,6 @@
 
 \vspace{0.5em}
 
-%==================== SpMSpM ====================
 \begin{subtable}{\linewidth}
 \centering
 \caption{SpMSpM}
@@ -42,7 +40,6 @@
 
 \vspace{0.5em}
 
-%==================== SpAdd ====================
 \begin{subtable}{\linewidth}
 \centering
 \caption{SpAdd}

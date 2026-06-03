@@ -1,21 +1,12 @@
 \begin{table}
 \centering
 \caption[Specifications of the simulated DAE multicore for scientific workloads.]{Specifications of the simulated DAE multicore processor used for the scientific sparse-tensor evaluation. The DAE system combines high-performance DAE cores each composed of a TMU and an Arm-like core, an HBM-backed memory hierarchy, and a mesh interconnect.}
-%\vspace{-0.3cm}
-%\resizebox{\columnwidth}{!}{%
     \begin{tabular}{@{}ll@{}}
     \toprule
-    %\multicolumn{2}{c}{\textbf{Processor}} \\
-    %\midrule
     \textbf{Cores} & 8 Neoverse-N1-like out-of-order cores at 2.4GHz\\
-    %Dispatch, issue width & 14 insts/cycle \\
-    %Fetch, decode width & 8 insts/cycle \\ 
-    %Commit width & 8 insts/cycle \\
     \textbf{SVE width} & 512 bits \\
     \textbf{Reorder buffer} & 224 entries \\
     \textbf{Load/Store queues} & 96 entries, 96 entries \\
-    %\toprule
-    %\multicolumn{2}{c}{\textbf{Cache Memory Hierarchy}} \\
     \midrule
     \textbf{Private L1 I\&D} & 64 KiB/core, 4-way, 2 cycle data access, 32 MSHRs \\
     \textbf{L1I prefetcher} & Tagged \\
@@ -24,23 +15,15 @@
     \textbf{L2 prefetcher}  & Best Offset Prefetcher \\
     \textbf{Shared L3 (LLC)} & Mostly exclusive, 8 slices of 1MiB, 16 ways, \\
        & 12 cycles data access, 128 MSHRs \\
-    %\toprule
-    %\multicolumn{2}{c}{\textbf{Coherent Interconnect}} \\
     \midrule
     \textbf{Coherence protocol} & MOESI-like AMBA 5 CHI specification \\% without DCT \& DMT \\
     \textbf{Network topology} & $4\times4$ 2D mesh, 1 cycle routers, 1 cycle links\\
-    %\toprule
-    %\multicolumn{2}{c}{\textbf{Main Memory}} \\
     \midrule
     \textbf{Memory} & 4 HBM2e channels, FR-FCFS, 37.5GB/s per channel\\
-    %\toprule
-    %\multicolumn{2}{c}{\textbf{TMU}} \\
     \midrule
     \textbf{TMU} & 2KB per-lane storage, 8 lanes, 4 TGs with mergers\\
         & 128 outstanding requests \\    
     \bottomrule
     \end{tabular}
-%}
-\label{tab:tmu-system-specs}
-%\vspace{-0.0cm}
+\label{tab:tmu-dae-system-specs}
 \end{table}

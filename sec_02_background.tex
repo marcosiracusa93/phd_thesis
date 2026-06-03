@@ -2,36 +2,30 @@
 
 This chapter introduces the background needed to understand the rest of the thesis. \Cref{sec:sparse-tensor-algebra-fundamentals} reviews how tensor computations are expressed, how sparse tensors are stored, and how sparse tensor programs are implemented through traversal, merging, scan-and-lookup, and computation. Then, \Cref{sec:sparsity-in-scientific-computing,sec:sparsity-in-machine-learning} review representative scientific computing and machine learning workloads that expose these patterns.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Sparse Tensor Algebra Fundamentals} \label{sec:sparse-tensor-algebra-fundamentals} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Tensor algebra expresses computations over tensors. An \emph{order}-\textit{n} tensor is an \textit{n}-dimensional collection of data; for example, $A_{ijk}$ denotes the scalar element at position $(i,j,k)$ of an order-3 tensor $A$. A widely used way of describing tensor computation, particularly in machine learning frameworks such as PyTorch~\cite{paszke2019neurips}, is through Einsum expressions~\cite{kjolstad2017oopsla}.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Einsum Expressions} \label{sec:einsum-expressions} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Einsum expressions specify tensor computations by describing how input and output dimensions relate: (i) input dimensions with repeated indices are combined \emph{element-wise}, (ii) input dimensions whose index is absent from the output are \emph{contracted}, and (iii) all other dimensions are copied to the output. For instance, matrix--vector multiplication is expressed as $Z_i = A_{ij} B_j$. Because the index $j$ does not appear in the output, it is contracted (i.e., multiplied element-wise and summed). Similarly, matrix multiplication is $Z_{ij} = A_{ik} B_{kj}$, contracting along $k$. By contrast, matrix addition is written as $Z_{ij} = A_{ij} + B_{ij}$, expressing element-wise addition across all coordinates.
 
 These expressions are implemented in software as deep loop nests, where each loop iterates over and combines tensor \emph{fibers}---one-dimensional views of a tensor (e.g., matrix rows or columns)~\cite{senanayake2020oopsla}. The loop order is determined by an index \textit{schedule}~\cite{kjolstad2017oopsla}. For example, an inner-product implementation of matrix multiplication uses the schedule $ijk$, an outer-product implementation uses $kij$, and a dataflow implementation uses $ikj$~\cite{gao2023systematic}. However, the iteration bounds of these loops depend on the compression format in which input tensors are stored~\cite{chou2018format}, as discussed in \Cref{sec:tensor-compression-formats}.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Tensor Compression Formats} \label{sec:tensor-compression-formats} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{figure}
 \centering
   \includegraphics[width=\textwidth]{img_matrix_formats.pdf}
   \caption[Sparse tensor compression formats.]{Sparse matrix represented in three common compression formats: Coordinate (COO), Compressed Sparse Row (CSR), and Doubly-Compressed Sparse Row (DCSR). COO stores every nonzero coordinate explicitly; CSR replaces repeated row coordinates with row pointers into the column-index and value arrays; DCSR further stores only nonempty rows and their row pointers. In general, the best sparse format depends on the tensor's sparsity structure.}
-  \label{fig:sparse-formats}
+  \label{fig:background-sparse-compression-formats}
 \end{figure}
 
-Dense tensors store their fibers contiguously according to a specified data layout (e.g., row- or column-major). Sparse tensors instead rely on compressed formats that store only nonzero values (\emph{nnzs}) and enough metadata to recover their coordinates during traversal. \Cref{fig:sparse-formats} summarizes several widely used sparse matrix formats~\cite{chou2018format}. Specifically:
+Dense tensors store their fibers contiguously according to a specified data layout (e.g., row- or column-major). Sparse tensors instead rely on compressed formats that store only nonzero values (\emph{nnzs}) and enough metadata to recover their coordinates during traversal. \Cref{fig:background-sparse-compression-formats} summarizes several widely used sparse matrix formats~\cite{chou2018format}. Specifically:
 \begin{enumerate}[label=(\alph*)]
-    \item The Coordinate (COO) format (\Cref{fig:sparse-formats}a) explicitly stores nonzero positions as $n$-dimensional coordinates---\texttt{row\_idxs} and \texttt{col\_idxs} for matrices---typically sorted by a multidimensional ordering (e.g., row-major).
-    \item For matrices with $\#nnzs > \#rows + 1$, the Compressed Sparse Row (CSR) format~\cite{barrett1994book} (\Cref{fig:sparse-formats}b) improves upon COO by storing row boundaries in a \texttt{row\_ptrs} array, eliminating repeated row indices. Therefore, in the CSR format, the \texttt{col\_idxs} vector stores the column indices of its nonzero elements. The \texttt{row\_ptrs} vector stores the position at which each row begins.
-    \item When $\#rows \gg \#nonempty\_rows$, the Doubly-Compressed Sparse Row (DCSR) format~\cite{buluc2008representation} (\Cref{fig:sparse-formats}c) further compresses the \texttt{row\_ptrs} by omitting empty rows.
+    \item The Coordinate (COO) format (\Cref{fig:background-sparse-compression-formats}a) explicitly stores nonzero positions as $n$-dimensional coordinates---\texttt{row\_idxs} and \texttt{col\_idxs} for matrices---typically sorted by a multidimensional ordering (e.g., row-major).
+    \item For matrices with $\#nnzs > \#rows + 1$, the Compressed Sparse Row (CSR) format~\cite{barrett1994book} (\Cref{fig:background-sparse-compression-formats}b) improves upon COO by storing row boundaries in a \texttt{row\_ptrs} array, eliminating repeated row indices. Therefore, in the CSR format, the \texttt{col\_idxs} vector stores the column indices of its nonzero elements. The \texttt{row\_ptrs} vector stores the position at which each row begins.
+    \item When $\#rows \gg \#nonempty\_rows$, the Doubly-Compressed Sparse Row (DCSR) format~\cite{buluc2008representation} (\Cref{fig:background-sparse-compression-formats}c) further compresses the \texttt{row\_ptrs} by omitting empty rows.
 \end{enumerate}
 Higher-dimensional tensors are typically stored either in COO or in Compressed Sparse Fiber (CSF)~\cite{smith2015tensor}, a generalization of DCSR that compresses fibers at each tensor dimension.
 
@@ -44,9 +38,7 @@ Chou et al.~\cite{chou2018format} formalize a hierarchical abstraction for expre
 \end{itemize}
 This abstraction enables the construction of arbitrarily complex formats, allowing developers to tune performance and storage efficiency for specific algorithms~\cite{kjolstad2017oopsla}.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Tensor Traversal} \label{sec:tensor-traversal} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Each level format defines a specific \emph{traversal} (i.e., iteration and loading) method, such as:
 \begin{enumerate}
@@ -82,76 +74,60 @@ for(p = 0; p < numNnzs; p++) {
 
 Tensor traversal is implemented by nesting these level-specific functions into deep loop hierarchies. To perform computation, multiple tensors are often co-iterated and combined, typically at the fiber level. For example, summing two tensors requires co-iterating their fibers and adding elements with matching coordinates.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Tensor Merging} \label{sec:tensor-merging} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{figure}[]
 \centering
   \includegraphics[width=.6\columnwidth]{img_merging_with_vals.pdf}
   \caption[Disjunctive and conjunctive merging of sparse tensors.]{Disjunctive and conjunctive merging of two sparse tensor fibers. Disjunctive merging emits every coordinate that appears in either input fiber, while conjunctive merging emits only coordinates that appear in both input fibers. This distinction determines whether a sparse-sparse operation computes over the union or the intersection of input coordinates.}
-  \label{fig:merging}
+  \label{fig:background-sparse-fiber-merging}
 \end{figure}
 
-When both tensors are sparse, fibers must be \emph{merged}. As illustrated in \Cref{fig:merging}, element-wise addition corresponds to \textit{disjunctive} merging, while element-wise multiplication corresponds to \textit{conjunctive} merging. Because $0 + x = x$, disjunctive merging co-iterates fibers and, at each step, advances the fiber with the smallest coordinate, summing values when coordinates match~\cite{hussain2022ipdps}. Conjunctive merging similarly advances fibers but outputs a value only when all fibers share the same coordinate, exploiting the fact that $0 \cdot x = 0$~\cite{hegde2019micro}.
+When both tensors are sparse, fibers must be \emph{merged}. As illustrated in \Cref{fig:background-sparse-fiber-merging}, element-wise addition corresponds to \textit{disjunctive} merging, while element-wise multiplication corresponds to \textit{conjunctive} merging. Because $0 + x = x$, disjunctive merging co-iterates fibers and, at each step, advances the fiber with the smallest coordinate, summing values when coordinates match~\cite{hussain2022ipdps}. Conjunctive merging similarly advances fibers but outputs a value only when all fibers share the same coordinate, exploiting the fact that $0 \cdot x = 0$~\cite{hegde2019micro}.
 
 \input{fig_merging_code}
 
-These operations are typically implemented using \texttt{while} loops with \texttt{if}-\texttt{then}-\texttt{else} logic~\cite{kjolstad2017oopsla}. \Cref{fig:csr-elementwise} shows how CSR matrix addition and multiplication implement these two merge semantics: addition advances and emits the smallest coordinate from either input, whereas multiplication advances until both inputs expose the same coordinate.
+These operations are typically implemented using \texttt{while} loops with \texttt{if}-\texttt{then}-\texttt{else} logic~\cite{kjolstad2017oopsla}. \Cref{fig:background-csr-elementwise-pseudocode} shows how CSR matrix addition and multiplication implement these two merge semantics: addition advances and emits the smallest coordinate from either input, whereas multiplication advances until both inputs expose the same coordinate.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Scan--and--Lookup for Sparse--Dense Operations} \label{sec:scan-and-lookup} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Sparse--dense operations---such as multiplying a sparse matrix by a dense vector or a sparse matrix by a dense matrix---could, in principle, be expressed through merging. In practice, however, they are usually implemented with an equivalent yet more efficient \emph{scan-and-lookup} operation. This pattern scans a compressed sparse fiber and uses each sparse coordinate to look up the corresponding value in a dense operand.
 
-Scan-and-lookup is central to several workloads studied in this thesis. In SpMV using CSR, for example, the program scans the nonzeros of each sparse matrix row and uses their column indices to look up elements of the dense input vector (\Cref{fig:spmv-lookup,fig:spmv-code}). The same pattern appears in machine learning embedding operations, where sparse IDs are scanned and used to fetch dense embedding vectors.
+Scan-and-lookup is central to several workloads studied in this thesis. In SpMV using CSR, for example, the program scans the nonzeros of each sparse matrix row and uses their column indices to look up elements of the dense input vector (\Cref{fig:background-spmv-scan-and-lookup,fig:background-spmv-pseudocode}). The same pattern appears in machine learning embedding operations, where sparse IDs are scanned and used to fetch dense embedding vectors.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Nonzero Computation and Reduction} \label{sec:nonzero-computation-reduction} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 After merging, fiber elements are computed and written back to memory. If the output is dense, results are stored directly. For compressed outputs, the algorithm typically proceeds in two phases: a \emph{symbolic} phase that computes or estimates the size of the output data structure, and a \emph{numeric} phase that performs floating-point computation and writes results~\cite{gao2023systematic}. A related fundamental operation is tensor \emph{reduction}, which accumulates multiple fibers into a single one~\cite{nagasaka2018high,liu2021sparta}. Given a stream of coordinate--value pairs with possible coordinate repetitions, reduction produces a stream with unique coordinates by accumulating values of pairs sharing the same coordinate.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Sparsity in Scientific Computing} \label{sec:sparsity-in-scientific-computing} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Many scientific simulations model systems in which each unknown interacts with only a small subset of the full problem. This structure appears in partial differential equation (PDE) discretizations based on finite difference (FD), finite volume (FV), and finite element (FE) methods, as well as in graph- and mesh-based computations. The resulting operators are large but sparse, so scientific codes store them in compressed formats and process them through sparse linear-algebra kernels. This section reviews the main sparse kernels that appear throughout modern scientific computing and later in this thesis.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Sparse Matrix--Vector Multiplication} \label{sec:background-spmv} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Sparse Matrix--Vector Multiplication (SpMV) is the most common example and often the dominant kernel in sparse scientific solvers. Krylov methods such as Conjugate Gradient (CG), Generalized Minimal Residual (GMRES), and Bi-Conjugate Gradient Stabilized (BiCGStab) repeatedly apply a sparse operator to a dense vector. Preconditioners and multigrid methods also rely on SpMV-like sparse operator applications during smoothing, residual computation, and coarse-grid correction. \Cref{fig:spmv-lookup,fig:spmv-code} show the CSR implementation of SpMV: the program scans the nonzeros in each sparse row, uses their column indices to perform indirect lookups into the dense vector, and accumulates the scaled values into one output element. This makes SpMV a canonical scan-and-lookup kernel with low arithmetic intensity and irregular memory accesses.
+Sparse Matrix--Vector Multiplication (SpMV) is the most common example and often the dominant kernel in sparse scientific solvers. Krylov methods such as Conjugate Gradient (CG), Generalized Minimal Residual (GMRES), and Bi-Conjugate Gradient Stabilized (BiCGStab) repeatedly apply a sparse operator to a dense vector. Preconditioners and multigrid methods also rely on SpMV-like sparse operator applications during smoothing, residual computation, and coarse-grid correction. \Cref{fig:background-spmv-scan-and-lookup,fig:background-spmv-pseudocode} show the CSR implementation of SpMV: the program scans the nonzeros in each sparse row, uses their column indices to perform indirect lookups into the dense vector, and accumulates the scaled values into one output element. This makes SpMV a canonical scan-and-lookup kernel with low arithmetic intensity and irregular memory accesses.
 
 \begin{figure}
     \centering
     \includegraphics[width=0.8\linewidth]{img_spmv_lookup.pdf}
     \vspace{-0.5em}
-    \caption[Visualization of sparse matrix-vector multiplication.]{Sparse Matrix--Vector Multiplication (SpMV) on a matrix stored in Compressed Sparse Row (CSR) format~\cite{barrett1994book}. Each row scans its nonzero entries and uses their column indices to look up elements of the dense input vector; the fetched vector elements are then scaled by the corresponding nonzero value and accumulated into the output, as shown in \Cref{fig:spmv-code}. The scaling step is omitted here for visual clarity. As a result, while SpMV does not require coordinate merging, the scan-and-lookup pattern still introduces irregular memory accesses.}
-    \label{fig:spmv-lookup}
+    \caption[Visualization of sparse matrix-vector multiplication.]{Sparse Matrix--Vector Multiplication (SpMV) on a matrix stored in Compressed Sparse Row (CSR) format~\cite{barrett1994book}. Each row scans its nonzero entries and uses their column indices to look up elements of the dense input vector; the fetched vector elements are then scaled by the corresponding nonzero value and accumulated into the output, as shown in \Cref{fig:background-spmv-pseudocode}. The scaling step is omitted here for visual clarity. As a result, while SpMV does not require coordinate merging, the scan-and-lookup pattern still introduces irregular memory accesses.}
+    \label{fig:background-spmv-scan-and-lookup}
 \end{figure}
 
 \input{fig_spmv_code}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Sparse Matrix--Sparse Matrix Multiplication} \label{sec:background-spmspm} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Sparse Matrix--Sparse Matrix Multiplication (SpMSpM), also known as sparse general matrix--matrix multiplication (SpGEMM), is important when scientific codes construct, compose, or transform sparse operators~\cite{gao2023systematic}. For example, algebraic multigrid uses sparse matrix products to build coarse-grid operators, and graph or mesh algorithms use matrix products to compose sparse connectivity. Gustavson-style SpMSpM follows the same scan-and-lookup principle as SpMV, but each nonzero in the left matrix looks up an entire sparse row of the right matrix rather than a single dense-vector element. As shown in \Cref{fig:spmspm-code}, these looked-up rows are accumulated into a temporary output row before the final sparse row is emitted. SpMSpM therefore combines irregular row lookups with intermediate accumulation and higher reuse than SpMV.
+Sparse Matrix--Sparse Matrix Multiplication (SpMSpM), also known as sparse general matrix--matrix multiplication (SpGEMM), is important when scientific codes construct, compose, or transform sparse operators~\cite{gao2023systematic}. For example, algebraic multigrid uses sparse matrix products to build coarse-grid operators, and graph or mesh algorithms use matrix products to compose sparse connectivity. Gustavson-style SpMSpM follows the same scan-and-lookup principle as SpMV, but each nonzero in the left matrix looks up an entire sparse row of the right matrix rather than a single dense-vector element. As shown in \Cref{fig:background-spmspm-pseudocode}, these looked-up rows are accumulated into a temporary output row before the final sparse row is emitted. SpMSpM therefore combines irregular row lookups with intermediate accumulation and higher reuse than SpMV.
 
 \input{fig_spmspm_code}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Sparse Matrix Addition} \label{sec:background-spadd} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Sparse Matrix Addition (SpAdd) is important whenever scientific applications assemble, update, or combine sparse operators. Examples include accumulating terms from different physical processes, updating matrices during nonlinear solves, and combining sparse operators in preconditioners or multigrid setup. Unlike SpMV and SpMSpM, SpAdd does not look up dense operands. Instead, it co-iterates the compressed rows of two sparse matrices and emits the union of their coordinates. This is the disjunctive merge pattern introduced in \Cref{sec:tensor-merging}; the corresponding CSR pseudocode is shown in \Cref{fig:csr-addition}. As a result, SpAdd is representative of sparse coordinate merging and the data-dependent control flow induced by sparse-sparse operations. A common generalization of SpAdd is SpKAdd, which merges and adds $K$ sparse matrices simultaneously.
+Sparse Matrix Addition (SpAdd) is important whenever scientific applications assemble, update, or combine sparse operators. Examples include accumulating terms from different physical processes, updating matrices during nonlinear solves, and combining sparse operators in preconditioners or multigrid setup. Unlike SpMV and SpMSpM, SpAdd does not look up dense operands. Instead, it co-iterates the compressed rows of two sparse matrices and emits the union of their coordinates. This is the disjunctive merge pattern introduced in \Cref{sec:tensor-merging}; the corresponding CSR pseudocode is shown in \Cref{fig:background-csr-spadd-pseudocode}. As a result, SpAdd is representative of sparse coordinate merging and the data-dependent control flow induced by sparse-sparse operations. A common generalization of SpAdd is SpKAdd, which merges and adds $K$ sparse matrices simultaneously.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Other Sparse Linear and Tensor Kernels} \label{sec:background-other-scientific-kernels} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Several other sparse linear- and tensor-algebra kernels are central to scientific computing and graph analytics, and they build on the same traversal, lookup, merging, and accumulation patterns introduced above.
 
@@ -165,17 +141,12 @@ Several other sparse linear- and tensor-algebra kernels are central to scientifi
 
 \noindent\textbf{Sparse Tensor Contraction (SpTC)} generalizes matrix multiplication to higher-dimensional sparse tensors~\cite{liu2021sparta}. Tensor contractions appear in multilinear algebra, tensor-network methods, and high-dimensional data analysis, where they combine tensor modes according to index relationships. SpTC combines compressed sparse fibers across multiple tensor modes and may require matching coordinates across several dimensions. It is relevant here because it stresses hierarchical traversal and sparse-sparse matching in compressed tensor formats such as CSF.
 
-%Together, these kernels cover the main sparse access patterns used later in the thesis: scan-and-lookup into dense operands (SpMV, PR, MTTKRP, and CP-ALS), scan-and-lookup with sparse-row reuse and accumulation (SpMSpM and TC), and coordinate merging across sparse operands (SpAdd, SpKAdd, and SpTC). Although sparsity reduces storage and arithmetic work, these kernels introduce irregular memory accesses, data-dependent control flow, limited locality, and load imbalance. These effects prevent modern processors---which are optimized for dense, regular numerical kernels---from achieving high utilization, motivating the architectural analysis in \Cref{sec:sparse-scientific-computing}.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Sparsity in Machine Learning} \label{sec:sparsity-in-machine-learning} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Sparsity also plays a central role in modern machine learning models. Many models represent categorical features---such as users, products, and words---using dense embedding vectors stored in large embedding tables~\cite{naumov2019arxiv,pennington2014emnlp}. Because the number of possible categories is extremely large, any given input activates only a small subset of entries, making interactions inherently sparse~\cite{ke2020isca,zaheer2020neurips,hu2020neurips}. This section reviews the main machine learning models that leverage feature embeddings.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Graph Learning Models} \label{sec:background-graph-learning} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 A graph is formally defined as a set of nodes (vertices) and a set of edges that represent relationships between pairs of nodes. For example, in a financial network, nodes may represent economic entities such as individuals or institutions, while edges denote transactions between them. Nodes can include features such as account age, geographic region, and risk score, while edges may include features such as transaction amount, timestamp, device ID, or location.
 
@@ -187,36 +158,32 @@ However, categorical features such as location or device ID cannot be directly p
     \centering
     \includegraphics[width=\linewidth]{img_gnn_lookup.pdf}
     \vspace{-1em}
-    \caption[Visualization of graph convolution.]{Graph convolution in GNNs implemented as Sparse Matrix--Dense Matrix Multiplication (SpMM)~\cite{aktulga2014ipdps,selvitopi2021sc}. The graph adjacency matrix is stored in CSR format~\cite{barrett1994book}; each nonzero identifies a neighboring node whose embedding vector is looked up, optionally scaled by the nonzero value, and accumulated into the output embedding of the current node. \Cref{fig:gc-code} shows the corresponding pseudocode. The scaling step is omitted here for visual clarity. In the end, graph convolution follows the same scan-and-lookup structure as SpMV, but each sparse coordinate triggers an indirect dense-vector lookup rather than an indirect scalar lookup.}
-    \label{fig:gnn-lookup}
+    \caption[Visualization of graph convolution.]{Graph convolution in GNNs implemented as Sparse Matrix--Dense Matrix Multiplication (SpMM)~\cite{aktulga2014ipdps,selvitopi2021sc}. The graph adjacency matrix is stored in CSR format~\cite{barrett1994book}; each nonzero identifies a neighboring node whose embedding vector is looked up, optionally scaled by the nonzero value, and accumulated into the output embedding of the current node. \Cref{fig:background-gnn-graph-convolution-pseudocode} shows the corresponding pseudocode. The scaling step is omitted here for visual clarity. In the end, graph convolution follows the same scan-and-lookup structure as SpMV, but each sparse coordinate triggers an indirect dense-vector lookup rather than an indirect scalar lookup.}
+    \label{fig:background-gnn-graph-convolution-lookup}
 \end{figure}
 
 \input{fig_gc_code}
 
-As shown in \Cref{fig:gnn-lookup,fig:gc-code}, embedding vectors are stored in embedding tables indexed by the IDs of their corresponding vertices or edges. To perform embedding operations such as graph convolution, GNNs scan the nonzeros that identify a node's neighbors, look up the corresponding embedding vectors, and aggregate them with, for instance, an element-wise sum. This is the machine-learning analogue of the SpMV scan-and-lookup pattern, except that each sparse coordinate fetches a dense vector rather than a scalar.
+As shown in \Cref{fig:background-gnn-graph-convolution-lookup,fig:background-gnn-graph-convolution-pseudocode}, embedding vectors are stored in embedding tables indexed by the IDs of their corresponding vertices or edges. To perform embedding operations such as graph convolution, GNNs scan the nonzeros that identify a node's neighbors, look up the corresponding embedding vectors, and aggregate them with, for instance, an element-wise sum. This is the machine-learning analogue of the SpMV scan-and-lookup pattern, except that each sparse coordinate fetches a dense vector rather than a scalar.
 
 Several other graph learning models, including Message Passing (MP) models~\cite{rahman2021ipdps} and Knowledge Graphs (KGs)~\cite{bernerslee2001semantic}, leverage the same principles. MP models are a Sampled-Dense-Dense Matrix Multiplication (SDDMM) fused with an SpMM kernel~\cite{rahman2021ipdps}. KGs are SpMM functions that use semirings---general algebraic structures with addition and multiplication---with only one nonzero per row, requiring no segment pointers or lengths and no rescaling.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Deep Learning Recommendation Models (DLRMs)} \label{sec:background-dlrms}  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 DLRMs recommend products to users by processing a large set of categorical features under strict latency constraints~\cite{gupta2020hpca,ibrahim2022memsys,gupta2020isca}. They currently account for a large fraction of inference cycles in production data centers, with embedding operations consuming a significant portion of runtime~\cite{gupta2020hpca,gupta2020isca}.
 
 Categorical features in DLRMs are generally multi-hot, meaning they can take on multiple values (e.g., movie genres or cast). When representing these relationships as graphs, DLRMs can be viewed as a special category of graph learning models. At inference time, the embedding vectors corresponding to these values must be looked up and aggregated via operations such as an element-wise sum. High-performance implementations (1) fuse lookup and aggregation to avoid materializing intermediate results and (2) batch the categories of multiple queries to improve throughput~\cite{mudigere2022isca}. This operation is similar to graph convolution, although the pooling operation may differ from an element-wise sum. The \texttt{nn.EmbeddingBag} (EB) in PyTorch~\cite{paszke2019neurips} is one such example. Unlike graph learning models, DLRMs have higher spatial locality, as discussed in \Cref{sec:embedding-characterization-dlrms}.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Sparse Attention in Language Models} \label{sec:background-llms} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{figure}
 \centering
 \includegraphics[width=\linewidth]{img_embedding_lookup.pdf}
 \caption[Visualization of embedding lookup operations for language models.]{Embedding lookup in language models. Words or subwords in a batch of sentences are tokenized into integer IDs, stored in a CSR-like representation for the batch, and used to gather dense vectors from an embedding table. Unlike graph convolution in GNNs, this operation performs traversal and lookup without reducing multiple looked-up vectors into an output vector.}
-\label{fig:llm-lookup}
+\label{fig:background-llm-embedding-lookup}
 \end{figure}
 
-Large Language Models (LLMs) embed text into vectors~\cite{devlin2019bert}. \Cref{fig:llm-lookup} shows how categorical features are tokenized into integer IDs that index into an embedding table. Transformers such as Google's BigBird~\cite{zaheer2020neurips} sparsify the attention mechanism to compare only a selected subset of input tokens, improving memory footprint and performance on long sequences. Although this technique drastically reduces inference latency, it requires an additional step to gather embedding blocks. This gathering step is generally not fused with downstream deep neural network computation~\cite{zaheer2020neurips}, requiring only embedding lookups with no additional compute. This is similar to a \texttt{tf.gather}~\cite{abadi2015tensorflow}, although it replicates blocks of embeddings from the key tensor into the query tensor.
+Large Language Models (LLMs) embed text into vectors~\cite{devlin2019bert}. \Cref{fig:background-llm-embedding-lookup} shows how categorical features are tokenized into integer IDs that index into an embedding table. Transformers such as Google's BigBird~\cite{zaheer2020neurips} sparsify the attention mechanism to compare only a selected subset of input tokens, improving memory footprint and performance on long sequences. Although this technique drastically reduces inference latency, it requires an additional step to gather embedding blocks. This gathering step is generally not fused with downstream deep neural network computation~\cite{zaheer2020neurips}, requiring only embedding lookups with no additional compute. This is similar to a \texttt{tf.gather}~\cite{abadi2015tensorflow}, although it replicates blocks of embeddings from the key tensor into the query tensor.
 
 \section{Summary} \label{sec:background-summary}
 

@@ -17,6 +17,6 @@ void spmv(row_ptrs: mref<? x idx>, // adj matrix CSR pointers
       out_vals[row_idx] += nnz_val * vec_val; }}}}
     \end{lstlisting}
     \vspace{-1em}
-    \caption[Pseudocode of sparse matrix-vector multiplication.]{Pseudocode for the SpMV operation in \Cref{fig:spmv-lookup}. The outer loop iterates over CSR rows using \texttt{row\_ptrs}; the inner loop scans each row's nonzeros, loads the corresponding nonzero value and column index, and performs an indirect lookup into \texttt{vec\_vals}. The final statement accumulates the scaled dense-vector value into the output row. In the end, SpMV exposes data-dependent loop bounds and indirect load operations, which general-purpose CPUs can vectorize using gather operations.}
-    \label{fig:spmv-code}
+    \caption[Pseudocode of sparse matrix-vector multiplication.]{Pseudocode for the SpMV operation in \Cref{fig:background-spmv-scan-and-lookup}. The outer loop iterates over CSR rows using \texttt{row\_ptrs}; the inner loop scans each row's nonzeros, loads the corresponding nonzero value and column index, and performs an indirect lookup into \texttt{vec\_vals}. The final statement accumulates the scaled dense-vector value into the output row. In the end, SpMV exposes data-dependent loop bounds and indirect load operations, which general-purpose CPUs can vectorize using gather operations.}
+    \label{fig:background-spmv-pseudocode}
 \end{figure}

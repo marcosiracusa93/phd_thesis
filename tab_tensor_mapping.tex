@@ -2,8 +2,7 @@
     \centering
     \setlength{\tabcolsep}{2.5pt}
     \caption[Mapping sparse tensor algebra kernels to TMU hardware.]{Mapping sparse tensor algebra kernels to TMU hardware. Each row lists an Einsum expression, sparse input formats, a loop schedule, the traversal primitives, data streams, inter-layer modes, and callbacks needed to execute that kernel on the TMU. Underlined schedule indices identify the loop level parallelized across lanes (notation P\textit{x}). Thus, the table shows that the same TMU primitives cover sparse-dense traversal, sparse-sparse merging, vectorization, and callback generation across a broad set of kernels.}
-    \label{tab:tensor-mapping}
-    %\vspace{-0.3cm}
+    \label{tab:tmu-tensor-algebra-mapping}
     \resizebox{\textwidth}{!}{%
     \begin{tabular}{@{}lllc|ccc|cccccc|cccccc|ccc@{}}
     \toprule
@@ -28,5 +27,4 @@
         \textbf{SpTTM} & $Z_{ijk} = A_{ijl}B_{lk}$ & $A$=CSF & $ijl\underline{k}$ & $ik$ & $l$ & $jl$ & ~ & ~ & $ijlk$ & ~ & ~ & ~ & ~ & $l$ & $k$ & ~ & ~ & ~ & ~ & $k$ & $k$ \\
         \bottomrule
     \end{tabular}}    
-    %\vspace{-0.4cm}
 \end{sidewaystable}

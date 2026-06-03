@@ -2,7 +2,6 @@
 \begin{figure}[]
     \centering
 
-    %-------------------- Addition --------------------%
     \begin{subfigure}[t]{0.48\linewidth}
         \centering
 \begin{lstlisting}[numbers=none,xleftmargin=0em]
@@ -33,10 +32,9 @@ CSR csr_add(const CSR& A,
 }
 \end{lstlisting}
         \caption{Elementwise CSR matrix addition.}
-        \label{fig:csr-addition}
+        \label{fig:background-csr-spadd-pseudocode}
     \end{subfigure}
     \hfill
-    %-------------------- Multiplication --------------------%
     \begin{subfigure}[t]{0.48\linewidth}
         \centering
 \begin{lstlisting}[numbers=none,xleftmargin=0em]
@@ -65,9 +63,9 @@ CSR csr_mul(const CSR& A,
 }
 \end{lstlisting}
         \caption{Elementwise CSR matrix multiplication.}
-        \label{fig:csr-multiplication}
+        \label{fig:background-csr-spmul-pseudocode}
     \end{subfigure}
 
     \caption[CSR elementwise addition and multiplication.]{Pseudocode for elementwise addition and multiplication of two CSR matrices. The helper \texttt{emit} appends one coordinate--value pair to the output row, and \texttt{close\_row} updates the output row pointer. Addition and multiplication differ in their merge semantics, but both rely on data-dependent coordinate comparisons over compressed fibers to decide which inputs advance and which nonzeros are emitted.}
-    \label{fig:csr-elementwise}
+    \label{fig:background-csr-elementwise-pseudocode}
 \end{figure}

@@ -32,5 +32,5 @@ void spmspm(row_ptrs_A: mref<? x idx>,
     \end{lstlisting}
     \vspace{-1em}
     \caption[Pseudocode of sparse matrix-sparse matrix multiplication.]{Pseudocode for Gustavson-style SpMSpM. The outer loop builds one output row at a time. For each nonzero $A_{ik}$, the middle loop uses $k$ to look up row $k$ of $B$, and the inner loop scans that row. Products are accumulated in a row-local sparse accumulator: \texttt{mark} identifies whether a column has already been touched, and \texttt{touched} records the nonzero columns of the output row. The output row can therefore be emitted by iterating only over \texttt{touched}, avoiding a scan of the full dense accumulator. Compared with SpMV, SpMSpM performs scan-and-lookup over whole sparse rows and introduces accumulation of intermediate results.}
-    \label{fig:spmspm-code}
+    \label{fig:background-spmspm-pseudocode}
 \end{figure}

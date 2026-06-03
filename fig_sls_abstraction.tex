@@ -5,7 +5,7 @@
         \centering
         \includegraphics[width=\linewidth]{img_sls_example.pdf}
         \caption{Functional example of the EB function.}
-        \label{fig:eb-functional-example}
+        \label{fig:ember-eb-functional-example}
     \end{subfigure}
     
     \begin{minipage}{\columnwidth}
@@ -20,7 +20,7 @@ void eb(idxs, ptrs, vals, out){
     \end{lstlisting}
     \vspace{-0.5em}
     \subcaption{Traditional imperative code, which also acts as input to Ember.}
-    \label{fig:eb-imperative-code}
+    \label{fig:ember-eb-imperative-code}
     \end{minipage}
 
     \begin{minipage}{\columnwidth}
@@ -45,14 +45,14 @@ void eb(idxs, ptrs, vals, out){
     \end{lstlisting}
     \vspace{-0.5em}
     \subcaption{DLC dataflow lookup code.}
-    \label{fig:dlc-lookup-code}
+    \label{fig:ember-dlc-lookup-code}
     \end{minipage}
     
     \begin{subfigure}{\columnwidth}
         \centering
         \includegraphics[width=0.81\columnwidth]{img_sls_queue.pdf}
         \caption{DLC queue content for the EB example.}
-        \label{fig:dlc-queue-content}
+        \label{fig:ember-dlc-queue-content}
     \end{subfigure}
     
     \begin{minipage}{\columnwidth}
@@ -65,9 +65,8 @@ while(ctrlQ.pop() == (*$e_i$*)){ // while some element
     \end{lstlisting}
     \vspace{-0.5em}
     \subcaption{DLC imperative compute code.}
-    \label{fig:dlc-compute-code}
+    \label{fig:ember-dlc-compute-code}
     \end{minipage}
-    %\vspace{-0.5em} % Adds vertical spacing between subfigures
     \caption[DLC representation of an EB operation.]{DLC representation of an EB operation. The functional example and imperative code define the source computation, the lookup code traverses batches, segments, and embedding elements with streams, the queues serialize callback tokens and operands, and the compute code dequeues those values to update the output. Overall, DLC separates embedding lookup from accumulation while preserving the callback order of the original loop nest.}
-    \label{fig:dlc-eb-abstraction}
+    \label{fig:ember-dlc-eb-representation}
 \end{figure}

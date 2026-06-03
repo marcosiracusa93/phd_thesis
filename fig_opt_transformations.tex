@@ -20,7 +20,7 @@ void eb(idxs: mref<? x idx>, offs: mref<? x idx>,
     \end{lstlisting}
     \vspace{-1em}
     \subcaption{Unoptimized code.}
-    \label{fig:opt-unoptimized}
+    \label{fig:ember-slc-unoptimized-code}
     \end{minipage}
 
     \begin{minipage}{\columnwidth}
@@ -37,7 +37,7 @@ void eb(idxs: mref<? x idx>, offs: mref<? x idx>,
     \end{lstlisting}
     \vspace{-1em}
     \subcaption{Vectorized code.}
-    \label{fig:opt-vectorized}
+    \label{fig:ember-slc-vectorized-code}
     \end{minipage}
 
     \begin{minipage}{\columnwidth}
@@ -57,7 +57,7 @@ void eb(idxs: mref<? x idx>, offs: mref<? x idx>,
     \end{lstlisting}
     \vspace{-1em}
     \subcaption{Buffered code.}
-    \label{fig:opt-buffered}
+    \label{fig:ember-slc-buffered-code}
     \end{minipage}
 
     \begin{minipage}{\columnwidth}
@@ -77,10 +77,10 @@ void eb(idxs: mref<? x idx>, offs: mref<? x idx>,
     \end{lstlisting}
     \vspace{-1em}
     \subcaption{Queue aligned code.}
-    \label{fig:opt-aligned}
+    \label{fig:ember-slc-aligned-code}
     \end{minipage}
     
     \vspace{-0.8em}
     \caption[Progressive SLC optimization steps.]{Progressive optimization of the EB SLC IR. The figure shows the unoptimized SLC program, the vectorized SLCV program, the buffered version that materializes embedding vectors as compound stream values, and the queue-aligned version that regenerates simple indices on the execute side. Gray code is unchanged from the previous version. Overall, each step keeps the program structured while exposing a more efficient queue protocol.}
-    \label{fig:opt-transformations}
+    \label{fig:ember-slc-optimization-transformations}
 \end{figure}

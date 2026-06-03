@@ -1,5 +1,4 @@
 \begin{figure}
-%\centering
   \normalsize
 \[
 \begin{array}{rl|@{\hspace{1.5\arraycolsep}}rl}
@@ -8,7 +7,6 @@
 \textit{CPU variable} & var &
 \textit{Stream Variable} & s \\
 \textit{Unsigned Integer} & \text{uint} \\
-%\hline
 \end{array}
 \]
 \[
@@ -22,17 +20,12 @@
   \textit{Loop Range} & r & \bnfdef &  s ~\bnfalt~ var ~\bnfalt~ \text{uint}  \\
   \textit{Stream Expression} & se & \bnfdef & ls~\bnfalt~as~\bnfalt~cs~\bnfalt~bs \\
   \textit{Load Stream} & ls  & \bnfdef & \text{load\_str} (mref[indices^*], uint) \\
-  %\textit{Store Stream} & ss  & \bnfdef & \text{store\_str} (mref[indices^*], s, uint) \\
   \textit{Indices} & indices & \bnfdef & s~\bnfalt~var~\bnfalt~ \text{uint} \\
   \textit{ALU Stream} & as & \bnfdef & \text{alu\_str} (sop, s_1, s_2) \\
   \textit{Stream Ops} & sop  & \bnfdef & +~\bnfalt~-~\bnfalt~*~\bnfalt~ 
 /~\bnfalt~\%~\bnfalt~ \ldots  \\
-  %\textit{Accumulation Stream} & cs & \bnfdef & \text{accumulation\_str} (indices) \\
-  %\textit{Buffer Stream} & bs & \bnfdef & \text{buffer\_str} () \\
 \end{array}
 \]
-  %\vspace{-1em}
   \caption[SLC IR grammar.]{Grammar of Ember's Structured Lookup--Compute (SLC) IR. The SLC IR represents structured loops, stream declarations, callbacks, and stream-to-value conversions in a single structured representation. In this way, SLC preserves the control flow and data flow needed for global DAE optimizations before the program is serialized into explicit DLC queues.}
-  \label{fig:slc-ir}
-  %\vspace{-0.5em}
+  \label{fig:ember-slc-ir-grammar}
 \end{figure}

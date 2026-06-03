@@ -20,7 +20,7 @@ while(ctrlQ.pop() == (*$e_i$*)){
         \end{minipage}
     \vspace{-0.5em}
     \subcaption{Unoptimized code.}
-    \label{fig:opt-impact-unoptimized}
+    \label{fig:ember-dlc-queue-unoptimized-code}
     \end{minipage}
     
     \begin{minipage}{\columnwidth}
@@ -44,7 +44,7 @@ while(ctrlQ.pop() == (*$e_i$*)){
         \end{minipage}
     \vspace{-0.5em}
     \subcaption{Vectorized code.}
-    \label{fig:opt-impact-vectorized}
+    \label{fig:ember-dlc-queue-vectorized-code}
     \end{minipage}
 
     \begin{minipage}{\columnwidth}
@@ -68,7 +68,7 @@ while(ctrlQ.pop() == (*$e_e$*)){
         \end{minipage}
     \vspace{-0.5em}
     \subcaption{Buffered code.}
-    \label{fig:opt-impact-buffered}
+    \label{fig:ember-dlc-queue-buffered-code}
     \end{minipage}
 
     \begin{minipage}{\columnwidth}
@@ -95,10 +95,9 @@ while(tkn = ctrlQ.pop() != done){
         \end{minipage}
     \vspace{-0.5em}
     \subcaption{Queue aligned code.}
-    \label{fig:opt-impact-aligned}
+    \label{fig:ember-dlc-queue-aligned-code}
     \end{minipage}
     
-    %\vspace{-1em} % Adds vertical spacing between subfigures
     \caption[Impact of SLC optimizations on DLC queues and compute code.]{Impact of SLC optimizations on DLC EB compute code and output queues. Vectorization widens queued values, buffering groups an entire embedding vector behind one token, and queue alignment removes scalar operands that would otherwise misalign vector data in the queue. Overall, these optimizations reduce queue traffic and improve execute-side vector efficiency.}
-    \label{fig:opt-impact}
+    \label{fig:ember-dlc-queue-optimization-impact}
 \end{figure}
