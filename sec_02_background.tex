@@ -93,7 +93,15 @@ These operations are typically implemented using \texttt{while} loops with \text
 
 Sparse--dense operations---such as multiplying a sparse matrix by a dense vector or a sparse matrix by a dense matrix---could, in principle, be expressed through merging. In practice, however, they are usually implemented with an equivalent yet more efficient \emph{scan-and-lookup} operation. This pattern scans a compressed sparse fiber and uses each sparse coordinate to look up the corresponding value in a dense operand.
 
-Scan-and-lookup is central to several workloads studied in this thesis. In SpMV using CSR, for example, the program scans the nonzeros of each sparse matrix row and uses their column indices to look up elements of the dense input vector (\Cref{fig:background-spmv-scan-and-lookup,fig:background-spmv-pseudocode}). The same pattern appears in machine learning embedding operations, where sparse IDs are scanned and used to fetch dense embedding vectors.
+Scan-and-lookup is central to several workloads studied in this thesis. In SpMV using CSR, for example, the program scans the nonzeros of each sparse matrix row and uses their column indices to look up elements of the dense input vector, as shown in \Cref{fig:background-spmv-scan-and-lookup}. A similar pattern appears in machine learning embedding operations, where sparse IDs are scanned and used to fetch dense embedding vectors rather than scalar elements.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{img_spmv_lookup.pdf}
+    \vspace{-0.5em}
+    \caption[Visualization of sparse matrix-vector multiplication.]{Sparse Matrix--Vector Multiplication (SpMV) on a matrix stored in Compressed Sparse Row (CSR) format~\cite{barrett1994book}. Each row scans its nonzero entries and uses their column indices to look up elements of the dense input vector; the fetched vector elements are then scaled by the corresponding nonzero value and accumulated into the output, as shown in \Cref{fig:background-spmv-pseudocode}. The scaling step is omitted here for visual clarity. As a result, while SpMV does not require coordinate merging, the scan-and-lookup pattern still introduces irregular memory accesses.}
+    \label{fig:background-spmv-scan-and-lookup}
+\end{figure}
 
 \subsection{Nonzero Computation and Reduction} \label{sec:nonzero-computation-reduction} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -105,15 +113,7 @@ Many scientific simulations model systems in which each unknown interacts with o
 
 \subsection{Sparse Matrix--Vector Multiplication} \label{sec:background-spmv} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Sparse Matrix--Vector Multiplication (SpMV) is the most common example and often the dominant kernel in sparse scientific solvers. Krylov methods such as Conjugate Gradient (CG), Generalized Minimal Residual (GMRES), and Bi-Conjugate Gradient Stabilized (BiCGStab) repeatedly apply a sparse operator to a dense vector. Preconditioners and multigrid methods also rely on SpMV-like sparse operator applications during smoothing, residual computation, and coarse-grid correction. \Cref{fig:background-spmv-scan-and-lookup,fig:background-spmv-pseudocode} show the CSR implementation of SpMV: the program scans the nonzeros in each sparse row, uses their column indices to perform indirect lookups into the dense vector, and accumulates the scaled values into one output element. This makes SpMV a canonical scan-and-lookup kernel with low arithmetic intensity and irregular memory accesses.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.8\linewidth]{img_spmv_lookup.pdf}
-    \vspace{-0.5em}
-    \caption[Visualization of sparse matrix-vector multiplication.]{Sparse Matrix--Vector Multiplication (SpMV) on a matrix stored in Compressed Sparse Row (CSR) format~\cite{barrett1994book}. Each row scans its nonzero entries and uses their column indices to look up elements of the dense input vector; the fetched vector elements are then scaled by the corresponding nonzero value and accumulated into the output, as shown in \Cref{fig:background-spmv-pseudocode}. The scaling step is omitted here for visual clarity. As a result, while SpMV does not require coordinate merging, the scan-and-lookup pattern still introduces irregular memory accesses.}
-    \label{fig:background-spmv-scan-and-lookup}
-\end{figure}
+Sparse Matrix--Vector Multiplication (SpMV) is the most common example and often the dominant kernel in sparse scientific solvers. Krylov methods such as Conjugate Gradient (CG), Generalized Minimal Residual (GMRES), and Bi-Conjugate Gradient Stabilized (BiCGStab) repeatedly apply a sparse operator to a dense vector. Preconditioners and multigrid methods also rely on SpMV-like sparse operator applications during smoothing, residual computation, and coarse-grid correction. \Cref{fig:background-spmv-scan-and-lookup,fig:background-spmv-pseudocode} show the CSR implementation of SpMV: as mentioned in \Cref{sec:scan-and-lookup}, the program scans the nonzeros in each sparse row, uses their column indices to perform indirect lookups into the dense vector, and accumulates the scaled values into one output element. This makes SpMV a canonical scan-and-lookup kernel with low arithmetic intensity and irregular memory accesses.
 
 \input{fig_spmv_code}
 
@@ -187,4 +187,4 @@ Large Language Models (LLMs) embed text into vectors~\cite{devlin2019bert}. \Cre
 
 \section{Summary} \label{sec:background-summary}
 
-Overall, sparse tensor workloads in both scientific computing and machine learning repeatedly exercise the same core mechanisms: compressed tensor traversal, sparse coordinate merging, and scan-and-lookup into dense operands. These mechanisms reduce storage and computation, but they also introduce irregular memory accesses, data-dependent control flow, and limited locality. \Cref{sec:related-work} introduces existing solutions in the literature and their remaining limitations, while the remainder of this thesis discusses how we overcome them: \Cref{sec:architectural-implications} quantifies how sparsity affects modern CPUs and GPUs, motivating the DAE hardware--software co-design developed in the following chapters (\Cref{sec:tmu,sec:dae-compilation}).
+Overall, sparse tensor workloads in both scientific computing and machine learning repeatedly exercise the same core mechanisms: compressed tensor traversal, sparse coordinate merging, and scan-and-lookup into dense operands. These mechanisms reduce storage and computation, but they also introduce irregular memory accesses, data-dependent control flow, and limited locality, which become major bottlenecks on traditional architectures. \Cref{sec:related-work} reviews prior work on analyzing and optimizing these operations, as well as its remaining limitations. The rest of this thesis then shows how we address them: \Cref{sec:architectural-implications} quantifies the architectural requirements of sparse tensor algebra, motivating the DAE hardware--software co-design developed in \Cref{sec:tmu,sec:dae-compilation}.
