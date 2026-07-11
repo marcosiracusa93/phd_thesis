@@ -1,0 +1,5 @@
+Bibliography review fixes
+- Reviewed all 172 BibTeX source entries and all 163 rendered bibliography entries for missing or incorrect metadata.
+- Verified DOI-backed entries against DOI/Crossref metadata and arXiv-backed entries against arXiv metadata; added missing DOI, URL/eprint, access-date, page/article, report, and venue metadata where needed.
+- Updated proceedings/publication metadata for FuseFlow, Ember, DGL, PyTorch/NeurIPS-style entries, MEMSYS 2021, Sandia reports, the patent entry, and software/web/dataset references.
+- Normalized bibliography formatting, including TeX page ranges, public `doi.org` URLs, style-compatible entry types, visible article numbers/pages under `apalike`, title/acronym/product capitalization, and removal of raw HTML.
