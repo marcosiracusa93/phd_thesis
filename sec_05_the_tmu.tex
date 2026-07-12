@@ -90,8 +90,9 @@ Overall, parallelization enables (1) parallel loading, reducing the control over
 The two-dimensional TMU design allows loops to be parallelized at different levels.
 For instance, inner-loop parallelization allows the TMU to marshal adjacent tensor elements into the same vector operand (i.e. the usual vectorization scheme).
 Outer-loop parallelization, instead, allows the TMU to marshal multiple fibers, slices, and arbitrary tensor dimensions into the same vector operand, enabling higher-dimensional parallelization schemes.
-In the SpMV example in \Cref{fig:tmu-spmv-decomposition}, where we parallelize at the inner-loop level, we should configure the first layer to load row pointers and \texttt{BCast} them to the next layer to load multiple elements of the same row in \texttt{LockStep} (with each lane loading at a different offset).
-To parallelize SpMV at the outer-loop level, concurrently loading multiple rows into different lanes, both layers should work in \texttt{LockStep}.
+In the SpMV example in \Cref{fig:tmu-spmv-decomposition}, where we parallelize at the inner-loop level, we configure the first layer to load row pointers and \texttt{BCast} them to the next layer.
+The second layer then loads multiple elements of the same row in \texttt{LockStep}, with each lane starting at a different offset and advancing by the number of active lanes so that lanes cover disjoint nonzeros.
+To parallelize SpMV at the outer-loop level, concurrently loading multiple rows into different lanes, both layers work in \texttt{LockStep}.
 Both parallelization schemes aggregate data into vector operands that are marshaled into the core for computation.
 Boundary conditions can be handled by padding or marshaling the \texttt{msk} stream along with the operands, indicating the active elements in a multi-hot bit vector (equivalent to the \texttt{svwhilelt} operation in Arm SVE~\cite{stephens2017micro}).
 
@@ -103,7 +104,7 @@ Boundary conditions can be handled by padding or marshaling the \texttt{msk} str
 \end{figure}
 
 \noindent\textbf{Fiber merging} is achieved by loading different tensors in different lanes and merging them hierarchically with the mergers placed between layers.
-Merging operations are implemented by "sorting" the fiber indices of all the active lanes in the layers, which is achieved by iteratively pulling fibers with minimum indices.
+Merging operations are implemented by sorting the fiber indices produced by the active lanes of a TMU layer, which is achieved by iteratively pulling fibers with minimum indices.
 The position of these fibers can be identified with a multi-hot $l$-bit predicate, which is pushed in the \texttt{msk} stream of the layer.
 For the two-lane merging example in \Cref{fig:background-sparse-fiber-merging}, the \texttt{msk} stream is \texttt{11, 01, 10, 11}, with the first bit representing fiber A and the second bit representing fiber B.
 These predicates are then used to aggregate vector operands to send to the core.
@@ -120,8 +121,8 @@ Once we map the loop structure of a tensor expression into TMU layers, the TMU s
 These callback functions have a unique callback ID and a list of scalar, vector, or predicate operands produced by the TMU.
 In the SpMV example in \Cref{fig:tmu-spmv-decomposition}, we wrap the code in the inner-loop body into a \texttt{ri} callback, which multiplies and accumulates the matrix and vector values provided by the TMU, and the code in the inner-loop tail into a \texttt{re} callback, to store the accumulated results.
 
-Each layer of the TMU is programmed to trigger these callbacks upon traversal/merging events such as the \textit{begin}, \textit{iteration}, and \textit{end} of a traversal or merging.
-In the SpMV example in \Cref{fig:tmu-spmv-decomposition}, we register the \texttt{ri} callback to the \textit{iteration} of the inner-loop layer and the \texttt{re} callback to the \textit{end} of the inner-loop layer.
+Each TMU layer can be programmed to trigger callbacks upon traversal or merging events, such as the \textit{begin}, \textit{iteration}, and \textit{end} events of the traversal assigned to that layer.
+In the SpMV example in \Cref{fig:tmu-spmv-decomposition}, we register the \texttt{ri} callback to the \textit{iteration} event of the TMU layer that traverses the nonzeros of a CSR row (the inner loop), and the \texttt{re} callback to the \textit{end} event of that same inner-loop traversal.
 For the \texttt{ri} callback, we also register the list of operands consisting of matrix and vector values. Callback registration can be done with the following operation:
 
 {\small
@@ -155,25 +156,37 @@ To prove functional completeness of TMU primitives with respect to tensor algebr
 
 \section{TMU Microarchitecture} \label{sec:tmu-microarchitecture} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-This section details the TMU microarchitecture as well as the implementation and operation of its components, before concluding with a step-by-step example.
+This section explains how the TMU executes the programming abstractions introduced above.
+We first describe how Traversal Units iterate tensor fibers and produce synchronized data and control streams.
+We then describe how Traversal Groups merge or co-iterate lanes within each layer, how the memory subsystem supports many outstanding sparse accesses, and how the TMU stores architectural state for context switching.
+Finally, we walk through the execution of a column-parallel SpMV example to connect these mechanisms end to end.
 
 \subsection{Traversal Unit Design} \label{sec:tmu-traversal-unit-design} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-TUs implement the logic to (i)~iterate tensor fibers, (ii)~generate a binary control sequence to track the iteration status, and (iii)~populate data streams.
+Each TU contains a set of data streams and a control stream, all implemented as circular queues.
+Data streams carry iteration variables and values produced by memory or arithmetic operations, such as tensor values, tensor indices, memory addresses, and transformed indices or addresses.
+The binary control sequence marks fiber boundaries for the synchronized data streams: a \texttt{0} token denotes a regular iteration element, and a \texttt{1} token denotes the end of the current fiber.
+
+All data streams within the same TU have the same depth and advance together with the TU control sequence through synchronized push and pull operations.
+Hence, each queue entry is computed from the corresponding entry at the same position in its parent stream, as defined in \Cref{sec:tmu-programming-traversal}.
+This synchronization allows a TU to produce related streams in parallel; for example, in SpMV it can concurrently load column indices and nonzero values for the same CSR row entry.
+
+With this organization, TUs implement the logic to (i)~iterate tensor fibers, (ii)~generate a binary control sequence to track the iteration status, and (iii)~populate data streams with memory or arithmetic operations.
 To iterate a tensor fiber, each TU implements a finite-state machine (FSM) looping through the \texttt{fbeg}, \texttt{fite}, and \texttt{fend} states.
 The \texttt{fbeg} state initializes the iteration boundaries, which can either be constant values or read from a leftward TU, stalling the current TU execution if the leftward TU has not produced new valid data yet.
-If the streams, which are implemented as circular queues, are not full, the \texttt{fite} state pushes (i)~a \texttt{0} token into the binary control sequence, (ii)~the current iteration index into the \texttt{ite} stream, and (iii)~a new element into each other stream (which is generated according to the stream type).
+If the streams are not full, the \texttt{fite} state pushes (i)~a \texttt{0} token into the binary control sequence, (ii)~the current iteration index into the \texttt{ite} stream, and (iii)~a new element into each other stream (which is generated according to the stream type).
 As discussed below, the value of this element depends on its input queue.
 Finally, when the fiber traversal has no more elements to iterate, the \texttt{fend} state pushes a \texttt{1} token into the binary control sequence and returns to the \texttt{fbeg} state.
 
-All data streams within the same TU are of equal size and controlled simultaneously with a single push/pull command.
-Hence, the value of the \textit{i}-th element of a queue is computed starting from the \textit{i}-th element of its parent queue, as defined in \Cref{sec:tmu-programming-traversal}.
 If the parent queue implements a \texttt{mem} stream, its value may not be available immediately because of memory latency, leaving some queue elements in a transient state. In particular, queue elements can be in either a \texttt{valid} or \texttt{waiting} state according to whether the corresponding element in the parent queue is valid. Elements of \texttt{mem} queues, instead, can be in a \texttt{waiting}, \texttt{queued}, \texttt{requested}, or \texttt{valid} state according to whether the parent index is not valid, the address has been computed, the request has been submitted to memory, or the data has returned, respectively.
+This per-entry state tracking is central to the TMU's dataflow design: independent queues can continue generating addresses and issuing memory requests while other queue entries wait for their operands or memory responses, allowing the TMU to sustain many outstanding sparse memory accesses.
 
 \subsection{Traversal Group Design} \label{sec:tmu-traversal-group-design} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-A Traversal Group (TG) implements the logic to merge and co-iterate TUs in a layer. 
-Similarly to TUs, TGs also implement an FSM to loop through \texttt{gbeg}, \texttt{gite}, and \texttt{gend} states, generating predicates and a control sequence used later on to trigger callbacks.
+A Traversal Group (TG) corresponds to one TMU layer in \Cref{fig:tmu-architecture-overview}: it includes the TUs in that layer, which implement different lanes, and the associated merger logic.
+The TG implements the logic to merge and co-iterate these TUs.
+Similarly to TUs, TGs also implement an FSM to loop through \texttt{gbeg}, \texttt{gite}, and \texttt{gend} states, generating predicates and a control sequence. The output predicate is the layer predicate later exposed through the \texttt{msk} stream. The control sequence is used later on to trigger callbacks.
+
 TG FSMs compute their control sequence by combining (i) the predicate of the previous layer, if any, and (ii) the control sequences of all the TUs in the layer, implementing a hierarchical evaluation.
 In particular, we consider a lane to be \emph{active} only if the corresponding bit of the predicate coming out of the previous layer is set to true.
 TGs only process a \texttt{gite} state if all the active lanes have valid data in their queue heads.
@@ -201,14 +214,11 @@ For performance reasons, both the outQ and outQ buffers are double-buffered.
 \subsection{Memory Arbiter} \label{sec:tmu-memory-arbiter} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 The TMU sends out memory requests at the cacheline granularity.
-For each cycle, the TMU hierarchically selects the next cacheline address to request.
-Requests from the leftmost layers (outer loops) are prioritized.
-TUs within the same layer are selected round-robin.
-Streams within a TU are selected in configuration order.
-Requests within the same queue are selected in order.
+Each cycle, the TMU memory arbiter selects at most one cacheline request by walking a fixed priority hierarchy.
+It first prioritizes requests from the leftmost layers, which correspond to outer loops, then selects among TUs within the chosen layer in round-robin order, then selects streams within the chosen TU in configuration order, and finally selects requests within the chosen queue in FIFO order.
 TUs within the same layer snoop their memory requests and upgrade the status of their \texttt{queued} elements if their address has been requested by another TU.
 
-By default, memory requests within a stream are spawned \emph{eager}ly, meaning a cacheline can be requested as soon as an address for that cacheline is computed (\texttt{queued}). To reduce memory traffic, certain layers can adopt a \emph{lazy} loading strategy. Lazy loading prevents a cacheline from being requested until a different cacheline address is generated within that same queue. This strategy prevents the same cacheline from being requested multiple times if a queue produces data at a rate lower than the memory latency.
+By default, memory requests within a stream are spawned \emph{eager}ly, meaning a cacheline can be requested as soon as an address for that cacheline is computed (\texttt{queued}). To reduce memory traffic, certain layers can adopt a \emph{lazy} loading strategy. Under lazy loading, a queued cacheline request is held while subsequent entries in the same queue continue to target the same cacheline; the request is issued only when the queue reaches an entry for a different cacheline or when the queue must make progress. This coalesces multiple entries that access the same cacheline into a single memory request, which is useful when a queue produces data more slowly than the memory latency.
 
 \subsection{TU Queue Sizing} \label{sec:tmu-queue-sizing} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -217,17 +227,18 @@ Queue storage is provisioned from shared per-lane storage at configuration time.
 \subsection{System Integration} \label{sec:tmu-system-integration} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \noindent\textbf{Placement:} 
-As shown in \Cref{fig:tmu-architecture-overview}, each DAE core in our DAE multicore system features a TMU and a compute core. The TMU traverses fibers by loading data from the LLC and marshals the data into the outQ, which is written into the compute core's private L2 cache. Data from fiber traversals is unlikely to be reused in private caches; by reading from the LLC, we take advantage of the larger MSHR count (enabling more MLP). Each outQ is core-private; therefore, injecting it into the L2 cache enables faster compute throughput.
+As shown in \Cref{fig:tmu-architecture-overview}, each DAE core in our DAE multicore system features a TMU and a compute core. The TMU traverses fibers by loading data from the LLC and marshals the data into the outQ, which is written into the compute core's private L2 cache. Data from fiber traversals is unlikely to be reused in private caches; therefore, the TMU bypasses the private L1 and L2 caches for traversal reads and issues them directly to the shared LLC. This avoids consuming the small number of private-cache MSHRs and instead uses the larger, banked miss-handling capacity available at the LLC, enabling higher memory-level parallelism for sparse traversal. Each outQ is core-private; therefore, injecting it into the L2 cache enables faster compute throughput.
 
 \noindent\textbf{Memory subsystem integration:} 
-Like prior general-purpose processor engines, the TMU operates with virtual addresses and uses the host core's address translation hardware (MMU)~\cite{yang2021isca, kocberber2013micro, jones2016sc, mukkara2018micro, yu2015micro}. In particular, it queries the L2 TLB, and if a page fault occurs, it interrupts the core so the OS can handle the page fault. Once the missing translation is available, the MMU signals the TMU to retry the memory access.
+Like prior general-purpose processor engines, the TMU operates with virtual addresses and uses the host core's address translation hardware (MMU)~\cite{yang2021isca, kocberber2013micro, jones2016sc, mukkara2018micro, yu2015micro}. In particular, it queries the L2 TLB. A hit returns the physical address directly; a TLB miss is handled by the existing page-table walker and stalls only the corresponding TMU memory request, while other independent TMU requests can continue to make progress. We assume the TMU shares the host core's L2 TLB, so TMU traversal accesses may compete for L2 TLB capacity similarly to ordinary core loads. If the translation results in a page fault, the TMU interrupts the core so the OS can handle the fault. Once the missing translation is available, the MMU signals the TMU to retry the memory access.
 
 The TMU operates decoupled from the compute core by issuing coherent read-only traversal requests and writing the resulting outQ into the compute core's private L2 cache. The outQ is a core-private producer-consumer buffer: the TMU writes it and the compute core reads it, but no other DAE core observes or modifies it. Thus, the TMU does not introduce new shared read-write data across DAE cores beyond ordinary coherent cache behavior.
 
 \noindent\textbf{Context switching and exceptions:}
 TMU architectural state must be saved and restored when a thread is context-switched. When the OS deschedules a thread that uses the TMU, it quiesces the TMU, saves its context, and restores it when the thread is rescheduled. 
 On exceptions or syscalls that return to the same thread without descheduling it, the OS does not need to save TMU state. If handling the event deschedules the thread, the normal context-switch path quiesces and saves the TMU before another thread uses it.
-The minimum context state that needs to be saved is the initial TMU configuration (e.g., queue types and sizes, \texttt{beg} and \texttt{end} iteration boundaries), the head of each TU \texttt{ite} stream, and some control registers such as the base outQ address and current writing offset. The memory-mapped outQ is private per thread.
+Quiescing the TMU requires bringing its dataflow queues to a restartable state. The TMU stops issuing new memory requests and rolls each stream back to the last position at which all dependent queue entries are valid, which can be identified by walking the stream dependencies backwards. Any outstanding requests beyond that restart point are discarded or replayed after restore; once the queues contain only valid restartable entries, the TMU context can be saved.
+After quiescence, the minimum context state that needs to be saved is the initial TMU configuration (e.g., queue types and sizes, \texttt{beg} and \texttt{end} iteration boundaries), the head of each TU \texttt{ite} stream, and some control registers such as the base outQ address and current writing offset. The memory-mapped outQ is private per thread.
 Fortunately, support for efficiently saving large state is already implemented in the Linux kernel via on-demand expansion of per-task context switch buffers. This is used by the new Intel Advanced Matrix eXtensions (AMX)~\cite{intel2023amx,nassif2022isscc}, which employ tile registers that already occupy 8KB in current implementations.
 
 \subsection{TMU Execution Example} \label{sec:tmu-execution-example} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -444,6 +455,9 @@ From the core's perspective, offloading embedding lookup allows the core to full
     \label{fig:tmu-gnn-dae-vs-gpu}
 \end{figure}
 
+% TODO(Mark, annex p. 102, MARK-054): Highlighted "Figure 5.20a shows the inference latency breakdown
+%   of GNN models on the DAE proces- / sor and GPU.". Comment: Which GPU were you using? Did it also use
+%   HBM2?
 \Cref{fig:tmu-gnn-gpu-latency-breakdown} shows the inference latency breakdown of GNN models on the DAE processor and GPU. Although the two systems have the same peak memory bandwidth, the DAE system utilizes 4.6$\times$ higher bandwidth, executing embedding operations 1.8$\times$ faster than the GPU. Hence, the DAE processor achieves 2.9$\times$ higher end-to-end performance than the GPU. As the DAE processor saturates memory bandwidth with only 8---16 cores per HBM stack, it consumes less power than the GPU, and achieves 4.1$\times$ higher performance/watt, as shown in \Cref{fig:tmu-gnn-gpu-performance-per-watt}.
 
 \subsection{Specialized TMU-Enabled DAE Architectures} \label{sec:specialized-tmu-enabled-dae-architectures} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -484,6 +498,8 @@ Motivated by these observations, in this section we explore two complementary op
 \textbf{Type}         & Arm N1-like          & Arm E1-like          \\ \hline
 \textbf{Frequency}    & 2.4 GHz              & 1.2 GHz              \\ \hline
 \textbf{Vector FLOPs} & 2 $\times$ 64B       & 2 $\times$ 16B       \\ \hline
+% TODO(Mark, annex p. 104, MARK-055): Highlighted "FLOPs MLP". Comment: what is this? I thought the
+%   prior design had 128 outstanding requests ...
 \textbf{TMU MLP}      & 256 requests         & 256 requests         \\ \hline
 \end{tabular}
 \end{table}
@@ -505,6 +521,13 @@ We name configurations based on whether embedding operations are executed on big
 
 Our baseline is our high-performance DAE multicore processor, denoted \texttt{dae-bh}. The \texttt{dae-lh} configuration replaces big cores with little cores while preserving core count, TMU capacity, and memory hierarchy. The \texttt{dae-lm} configuration extends \texttt{dae-lh} by placing eight little DAE cores in the base die of each Processing Near HBM (PN-HBM) stack. \Cref{tab:tmu-specialized-dae-configurations} summarizes these configurations.
 
+% TODO(Mark, annex p. 106, MARK-056): Highlighted "summarizes these dae-lm / The / system includes six
+%   PN-HBM devices, each treated as an accelerator with / a private address space. The". Comment: Huh?
+%   You are changing the memory bandwidth in this machine? That doesn't seem fair. Why did you do that?
+%   Also if each of these are private address spaces, sharding across them for sparse data seems like it
+%   would be difficult in the real world. Why didn't you keep the same basic machine design, and simply
+%   move the processors to the LLC cache for their accesses, since these are private to the memory bank
+%   they are su...
 The \texttt{dae-lm} system includes six PN-HBM devices, each treated as an accelerator with a private address space. The remaining processor components (cache hierarchy and host DAE cores) form the host CPU. We distribute work across PN-HBM devices using row parallelism~\cite{mudigere2022isca}, where embedding tables are sharded by rows and mapped across memory stacks. Each device processes its partition independently, and partial results are combined via a \texttt{reduce-scatter} operation, performed on the host CPU while PN-HBM devices execute embedding operations.
 
 As before, we evaluate performance and power using gem5~\cite{lowepower2020gem5} and McPAT~\cite{li2009micro} for the host CPU, and Ramulator2.0~\cite{luo2024cal} for PN-HBM modeling.
@@ -521,7 +544,7 @@ As before, we evaluate performance and power using gem5~\cite{lowepower2020gem5}
 
 \Cref{fig:tmu-specialized-dae-performance-efficiency} summarizes the performance and efficiency impact of the proposed optimizations. Overall, reducing compute core complexity (\texttt{dae-lh}) substantially improves energy efficiency with minimal performance degradation, while near-memory execution (\texttt{dae-lm}) provides additional gains for low-reuse workloads.
 
-The \texttt{dae-lh} configuration achieves 94\%–99\% of the performance of \texttt{dae-bh}, while improving performance per watt by 2.66$\times$–4.12$\times$. This is because embedding operations underutilize large out-of-order cores (\Cref{sec:specialized-dae-motivation}), and simpler cores can deliver comparable throughput at only 10\%–12\% of the energy. Workloads with higher node degree achieve better performance due to increased computation per memory access, while low-reuse workloads exhibit lower efficiency due to dominant memory and cache overheads.
+The \texttt{dae-lh} configuration achieves 94\%–99\% of the performance of \texttt{dae-bh}, while improving performance per watt by 2.66$\times$–4.12$\times$. This is because, as demonstrated earlier, embedding operations underutilize large out-of-order cores, and simpler cores can deliver comparable throughput at only 10\%–12\% of the energy. Workloads with higher node degree achieve better performance due to increased computation per memory access, while low-reuse workloads exhibit lower efficiency due to dominant memory and cache overheads.
 
 In contrast, \texttt{dae-lm} provides the highest benefits for low-reuse datasets, where caches provide limited filtering. By moving DAE cores closer to memory, this configuration eliminates unnecessary cache accesses, reducing both latency and energy. For example, on \texttt{products}, \texttt{dae-lm} achieves 1.85$\times$ higher performance and 4.39$\times$ higher efficiency than \texttt{dae-lh}, and 1.79$\times$ higher performance and 7.86$\times$ higher efficiency than \texttt{dae-bh}. Similar trends are observed for \texttt{mag}, where \texttt{dae-lm} improves performance by 9\% and efficiency by 83\% over \texttt{dae-lh}.
 

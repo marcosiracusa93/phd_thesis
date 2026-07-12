@@ -26,7 +26,7 @@
 \texttt{mem} & loads \texttt{p}'s elements from memory at index \texttt{x} & \texttt{p[x]}\\
 \texttt{ite} & generates TU iteration indices $\in$[\texttt{beg},\texttt{end}) & \texttt{x:b->e}\\
 \texttt{lin} & implements a linear transformation on \texttt{x} & \texttt{ax+b}\\
-\texttt{map} & reads \texttt{x}-th element of a small map \texttt{a=\{v1,...,v16\}} & \texttt{a[x]}\\
+\texttt{map} & selects \texttt{x}-th value from a small TU-local map \texttt{a=\{v1,...,v16\}} & \texttt{a[x]}\\
 \texttt{ldr} & computes the address of the \texttt{x}-th element in \texttt{p} & \texttt{\&p[x]}\\
 \midrule
 \texttt{fwd} &\multicolumn{2}{l}{forwards a leftward TU stream to the next layer}\\
@@ -46,9 +46,9 @@
 \texttt{BCast} & broadcasts a single lane to a parallel group\\
 \texttt{Keep} & keeps one lane out of a parallel group\\
 \midrule
-\texttt{DisjMrg} & joins lanes of a layer\\
-\texttt{ConjMrg} & intersects lanes of a layer\\
-\texttt{LockStep} & co-iterates lanes of a layer\\
+\texttt{DisjMrg} & joins lanes in the current TMU layer\\
+\texttt{ConjMrg} & intersects lanes in the current TMU layer\\
+\texttt{LockStep} & co-iterates lanes in the current TMU layer\\
 \bottomrule
 \end{tabular}
 

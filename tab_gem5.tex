@@ -1,6 +1,6 @@
 \begin{table}
 \centering
-\caption[Specifications of the simulated DAE multicore for scientific workloads.]{Specifications of the simulated DAE multicore processor used for the scientific sparse-tensor evaluation. The DAE system combines high-performance DAE cores each composed of a TMU and an Arm-like core, an HBM-backed memory hierarchy, and a mesh interconnect.}
+\caption[Specifications of the simulated DAE multicore for scientific workloads.]{Specifications of the simulated DAE multicore processor used for the scientific sparse-tensor evaluation. The DAE system combines high-performance DAE cores each composed of a TMU and an Arm-like core, an HBM-backed memory hierarchy, and a mesh interconnect. The TMU and LLC capacities are balanced at the system level: the sum of outstanding-request slots across TMUs matches the sum of MSHRs across LLC slices.}
     \begin{tabular}{@{}ll@{}}
     \toprule
     \textbf{Cores} & 8 Neoverse-N1-like out-of-order cores at 2.4GHz\\

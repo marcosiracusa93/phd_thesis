@@ -1,12 +1,14 @@
 \chapter{Introduction} \label{sec:introduction}
 
+This thesis proposes a hardware--software co-design for accelerating general sparse tensor algebra while preserving the programmability and flexibility of general-purpose systems. This chapter motivates the problem, defines the research objectives, summarizes the main contributions, and outlines the remainder of the document.
+
 \section{Motivation} \label{sec:introduction-motivation}
 
 Many of today’s scientific and machine learning models---including billion-dollar recommendation models and large-scale scientific solvers and simulators---are inherently sparse~\cite{gupta2020hpca,gupta2020isca,williams2007sc}. Yet modern datacenters and supercomputers are optimized for dense computation~\cite{nguyen2022ccpe}. This fundamental mismatch calls for architectures and systems that can execute sparse workloads efficiently.
 
 A tensor---a multidimensional array---is said to be \emph{sparse} when most of its entries are zero~\cite{kjolstad2017oopsla}. Many real-world datasets naturally exhibit that structure~\cite{davis2011university}. For example, the \textit{follow} relation in a social network can be represented as a matrix $A$ where $A_{i,j} = 1$ if user $i$ follows user $j$, and zero otherwise~\cite{leskovec2014snap}. Since users typically follow only a small fraction of all other users, this matrix is overwhelmingly sparse. Similarly, the internal states of scientific solvers and simulations often contain mostly zero-valued elements~\cite{barrett1994book,williams2007sc}.
 
-Because zero elements neither need to be stored nor computed, sparse tensors are represented using compressed formats that track only nonzero values and their coordinates~\cite{barrett1994book}. Operating on these formats, however, requires irregular traversals and data-dependent control flow~\cite{sgherzi2024jpdc}. For example, summation requires merging nonzeros based on their coordinates, which entails frequent data-dependent branch operations~\cite{ahrens2023cgo}. Multiplication often requires locating tensor fibers that share a common index, leading to both irregular memory accesses and additional data-dependent control flow.
+Because zero elements neither need to be stored nor computed, sparse tensors are represented using compressed formats that track only nonzero values and their coordinates~\cite{barrett1994book}. Operating on these formats, however, requires irregular traversals and data-dependent control flow~\cite{sgherzi2024jpdc}. For example, summation requires merging nonzeros based on their coordinates, which entails frequent data-dependent branch operations~\cite{ahrens2023cgo}. Multiplication often requires locating parts of tensors that share a common index, leading to both irregular memory accesses and additional data-dependent control flow.
 
 Traditional datacenters and supercomputers are not designed for such irregular computation. Instead, they are heavily optimized for dense and regular workloads---such as dense matrix multiplication and convolution---where data is laid out contiguously and accessed with predictable patterns~\cite{wilkinson2022pmbs,nassif2022isscc,nvidia2022hopper}. On these architectures, however, data-dependent branches cause frequent misspeculation and costly pipeline flushes~\cite{sgherzi2024jpdc}. Meanwhile, irregular memory accesses degrade cache utilization and increase memory latency, ultimately clogging the memory subsystem~\cite{wulf1995hitting,sgherzi2024jpdc}.
 
@@ -44,9 +46,11 @@ This contribution led to the following publications:
 
 The second contribution is the \emph{Tensor Marshaling Unit} (TMU), a specialized hardware unit designed to decouple tensor traversal and merging from the compute core, enabling scalable execution. Unlike prior DAE access units, the TMU (1)~supports a broad class of sparse and dense tensor algebra expressions, and (2)~integrates seamlessly with modern vector units to exploit structured and unstructured parallelism. In \Cref{sec:tmu}, we present the TMU architecture, its integration into a multicore DAE processor composed of TMUs and CPUs, and a detailed evaluation of performance, power, and area. The resulting DAE processor outperforms traditional CPUs by up to an order of magnitude and GPUs by up to 6$\times$ in both performance and performance per watt.
 
-This contribution led to the following publication:
+This contribution led to the following publications:
 \begin{itemize}
     \item \textbf{Marco Siracusa}, Víctor Soria-Pardos, Francesco Sgherzi, Joshua Randall, Douglas J. Joseph, Miquel Moretó Planas, Adrià Armejach. 2023. \textit{A Tensor Marshaling Unit for Sparse Tensor Algebra on General-Purpose Processors}. In Proceedings of the \textit{56th Annual IEEE/ACM International Symposium on Microarchitecture} (MICRO '23)~\cite{siracusa2023micro}.
+    \item \textbf{Marco Siracusa}, Miquel Moretó, Adrià Armejach. Accelerating Graph Machine Learning with Decoupled Memory-Access--Execute Architectures. \textit{Under submission}.
+
 \end{itemize}
 and the following patent:
 \begin{itemize}

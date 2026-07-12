@@ -3,3 +3,59 @@ Bibliography review fixes
 - Verified DOI-backed entries against DOI/Crossref metadata and arXiv-backed entries against arXiv metadata; added missing DOI, URL/eprint, access-date, page/article, report, and venue metadata where needed.
 - Updated proceedings/publication metadata for FuseFlow, Ember, DGL, PyTorch/NeurIPS-style entries, MEMSYS 2021, Sandia reports, the patent entry, and software/web/dataset references.
 - Normalized bibliography formatting, including TeX page ranges, public `doi.org` URLs, style-compatible entry types, visible article numbers/pages under `apalike`, title/acronym/product capitalization, and removal of raw HTML.
+
+Mark annex review fixes
+- Addressed MARK-001 by adding an introductory paragraph between the Introduction chapter heading and the Motivation section, avoiding consecutive headings without intervening prose.
+- Addressed MARK-002 by replacing the undefined term "tensor fibers" in the Introduction with the more general phrase "parts of tensors"; the formal fiber definition remains in Chapter 2.
+- Addressed MARK-005 by refining the machine-learning sparsity introduction in Chapter 2 to distinguish dense embedding vectors from sparse indexing, lookup, aggregation, and attention patterns.
+- Addressed MARK-004 by rephrasing the graph definition in Chapter 2 from edges that "represent" relationships to edges that "encode" relationships, avoiding an awkward PDF hyphenation.
+- Addressed MARK-006 by rephrasing the Chapter 2 summary sentence to avoid an ambiguous pronoun when referring to remaining limitations in prior work.
+- Addressed MARK-007 by revising the related-work discussion beyond SpMV to acknowledge mature sparse-library ecosystems and algorithmic studies while focusing the thesis gap on broad microarchitectural characterization.
+- Addressed MARK-008 by clarifying that the Roofline operational-intensity axis uses bytes transferred from main memory, including sparse metadata, values, dense operands, intermediate structures, and output data.
+- Addressed MARK-009 by clarifying that frontend and backend stall fractions are measured independently relative to total cycles and are not mutually exclusive.
+- Addressed MARK-010 by explaining that the embedding study uses gem5 and McPAT to evaluate CPU scaling by varying resources such as the ROB, LSQ, and MSHRs, and by clarifying that GPU measurements on the NVIDIA H100 report kernel execution time without host transfers or launch overhead.
+- Addressed MARK-011 by replacing fragile numbered column references in the embedding characterization with the corresponding metric names, such as loop hierarchy, compute-per-lookup ratio, memory footprint, reuse-distance CDF, and embedding-vector size.
+- Addressed MARK-012 by clarifying that embedding-vector sizes refer to scalar elements within each dense embedding vector rather than whole vectors or sparse entries.
+- Addressed MARK-013 by adding a reminder that GPU embedding results are measured on the NVIDIA H100 with NVIDIA Nsys rather than generated through simulation.
+- Addressed MARK-014 by defining GPU Roofline operational intensity as embedding-kernel FLOPs per byte transferred to and from GPU HBM, and by explaining why embedding kernels have higher operational intensity than sparse linear-algebra kernels.
+- Addressed MARK-015 by adding a sentence that attributes low GPU bandwidth utilization, compute utilization, and performance on embedding workloads to memory latency.
+- Addressed MARK-016 and MARK-017 by defining cache miss rates as local miss rates in both the CPU embedding-performance prose and the cache-miss figure caption.
+- Addressed MARK-018 by replacing the analytical-model opener with a roadmap that states the target request rate, reuse-distance CDF mapping, Little's-rule calculation, and lower-bound resource estimate.
+- Addressed MARK-019 by defining $T_x$ as the request throughput entering memory level $L_x$, distinguishing the core-issued request rate from the rate of requests that miss earlier levels.
+- Left MARK-020 unchanged after review; the existing conditional-probability formulation was retained.
+- Addressed MARK-021 by clarifying that the L2 and L3 reuse-distance CDF subfigures show the same CDFs with different x-axis ranges to make the cache-capacity markers readable.
+- Addressed MARK-022 by reordering the model-validation discussion so cache-access validation comes first, the inference-latency estimate is derived next, and the latency-validation result follows with a statement about the model capturing the dominant workload behavior.
+- Addressed MARK-023 by adding a high-level explanation of the analytical latency model and clarifying that it uses a bottleneck scaling factor rather than composing throughput and request-tracking limits across memory levels.
+- Addressed MARK-024 by framing the one-load-per-cycle assumption as an ideal lower-bound requirement and clarifying that the cache-level request demands account for cache filtering rather than assuming a perfect post-L1 memory system.
+- Addressed MARK-025 by revising the scale-out discussion to acknowledge that more cores or threads can expose additional memory-level parallelism while explaining that this still scales shared memory-system resources and general-purpose execution machinery inefficiently.
+- Resolved MARK-028 after review by retaining the existing stream-dependency explanation and its reference to the SpMV decomposition figure, without adding a new figure.
+- Addressed MARK-030 by clarifying that inner-loop SpMV parallelization uses different lane offsets and advances by the number of active lanes so lanes cover disjoint nonzeros.
+- Addressed MARK-029 and MARK-031 by removing incorrect quotation marks around sorting and clarifying that merging sorts fiber indices produced by the active lanes of a TMU layer.
+- Addressed MARK-026 by clarifying that the \texttt{map} stream selects from a small TU-local map rather than performing a regular memory read like \texttt{mem}.
+- Addressed MARK-027 by replacing ambiguous "lanes of a layer" table descriptions with "lanes in the current TMU layer."
+- Addressed MARK-032, MARK-033, and MARK-034 by clarifying that callbacks are attached to events of a traversal assigned to a TMU layer, and that the SpMV row-iteration and row-end callbacks both refer to the same inner-loop traversal.
+- Resolved MARK-035 after review; retained the existing outQ description because the surrounding marshaling discussion already establishes that vector operands and predicates are sent to the core.
+- Resolved MARK-036 after review; left the subsection layout unchanged rather than adding a source-level page-break directive.
+- Addressed MARK-037 by replacing the generic TMU microarchitecture opener with a roadmap covering Traversal Units, Traversal Groups, memory support, context state, and the step-by-step SpMV example.
+- Addressed MARK-038, MARK-039, and MARK-040 by adding a high-level explanation of TU data and control streams, clarifying synchronized push/pull behavior, and replacing ambiguous "i-th element" wording with corresponding queue entries in parent streams.
+- Addressed MARK-041 by explaining that per-entry queue state tracking enables the TMU's dataflow design to keep generating addresses and sustaining many outstanding sparse memory accesses while some entries wait on dependencies or memory responses.
+- Addressed MARK-044 by defining a Traversal Group as one TMU layer containing the TUs for different lanes and the associated merger logic shown in the architecture overview.
+- Addressed MARK-042 by clarifying that a Traversal Group's output predicate is the layer predicate exposed through the \texttt{msk} stream for operand marshaling and callback triggering.
+- Resolved MARK-043 after review; retained the existing conjunctive-merging description without adding further discussion of its filtering cost.
+- Addressed MARK-045 by replacing "hierarchically selects" with an explicit description of the memory arbiter's fixed priority order across layers, TUs, streams, and queue entries.
+- Addressed MARK-046 by rewriting lazy loading as a same-cacheline coalescing mechanism that delays a queued request until a different cacheline is reached or progress requires issuing it.
+- Addressed MARK-047 by clarifying that TMU traversal reads bypass private L1/L2 caches and issue to the shared LLC to use its larger, banked miss-handling capacity rather than private-cache MSHRs.
+- Addressed MARK-048 by explaining how TMU address translation handles L2 TLB hits, TLB misses through the existing page-table walker, possible shared L2 TLB capacity competition, and page faults.
+- Addressed MARK-049 by clarifying that context switching first quiesces the TMU into a restartable dataflow-queue state, rolling streams back to valid dependency points and replaying or discarding outstanding requests beyond that point before saving architectural state.
+- Resolved MARK-050 and MARK-051 by adding a table-caption note that aggregate TMU outstanding-request capacity matches aggregate LLC-slice MSHR capacity at the system level.
+- Resolved MARK-052 after review; retained the existing system-utilization analysis without adding a new distribution of outstanding TMU memory requests.
+- Resolved MARK-053 after review; retained the existing per-HBM-stack bandwidth-scaling comparison without adding further discussion of alternative HBM configurations.
+- Addressed MARK-057 by correcting the typo "hte TMU" to "the TMU" in the DLC IR discussion.
+- Addressed MARK-058 by expanding the first early use of SAM as Sparse Abstract Machine and adding the corresponding citation.
+- Addressed MARK-059 by expanding SCF, SLC, and DLC in the Ember compiler-design opener before using the acronyms in the chapter roadmap.
+- Addressed MARK-060 and MARK-061 by replacing the repetitive SLC-section roadmap with a concise description of the SLC IR and the two lowering steps, avoiding repeated section references.
+- Resolved MARK-062 after review; retained the existing compiler-legality discussion without adding extra memory-coherence or flush requirements.
+- Addressed MARK-063 by replacing references to unnumbered optimization subsubsections with direct prose naming vectorization, embedding-vector buffering, queue alignment, and model-specific optimizations. Also cleaned up remaining references to unnumbered subsubsections by replacing them with prose descriptions, avoiding misleading references that rendered as their parent subsection numbers.
+- Addressed MARK-064 by explaining that the Ember evaluation focuses on machine learning embedding operations because scientific sparse workloads are typically exposed through replaceable library kernels, whereas machine learning kernels are generated and fused from high-level models, making manual DAE programming impractical.
+- Addressed MARK-065 by replacing the generic conclusions roadmap with a substantive opening statement about DAE acceleration and programmability.
+- Addressed MARK-066 by reframing the conclusions from a summary of contributions into lessons learned about sparse traversal and merging bottlenecks, the access/execute architectural boundary, and compiler abstractions for DAE programmability.
