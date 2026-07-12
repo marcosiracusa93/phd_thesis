@@ -105,7 +105,7 @@ Boundary conditions can be handled by padding or marshaling the \texttt{msk} str
 
 \noindent\textbf{Fiber merging} is achieved by loading different tensors in different lanes and merging them hierarchically with the mergers placed between layers.
 Merging operations are implemented by sorting the fiber indices produced by the active lanes of a TMU layer, which is achieved by iteratively pulling fibers with minimum indices.
-The position of these fibers can be identified with a multi-hot $l$-bit predicate, which is pushed in the \texttt{msk} stream of the layer.
+The position of these fibers can be identified with a multi-hot predicate with one bit per lane, which is pushed in the \texttt{msk} stream of the layer.
 For the two-lane merging example in \Cref{fig:background-sparse-fiber-merging}, the \texttt{msk} stream is \texttt{11, 01, 10, 11}, with the first bit representing fiber A and the second bit representing fiber B.
 These predicates are then used to aggregate vector operands to send to the core.
 In this way, for instance, we can implement SpKAdd~\cite{hussain2022ipdps}, a summation of K sparse matrices, by mapping matrices in K different lanes and merging them with \texttt{DisjMrg} layers.
@@ -245,7 +245,7 @@ Fortunately, support for efficiently saving large state is already implemented i
 
 \Cref{fig:tmu-spmv-step-by-step-part-1} and \Cref{fig:tmu-spmv-step-by-step-part-2} depict a step-by-step example for SpMV (\Cref{fig:tmu-spmv-decomposition}) where the TMU has been programmed using the code in \Cref{fig:tmu-spmv-configuration-code}. The example loads the CSR matrix shown in \Cref{fig:background-sparse-compression-formats} and assumes a two-lane design.
 
-The reminder of this chapter demonstrate the performance potential of the TMU for accelerating sparse tensor algebra kernels in scientific and machine learning models.
+The remainder of this chapter demonstrates the performance potential of the TMU for accelerating sparse tensor algebra kernels in scientific and machine learning models.
 
 \section{Scientific Sparse Tensor Algebra Evaluation} \label{sec:tmu-scientific-evaluation} %%%%%%%%%%%%%%
 This section evaluates the TMU on scientific sparse tensor algebra kernels. \Cref{sec:tmu-scientific-methodology} first describe the methodology for this study. \Cref{sec:tmu-scientific-performance-analysis,sec:tmu-system-utilization} compare the performance of a multicore DAE processor composed of TMU--CPU cores against a traditional CPU baselines, and analyze how these speedups translate into system utilization. \Cref{sec:tmu-sensitivity-analysis,sec:tmu-prior-sparse-architectures} study sensitivity to TMU parameters and compare against representative prefetching and scalar traversal-engine designs. \Cref{sec:tmu-rtl-area-analysis} closes the scientific evaluation by quantifying the area cost of the TMU; \Cref{sec:tmu-embedding-evaluation} then evaluates the same decoupling principle on machine learning embedding operations.
