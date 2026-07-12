@@ -21,13 +21,11 @@ These expressions are implemented in software as deep loop nests, where each loo
   \label{fig:background-sparse-compression-formats}
 \end{figure}
 
-% TODO(Mark, annex p. 026, MARK-003): Highlighted "(nnzs)". Comment: I thought nnzs was number of non
-%   zero values. If that is the case, shouldn't this be nzs?
-Dense tensors store their fibers contiguously according to a specified data layout (e.g., row- or column-major). Sparse tensors instead rely on compressed formats that store only nonzero values (\emph{nnzs}) and enough metadata to recover their coordinates during traversal. \Cref{fig:background-sparse-compression-formats} summarizes several widely used sparse matrix formats~\cite{chou2018format}. Specifically:
+Dense tensors store their fibers contiguously according to a specified data layout (e.g., row- or column-major). Sparse tensors instead rely on compressed formats that store only nonzero values and enough metadata to recover their coordinates during traversal. \Cref{fig:background-sparse-compression-formats} summarizes several widely used sparse matrix formats~\cite{chou2018format}. Specifically:
 \begin{enumerate}[label=(\alph*)]
     \item The Coordinate (COO) format (\Cref{fig:background-sparse-compression-formats}a) explicitly stores nonzero positions as $n$-dimensional coordinates---\texttt{row\_idxs} and \texttt{col\_idxs} for matrices---typically sorted by a multidimensional ordering (e.g., row-major).
-    \item For matrices with $\#nnzs > \#rows + 1$, the Compressed Sparse Row (CSR) format~\cite{barrett1994book} (\Cref{fig:background-sparse-compression-formats}b) improves upon COO by storing row boundaries in a \texttt{row\_ptrs} array, eliminating repeated row indices. Therefore, in the CSR format, the \texttt{col\_idxs} vector stores the column indices of its nonzero elements. The \texttt{row\_ptrs} vector stores the position at which each row begins.
-    \item When $\#rows \gg \#nonempty\_rows$, the Doubly-Compressed Sparse Row (DCSR) format~\cite{buluc2008representation} (\Cref{fig:background-sparse-compression-formats}c) further compresses the \texttt{row\_ptrs} by omitting empty rows.
+    \item For matrices with \texttt{num\_nonzeros} $>$ \texttt{num\_rows} $+ 1$, the Compressed Sparse Row (CSR) format~\cite{barrett1994book} (\Cref{fig:background-sparse-compression-formats}b) improves upon COO by storing row boundaries in a \texttt{row\_ptrs} array, eliminating repeated row indices. Therefore, in the CSR format, the \texttt{col\_idxs} vector stores the column indices of its nonzero elements. The \texttt{row\_ptrs} vector stores the position at which each row begins.
+    \item When \texttt{num\_rows} $\gg$ \texttt{num\_nonempty\_rows}, the Doubly-Compressed Sparse Row (DCSR) format~\cite{buluc2008representation} (\Cref{fig:background-sparse-compression-formats}c) further compresses the \texttt{row\_ptrs} by omitting empty rows.
 \end{enumerate}
 Higher-dimensional tensors are typically stored either in COO or in Compressed Sparse Fiber (CSF)~\cite{smith2015tensor}, a generalization of DCSR that compresses fibers at each tensor dimension.
 
@@ -47,7 +45,7 @@ Each level format defines a specific \emph{traversal} (i.e., iteration and loadi
 \item Dense traversal:
 \begin{small}
 \begin{verbatim}
-for(idx = 0; idx < fbrSize; idx++)
+for(idx = 0; idx < fiber_size; idx++)
   val = vals[idx];
 \end{verbatim}
 \end{small}
@@ -65,7 +63,7 @@ for(p = ptr[i]; p < ptr[i+1]; p++) {
 \item Coordinate singleton traversal:
 \begin{small}
 \begin{verbatim}
-for(p = 0; p < numNnzs; p++) {
+for(p = 0; p < num_nonzeros; p++) {
   idx0 = idxs0[p];
   idx1 = idxs1[p];
   val = vals[p];

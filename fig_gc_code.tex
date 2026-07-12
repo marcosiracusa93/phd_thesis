@@ -11,8 +11,8 @@ void spmm(row_ptrs: mref<? x idx>, // adj matrix CSR pointers
     idx mtx_ptr_end = row_ptrs[mtx_row_idx+1];
     // Go through all nonzeros in a row
     for (idx mtx_ptr=mtx_ptr_beg; mtx_ptr<mtx_ptr_end; mtx_ptr++){
-      f32 mtx_nnz_val = mtx_nnz_vals[mtx_ptr];
-      idx mtx_col_idx = mtx_col_idxs[mtx_ptr];
+      f32 mtx_nnz_val = nnz_vals[mtx_ptr];
+      idx mtx_col_idx = col_idxs[mtx_ptr];
       // Go through all elements in embedding vector
       for (idx emb_col_idx=0; emb_col_idx<emb_len; emb_col_idx++){
         f32 emb_val = emb_vals[mtx_col_idx,emb_col_idx];

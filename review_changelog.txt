@@ -7,7 +7,7 @@ Bibliography review fixes
 Mark annex review fixes
 - Addressed MARK-001 (annex p. 019, Chapter 1 Introduction) by adding an introductory paragraph between the Introduction chapter heading and the Motivation section, avoiding consecutive headings without intervening prose.
 - Addressed MARK-002 (annex p. 019, Section 1.1 Motivation) by replacing the undefined term "tensor fibers" in the Introduction with the more general phrase "parts of tensors"; the formal fiber definition remains in Chapter 2.
-- Pending MARK-003 (annex p. 026, Section 2.1.2 Tensor Compression Formats): review the notation around "nnzs" and decide whether to normalize the terminology for nonzero values and the number of nonzeros.
+- Addressed MARK-003 (annex p. 026, Section 2.1.2 Tensor Compression Formats) by removing the ambiguous use of "nnzs" for nonzero values, normalizing nearby count notation, and cleaning up related nonzero-count wording.
 - Addressed MARK-004 (annex p. 034, Section 2.3.1 Graph Learning Models) by rephrasing the graph definition in Chapter 2 from edges that "represent" relationships to edges that "encode" relationships, avoiding an awkward PDF hyphenation.
 - Addressed MARK-005 (annex p. 034, Section 2.3 Sparsity in Machine Learning) by refining the machine-learning sparsity introduction in Chapter 2 to distinguish dense embedding vectors from sparse indexing, lookup, aggregation, and attention patterns.
 - Addressed MARK-006 (annex p. 037, Section 2.4 Summary) by rephrasing the Chapter 2 summary sentence to avoid an ambiguous pronoun when referring to remaining limitations in prior work.

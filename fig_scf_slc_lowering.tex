@@ -11,7 +11,7 @@ void eb(idxs: mref<? x idx>,
   (*\hlmem{idx beg=ptrs[b]}*);
   (*\hlmem{idx end=ptrs[b+1]}*);
   (*\hlloop{for(idx p=beg; p<end; p++)}*){
-   (*\hlmem{idx i=idxs[ptr]}*);
+   (*\hlmem{idx i=idxs[p]}*);
    (*\hlloop{for(idx e=0; e<emb\_len; e++)}*){
     (*\hlmem{f32 val=vals[i,e]}*);
     (*\hlcompute{f32 acc=out[b,e]}*);
@@ -32,14 +32,14 @@ void eb(idxs: mref<? x idx>,
   (*\hlmem{str end=slc.mem\_str(ptrs[b+1])}*);
   (*\hlloop{slc.for(str p from beg to end)}*){
    (*\hlmem{str i=slc.mem\_str(idxs[p])}*);
-   (*\hlloop{slc.for(str es from 0 to emb\_len)}*){
-    (*\hlmem{str vals=slc.mem\_str(vals[i,e])}*);
+   (*\hlloop{slc.for(str e from 0 to emb\_len)}*){
+    (*\hlmem{str val=slc.mem\_str(vals[i,e])}*);
    (*\hlnone{ }*)slc.callback{
-    (*\hlnone{ }*)idx bv=slc.to_val(b);
-    (*\hlnone{ }*)idx ev=slc.to_val(e);
-    (*\hlnone{ }*)f32 val=slc.to_val(vals);
+    (*\hlnone{ }*)idx bv=slc.to_val(beg);
+    (*\hlnone{ }*)idx ev=slc.to_val(end);
+    (*\hlnone{ }*)f32 vv=slc.to_val(val);
      (*\hlcompute{f32 acc=out[bv,ev]}*);
-     (*\hlcompute{out[bv,ev]=acc+val}*); }}}}}
+     (*\hlcompute{out[bv,ev]=acc+vv}*); }}}}}
             \end{lstlisting}
             \caption{SLC IR}
             \label{fig:ember-scf-to-slc-output}
