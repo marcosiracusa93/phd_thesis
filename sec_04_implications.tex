@@ -1,19 +1,23 @@
 \chapter{Architectural Implications of Sparse Tensor Workloads} \label{sec:architectural-implications}
 
-This chapter identifies the architectural requirements imposed by sparsity. \Cref{sec:sparse-scientific-computing} studies sparse tensor traversal and merging in scientific workloads, showing that conventional processors cannot efficiently handle the irregular memory accesses and data-dependent control flow these operations introduce. \Cref{sec:ml-embedding-workloads} then studies irregular memory accesses in sparse machine learning workloads, which span a wider range of spatial and temporal locality. This study estimates the ideal resource requirements under different locality regimes and shows that traditional architectures, which execute traversal, merging, and computation on the same compute cores, cannot scale to these requirements. Together, these results motivate the DAE TMU--CPU system introduced in \Cref{sec:tmu}: a design that decouples traversal and merging from computation.
+This chapter derives the architectural requirements that motivate the TMU--CPU system developed in the rest of the thesis. We study two complementary classes of sparse tensor workloads. Scientific sparse tensor kernels expose the diversity of sparse tensor algebra: they combine sparse traversal, scan-and-lookup operations, coordinate merging, and computation on partial results. These workloads show that general-purpose processors already provide several capabilities that sparse tensor algebra needs, including large memory capacity, caches that can exploit locality, vector units for dense arithmetic, and flexible general-purpose execution. However, they are inefficient at the irregular traversal, merging, and lookup operations that account for most execution cycles of these workloads. Machine learning embedding workloads isolate the most important of these bottlenecks: irregular lookup and accumulation of dense embedding vectors. Although these workloads are less diverse in their sparse operations, they expose a wide range of spatial and temporal locality because they access vectors of different sizes with different reuse patterns. This makes them useful for quantifying how locality affects cache filtering, memory-level parallelism, and request-tracking requirements. Together, these two studies show that traditional architectures, which execute traversal, merging, lookup, and computation on the same compute cores, cannot scale efficiently to the requirements of sparse tensor algebra. They motivate decoupling sparse traversal and merging from computation, which is the design principle implemented by the TMU.
 
 \section{Sparse Scientific Computing} \label{sec:sparse-scientific-computing} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We study sparsity in scientific computing by analyzing the three main kernels introduced in \Cref{sec:sparsity-in-scientific-computing}, each chosen here to isolate a distinct architectural stressor:
+Scientific sparse kernels provide the broadest view of the architectural requirements of sparse tensor algebra. They exercise the main sparse operations discussed in \Cref{sec:sparse-tensor-algebra-fundamentals}: traversal to recover compressed coordinates and values, scan-and-lookup to access dense or sparse operands indirectly, merging to co-iterate sparse operands, and computation over the resulting partial results. This makes them a useful starting point for separating what general-purpose processors already do well from what they handle inefficiently.
+
+\subsection{Scientific Workload Methodology} \label{sec:scientific-workload-methodology} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+To broadly understand the architectural implications of sparsity, we study three representative kernels across a large and diverse set of inputs on two processors with very different architectural characteristics.
+
+We analyze the three main kernels introduced in \Cref{sec:sparsity-in-scientific-computing}, each chosen to isolate a distinct architectural stressor:
 \begin{itemize}
     \item \emph{Sparse Matrix--Vector Multiplication} (SpMV)~\cite{williams2007sc}, which multiplies a CSR matrix and a dense vector and outputs a dense vector ($Z_i = A_{ij} B_j$). Since co-iteration of $A_{*j}$ and $B_j$ is generally implemented as a memory-intensive scan-and-lookup operation (\Cref{sec:scan-and-lookup}), we use SpMV as a proxy for sparse traversal and indirect scalar lookup.
     \item \emph{Gustavson's Sparse Matrix--Sparse Matrix Multiplication} (SpMSpM)~\cite{gao2023systematic}, which multiplies and outputs CSR matrices ($Z_{ij} = A_{ik} B_{kj}$ with $(ikj)$ schedule). SpMSpM performs the same scan-and-lookup operation as SpMV but, instead of scalars, it looks up and loads whole (sparse) rows of $B$, which are then reduced into a single row. For this reason, SpMSpM is a proxy for scan-and-lookup operations with higher spatial locality, as well as for the accumulation of intermediate results.
     \item \emph{Sparse Matrix Addition} (SpAdd)~\cite{hussain2022ipdps}, which adds and outputs CSR matrices ($Z_{ij} = A_{ij} + B_{ij}$) by repeatedly co-iterating and joining (disjunctive merge) matrix fibers with the same row index $i$. Therefore, SpAdd is representative of coordinate merging and the data-dependent control flow it induces.
 \end{itemize}
 
-\subsection{Scientific Workload Methodology} \label{sec:scientific-workload-methodology} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-We profile high-performance implementations of these kernels from Kokkos version 3.5~\cite{edwards2014kokkos} on both an HPC processor, the Fujitsu A64FX~\cite{sato2020design}, and a data-center processor, the AWS Graviton~3~\cite{aws2026graviton,aws2022c7g}. The main architectural characteristics of the two processors are summarized in \Cref{tab:implications-scientific-cpu-specs}. While the two processors provide similar peak compute throughput, the A64FX provides more than 3$\times$ the memory bandwidth, whereas the Graviton~3 provides more cores and more aggressive out-of-order resources. To understand the implications of these design points, we test these kernels on 1000 of the largest SuiteSparse matrices, spanning diverse application domains~\cite{davis2011university}.
+We profile high-performance implementations of these kernels from Kokkos version 3.5~\cite{edwards2014kokkos} on both an HPC processor, the Fujitsu A64FX~\cite{sato2020design}, and a data-center processor, the AWS Graviton~3~\cite{aws2026graviton,aws2022c7g}. The main architectural characteristics of the two processors are summarized in \Cref{tab:implications-scientific-cpu-specs}. While the two processors provide similar peak compute throughput, the A64FX provides more than 3$\times$ the memory bandwidth, whereas the Graviton~3 provides more cores and more aggressive out-of-order resources. To capture widely different input features, we test these kernels on 1000 of the largest SuiteSparse matrices, spanning diverse application domains~\cite{davis2011university}.
 
 \begin{table}
     \centering
@@ -47,6 +51,8 @@ We profile high-performance implementations of these kernels from Kokkos version
 
 \subsection{CPU Performance Characterization} \label{sec:scientific-cpu-performance-characterization} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+In this section, we show that neither off-the-shelf HPC processors nor data-center processors efficiently handle the irregular operations that dominate sparse scientific workloads. Although these designs provide different balances of memory bandwidth, vector throughput, cache capacity, and out-of-order execution resources, sparse traversal and merging still leave substantial compute and memory resources underutilized.
+
 \begin{figure}
      \centering
      \includegraphics[width=0.7\columnwidth]{img_roofline_numeric.pdf}
@@ -77,18 +83,19 @@ To better understand the reason, we measure the fraction of frontend and backend
     \item For SpAdd, the frontend becomes the dominant bottleneck due to highly data-dependent branching behavior, particularly on cores with limited out-of-order execution capabilities such as those in the A64FX, where average frontend stalls reach 42\% compared with only 6\% backend stalls~\cite{hussain2022ipdps}.
 \end{itemize}
 
-
 In conclusion, our study suggests that off-the-shelf CPU cores are not optimized for the irregular control flow and memory operations characteristic of sparse scientific workloads. Data-dependent control flow triggers branch mispredictions that stall the frontend, while irregular memory operations create long-latency fetches that stall the backend. Caches can reduce this cost when locality is available, but they are not sufficient to eliminate the bottleneck. In the next section, we use machine learning workloads---with their wider range of spatial and temporal locality characteristics---to study this limitation further.
 
 \section{Machine Learning Embedding Workloads} \label{sec:ml-embedding-workloads} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-As discussed in \Cref{sec:sparsity-in-machine-learning}, embedding operations are also dominated by irregular lookup operations. Unlike many sparse scientific kernels, however, embedding operations vary substantially not only in temporal locality, but also in spatial locality, since embedding vectors can range from tens to hundreds of elements. For this reason, we use embedding operations to study the architectural implications of irregular memory accesses across different spatial and temporal locality regimes. \Cref{sec:embedding-workload-methodology} first describes the experimental setup, workloads, and inputs. \Cref{sec:embedding-workload-characterization} then characterizes embedding operations from different machine learning models, and \Cref{sec:embedding-performance-gpus,sec:embedding-performance-cpus} analyze their performance on traditional architectures. Finally, \Cref{sec:ideal-mlp-requirements,sec:cost-of-scaling-mlp} quantify the scaling limitations of traditional architectures and the need for alternative solutions.
+The scientific kernels show that sparse tensor algebra stresses processors through a combination of traversal, scan-and-lookup, merging, and computation. Machine learning embedding workloads let us study the most important of these stressors in isolation: irregular lookup and accumulation of dense embedding vectors. This narrower structure is useful because embedding operations access fixed-size vectors, making spatial locality explicit, and because different models and inputs reuse those vectors at very different rates, making temporal locality explicit. We therefore use embedding workloads to quantify how spatial and temporal locality shape cache behavior, memory-level parallelism, and the request-tracking resources required by conventional architectures. We first characterize these workloads to identify their compute, memory-capacity, and locality requirements. We then show that GPUs, despite being the de facto architecture for machine learning, are inadequate for embedding operations because irregular lookups underutilize their bandwidth and compute resources. Next, we discuss the cost potential of CPUs for these workloads, but show that commodity cores achieve low performance because they cannot sustain enough irregular memory requests. Finally, we build an analytical model to show that this limitation cannot be solved by simply scaling conventional core resources.
 
 \subsection{Embedding Workload Methodology} \label{sec:embedding-workload-methodology} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Our GPU measurements use an NVIDIA H100 GPU. We measure GPU performance with NVIDIA Nsys~\cite{nvidia2024nsys} and report only device kernel execution time, excluding host-to-device transfers and kernel launch overhead. We measure GPU power consumption with the \texttt{torch.power\_draw} function.
+
 \input{tab_cpu_specs}
 
-To study how conventional CPU architectures scale on embedding operations, unlike the previous section, we use gem5~\cite{lowepower2020gem5} for the CPU experiments and McPAT~\cite{li2009micro} for power estimation. This simulation-based methodology allows us to vary critical microarchitectural resources such as the reorder buffer (ROB), load-store queue (LSQ), and miss status holding registers (MSHRs), which cannot be controlled on fixed commercial processors. The baseline CPU system is dimensioned as in \Cref{tab:embedding-cpu-system-specs}. We compare against real GPU hardware, an NVIDIA H100 GPU. We measure GPU performance with NVIDIA Nsys~\cite{nvidia2024nsys} and report device kernel execution time only, excluding host-to-device transfers and kernel launch overhead. We measure GPU power consumption with the \texttt{torch.power\_draw} function.
+To study how conventional CPU architectures scale on embedding operations, unlike the previous section, we use gem5~\cite{lowepower2020gem5} for the CPU experiments and McPAT~\cite{li2009micro} for power estimation. This simulation-based methodology allows us to vary critical microarchitectural resources such as the reorder buffer (ROB), load-store queue (LSQ), and miss status holding registers (MSHRs), which cannot be controlled on fixed commercial processors. The baseline CPU system is dimensioned as in \Cref{tab:embedding-cpu-system-specs}.
 
 \begin{table}
   \centering
@@ -116,7 +123,7 @@ All embedding operations we test are high-performance multicore implementations 
 
 \input{tab_characterization_split}
 
-This section characterizes embedding operations from different machine learning models.
+Before evaluating traditional architectures, we first characterize the properties that determine how embedding operations interact with the memory hierarchy. In particular, we study their loop structure, compute-per-lookup ratio, memory footprint, temporal locality, and embedding-vector size, which together determine whether caches, prefetching, memory bandwidth, or core-side request tracking are likely to become the bottleneck.
 
 \Cref{tab:embedding-workload-code-characterization} characterizes the code structure of embedding operations across several machine learning models, whereas \Cref{tab:embedding-workload-locality-characterization} characterizes their memory requirements. For each model, we first analyze its loop hierarchy and compute-per-lookup ratio, which approximate compute requirements. We then compute the memory footprint of the embedding tables to understand their storage demands. Finally, we characterize temporal locality with reuse-distance CDFs and spatial locality with embedding-vector sizes to gauge the effectiveness of caches and prefetchers for embedding lookups.
 
@@ -148,7 +155,7 @@ Taken together, these workloads require architectures that tolerate wide variati
 
 \subsection{Embedding Performance on Off-the-Shelf GPUs} \label{sec:embedding-performance-gpus} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-The GPU results in this section are measured on the NVIDIA H100 system described in \Cref{sec:embedding-workload-methodology}, using NVIDIA Nsys rather than simulation.
+GPUs are the de facto accelerator for machine learning, making them the natural first baseline for embedding workloads. However, embedding operations differ from the dense tensor kernels that GPUs are optimized for: they perform irregular vector lookups and expose little arithmetic work per lookup. This section shows that, despite their high peak bandwidth and massive parallelism, GPUs cannot efficiently execute these lookup-dominated workloads. Recall from \Cref{sec:embedding-workload-methodology} that all GPU results in this section are measured on a real NVIDIA H100 system.
 
 \begin{figure}
     \centering
@@ -181,7 +188,7 @@ Combined with the high cost of GPUs and their limited memory capacity for storin
 
 \subsection{Embedding Performance on Off-the-Shelf CPUs} \label{sec:embedding-performance-cpus} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In this section, we study the architectural implications of sparsity on commodity CPUs. We focus on graph learning models because their spatial and temporal locality span a broad range of the locality regimes observed across these workloads. We therefore expect the findings to generalize to the other workloads listed in \Cref{tab:embedding-workload-locality-characterization}.
+In this section, we show that embedding performance on commodity CPU cores is limited by the inability to sustain enough long-latency memory requests in flight. We demonstrate this with graph learning models, whose spatial and temporal locality span a broad range of the regimes observed across embedding workloads. This analysis shows how cache filtering, long-latency memory accesses, and core-side request tracking interact across inputs with different reuse patterns.
 
 \input{fig_misses}
 
@@ -195,7 +202,7 @@ When a core issues a memory request, it must allocate entries in the reorder buf
 
 \subsection{Ideal Memory-Level Parallelism Requirements} \label{sec:ideal-mlp-requirements} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-This section estimates how much memory-level parallelism an ideal core would need to sustain peak embedding-lookup throughput. The model starts from a target request rate at the core, uses the reuse-distance CDF to determine which cache or memory level serves each request, and then applies Little's rule to compute the number of outstanding requests required at the core and at each cache level. This gives a lower-bound estimate of the buffering and request-tracking resources that conventional cores would need to keep embedding lookups fully pipelined.
+The previous section shows that commodity CPU cores cannot sustain enough irregular memory requests to execute embedding lookups efficiently. This section quantifies why simply scaling conventional cores is not a practical solution. We estimate the memory-level parallelism an ideal core would need to sustain peak embedding-lookup throughput: the model starts from a target request rate at the core, uses the reuse-distance CDF to determine which cache or memory level serves each request, and applies Little's rule to compute the number of outstanding requests required at the core and at each cache level. This gives a lower-bound estimate of the buffering and request-tracking resources that conventional cores would need to keep embedding lookups fully pipelined.
 
 \begin{figure}
 \includegraphics[width=1\linewidth]{img_abstraction_cdf.pdf}

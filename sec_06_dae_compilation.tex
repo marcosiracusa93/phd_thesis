@@ -6,7 +6,7 @@ Despite its potential, decoupling memory access from computation introduces subs
 
 \section{A DAE Programming Abstraction for Embedding Operations} \label{sec:dae-programming-abstraction} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-This section outlines the programmability implications of separating memory access from computation into two distinct units for complex programs like embedding operations. We do so by formalizing our programming model for accelerating embedding operations and, more generally, sparse--dense tensor operations on DAE architectures.
+Automatic DAE compilation first requires an abstraction that hides architecture-specific implementation details while preserving the access/execute split that makes DAE architectures efficient. For embedding operations, this abstraction separates lookup code, compute callbacks, and the queues that carry operands and control tokens between them. This section formalizes that programming model for embedding operations and, more generally, sparse--dense tensor operations on DAE architectures.
 
 \begin{figure}
 \centering
@@ -51,7 +51,7 @@ Ultimately, although separating embedding lookups from computation substantially
 
 \section{Ember Compiler Design} \label{sec:ember-compiler}
 
-This section introduces Ember, a compiler we designed to automatically lower structured sparse machine learning operations to DAE architectures, enabling their full performance potential without additional programmability burden. It begins with the compiler pipeline in \Cref{sec:ember-overview}, then explains how MLIR Structured Control Flow (SCF) is lowered through the Structured Lookup--Compute (SLC) IR to the Decoupled Lookup--Compute (DLC) IR in \Cref{sec:scf-to-dlc}, and finally describes the optimizations enabled by this representation in \Cref{sec:slc-level-optimizations}.
+Ember is built around the observation that DAE code must be optimized before it is fully serialized into queues. The MLIR Structured Control Flow (SCF) IR preserves the loop structure and data flow needed for global optimization, but does not expose the access/execute split. The Decoupled Lookup--Compute (DLC) IR presented earlier exposes that split, but is too low-level for many global optimizations. Ember therefore introduces the Structured Lookup--Compute (SLC) IR as an intermediate representation that exposes DAE structure while preserving enough program information to optimize it. This section begins with the compiler pipeline in \Cref{sec:ember-overview}, then explains how SCF is lowered through SLC to DLC in \Cref{sec:scf-to-dlc}, and finally describes the optimizations enabled by this representation in \Cref{sec:slc-level-optimizations}.
 
 \subsection{Compiler Overview} \label{sec:ember-overview} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -204,7 +204,7 @@ Another extension targets COO-like formats, which differ fundamentally from CSR-
   \label{tab:ember-evaluation-code-versions}
 \end{table}
 
-This section demonstrates how Ember enables the full potential of DAE architectures at scale. The evaluation answers three questions. First, does the SLC IR enable optimizations that substantially improve DAE code? Second, can the same framework express model-specific optimizations beyond standard embedding bags? Third, does automatically generated Ember code match handwritten code optimized for our target TMU--CPU system? To answer these questions, \Cref{sec:impact-of-slc-level-optimizations} first performs an ablation study on the general embedding optimizations (vectorization, bufferization, and queue alignment) introduced in \Cref{sec:slc-level-optimizations}. \Cref{sec:impact-of-model-specific-optimizations} then measures the impact of the model-specific optimizations for LLMs introduced in \Cref{sec:ember-model-specific-optimizations}. Finally, \Cref{sec:comparison-with-hand-optimized-code} compares Ember-generated code against hand-optimized implementations.
+The evaluation demonstrates that Ember unlocks DAE performance without requiring handwritten DAE programs. SLC-level optimizations improve unoptimized DAE code by 6.6$\times$--21$\times$, model-specific optimizations extend the same framework to sparse LLM embedding patterns, and automatically generated Ember code reaches 99\% of hand-optimized TMU--CPU performance. \Cref{sec:impact-of-slc-level-optimizations} first quantifies the impact of vectorization, bufferization, and queue alignment. \Cref{sec:impact-of-model-specific-optimizations} then measures the benefit of model-specific optimizations for LLMs, and \Cref{sec:comparison-with-hand-optimized-code} compares Ember-generated code against hand-optimized implementations.
 
 \subsection{Evaluation Methodology} \label{sec:ember-evaluation-methodology} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
