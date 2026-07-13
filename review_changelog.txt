@@ -4,6 +4,9 @@ Bibliography review fixes
 - Updated proceedings/publication metadata for FuseFlow, Ember, DGL, PyTorch/NeurIPS-style entries, MEMSYS 2021, Sandia reports, the patent entry, and software/web/dataset references.
 - Normalized bibliography formatting, including TeX page ranges, public `doi.org` URLs, style-compatible entry types, visible article numbers/pages under `apalike`, title/acronym/product capitalization, and removal of raw HTML.
 
+Acknowledgments
+- Added personal acknowledgments thanking advisors, BSC collaborators, thesis reviewers, Arm Center of Excellence collaborators, Stanford and Samsung hosts and collaborators, workshop organizers, friends, and family.
+
 Mark annex review fixes
 - Addressed MARK-001 (annex p. 019, Chapter 1 Introduction) by adding an introductory paragraph between the Introduction chapter heading and the Motivation section, avoiding consecutive headings without intervening prose.
 - Addressed MARK-002 (annex p. 019, Section 1.1 Motivation) by replacing the undefined term "tensor fibers" in the Introduction with the more general phrase "parts of tensors"; the formal fiber definition remains in Chapter 2.
