@@ -91,11 +91,11 @@ The scientific kernels show that sparse tensor algebra stresses processors throu
 
 \subsection{Embedding Workload Methodology} \label{sec:embedding-workload-methodology} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Our GPU measurements use an NVIDIA H100 GPU. We measure GPU performance with NVIDIA Nsys~\cite{nvidia2024nsys} and report only device kernel execution time, excluding host-to-device transfers and kernel launch overhead. We measure GPU power consumption with the \texttt{torch.power\_draw} function.
+Our GPU measurements use an NVIDIA H100 GPU. We measure GPU performance with NVIDIA Nsys~\cite{nvidia2024nsys} and report only device kernel execution time, excluding host-to-device transfers.
 
 \input{tab_cpu_specs}
 
-To study how conventional CPU architectures scale on embedding operations, unlike the previous section, we use gem5~\cite{lowepower2020gem5} for the CPU experiments and McPAT~\cite{li2009micro} for power estimation. This simulation-based methodology allows us to vary critical microarchitectural resources such as the reorder buffer (ROB), load-store queue (LSQ), and miss status holding registers (MSHRs), which cannot be controlled on fixed commercial processors. The baseline CPU system is dimensioned as in \Cref{tab:embedding-cpu-system-specs}.
+To study how conventional CPU architectures scale on embedding operations, unlike the previous section, we use gem5~\cite{lowepower2020gem5} for the CPU experiments and McPAT~\cite{li2009micro} for power estimation. This simulation-based methodology allows us to vary critical microarchitectural resources such as the reorder buffer (ROB), load-store queue (LSQ), and miss status holding registers (MSHRs), which cannot be controlled on fixed commercial processors. The baseline CPU system, dimensioned as in \Cref{tab:embedding-cpu-system-specs}, models a datacenter-class multicore processor with HBM, HBM bandwidth comparable to the Nvidia H100 GPU~\cite{nvidia2024h100}, and bandwidth per core and per-core performance in the range of commercial HBM-based CPUs~\cite{reguly2023xeonmax}.
 
 \begin{table}
   \centering
