@@ -145,7 +145,7 @@ Meanwhile, the TMU populates another outQ chunk, overlapping data loading and co
   \label{fig:tmu-spmv-configuration-code}
 \end{figure}
 
-\include{tab_tensor_mapping}
+\input{tab_tensor_mapping}
 
 \Cref{fig:tmu-spmv-configuration-code} shows the full TMU configuration code for the SpMV example in \Cref{fig:tmu-spmv-decomposition}.
 The top block defines the dense traversal (\emph{DnsFbrT}) for the CSR matrix row pointers.
@@ -337,7 +337,7 @@ Our evaluation demonstrates that the TMU successfully accelerates tensor travers
     \label{fig:tmu-scientific-design-space}
 \end{figure}
 
-\Cref{fig:tmu-scientific-design-space} shows a sensitivity analysis varying the total engine size and SVE vector length, which is tied to the number of TMU lanes. That is, a system with 512-bit SVE has an 8-lane TMU design, while a system with 256-bit SVE has a 4-lane TMU design. The heatmap shows normalized speedup with respect to the evaluated 16KB 512-bit SVE configuration. We observe that SpMV is more sensitive to engine storage, as larger storage enables more MLP and hides memory latency, which is the main bottleneck in SpMV. SVE length does not have a large impact, since SpMV has a read-to-write ratio of 0.5. In SpMSpM, we observe the opposite behavior: wider SVE length has a large performance impact, since the bottleneck is on the core side (1.68 read-to-write ratio).
+\Cref{fig:tmu-scientific-design-space} shows a sensitivity analysis varying the total engine size and SVE vector length, which is tied to the number of TMU lanes. That is, a system with 512-bit SVE has an 8-lane TMU design, while a system with 256-bit SVE has a 4-lane TMU design. The heatmap shows normalized speedup with respect to the evaluated 16KB 512-bit SVE configuration. We observe that SpMV is more sensitive to engine storage, as larger storage enables more memory-level parallelism and hides memory latency, which is the main bottleneck in SpMV. SVE length does not have a large impact, since SpMV has a read-to-write ratio of 0.5. In SpMSpM, we observe the opposite behavior: wider SVE length has a large performance impact, since the bottleneck is on the core side (1.68 read-to-write ratio).
 
 \subsection{Comparison with Prior Sparse Architectures} \label{sec:tmu-prior-sparse-architectures} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -350,7 +350,7 @@ Our evaluation demonstrates that the TMU successfully accelerates tensor travers
 
 The graph-oriented traversal engines we compare against are integrated into multicore systems and are primarily designed for graph analytics~\cite{yang2021isca, mukkara2018micro}. They feature architectures similar to a single TMU lane, but with fewer primitives (i.e., stream types) and no support for parallel data loading or merging, limiting their applicability to simple linear algebra kernels. Two prominent examples are HATS~\cite{mukkara2018micro} and SpZip~\cite{yang2021isca}: the former exploits locality in graph communities, and the latter implements de(compression) techniques. Both optimizations are orthogonal to TMU operation. Therefore, we evaluate a \emph{Single-Lane} TMU with the same storage as the multi-lane \emph{TMU} employed throughout the evaluation. \Cref{fig:tmu-scientific-speedups-vs-prior-architectures} shows that \emph{Single-Lane} achieves 1.59$\times$ and 1.50$\times$ geomean speedups on SpMV and SpMSpM, while \emph{TMU} achieves 3.32$\times$ and 2.82$\times$, respectively. This indicates that graph-oriented traversal engines would also benefit from parallel data loading.
 
-We also evaluate the Indirect Memory Prefetcher (IMP)~\cite{yu2015micro}, configured as recommended by the paper's authors, including the use of virtual addresses to prefetch across memory page boundaries. IMP performs well on SpMV, with an average speedup of 1.25$\times$, but fails to deliver performance improvements on SpMSpM due to thrashing of partial results. Overall, \emph{Single-Lane} and \emph{TMU} obtain better performance because they unlock more MLP while always fetching useful data.
+We also evaluate the Indirect Memory Prefetcher (IMP)~\cite{yu2015micro}, configured as recommended by the paper's authors, including the use of virtual addresses to prefetch across memory page boundaries. IMP performs well on SpMV, with an average speedup of 1.25$\times$, but fails to deliver performance improvements on SpMSpM due to thrashing of partial results. Overall, \emph{Single-Lane} and \emph{TMU} obtain better performance because they unlock more memory-level parallelism while always fetching useful data.
 
 \subsection{RTL Implementation and Area Analysis} \label{sec:tmu-rtl-area-analysis} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 We implement the TMU in System Verilog using the parameters listed in \Cref{tab:tmu-dae-system-specs} and synthesize the design using the GlobalFoundries 22nm FD-SOI technology node. We have used the Cadence Genus tool v19.11 for the logical synthesis and the Cadence Innovus tool v19.11 for the place-and-route.
@@ -372,7 +372,7 @@ The embedding evaluation shows that the same decoupling principle also addresses
 \end{figure}
 
 
-\Cref{fig:tmu-embedding-dae-processor} shows the DAE system we use to evaluate embedding operations. The system builds on the datacenter-class HBM multicore processor described in \Cref{sec:embedding-workload-methodology}, whose HBM bandwidth is comparable to the Nvidia H100 GPU~\cite{nvidia2024h100} and whose bandwidth per core and per-core performance are in the range of commercial HBM-based CPUs~\cite{reguly2023xeonmax}. We augment each core with a TMU that issues and tracks embedding-vector lookups on behalf of the core. Because this datacenter-class DAE processor provides more bandwidth per core than the HPC-oriented DAE processor used in \Cref{sec:tmu-scientific-methodology}, we provision it with more TMU MSHRs. The GPU experimental methodology also follows \Cref{sec:embedding-workload-methodology}, with GPU power measured using the \texttt{torch.cuda.power\_draw} function.
+\Cref{fig:tmu-embedding-dae-processor} shows the DAE system we use to evaluate embedding operations. The system builds on the datacenter-class HBM multicore processor described in \Cref{sec:embedding-workload-methodology}, whose HBM bandwidth is comparable to the Nvidia H100 GPU~\cite{nvidia2024h100} and whose bandwidth per core and per-core performance are in the range of commercial HBM-based CPUs~\cite{reguly2023xeonmax}. We augment each core with a TMU that issues and tracks embedding-vector lookups on behalf of the core. Because this datacenter-class DAE processor provides more bandwidth per core than the HPC-oriented DAE processor used in \Cref{sec:tmu-scientific-methodology}, we provision it with more TMU MSHRs. The actual number of TMU MSHRs is driven by the analytical study in \Cref{sec:ideal-mlp-requirements}, particularly the ideal request-tracking requirements reported in \Cref{fig:implications-gnn-ideal-mlp}. The GPU experimental methodology also follows \Cref{sec:embedding-workload-methodology}, with GPU power measured using the \texttt{torch.cuda.power\_draw} function.
 
 \subsection{Architectural Benefits of Decoupling} \label{sec:tmu-architectural-benefits-decoupling} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -489,7 +489,7 @@ Motivated by these observations, in this section we explore two complementary op
 
 \begin{table}[]
 \centering
-\caption[Specifications of DAE big and little cores.]{Specifications of the big and little DAE cores used in the specialized-architecture study. The TMU configuration is held constant across both designs; only the compute core frequency and vector width change. Overall, the table isolates the effect of simplifying the execute side while preserving access-unit capability.}
+\caption[Specifications of DAE big and little cores.]{Specifications of the big and little DAE cores used in the specialized-architecture study. The TMU configuration, especially its Memory-Level Parallelism (MLP), is held constant across both designs; only the compute core frequency and vector width change. Overall, the table isolates the effect of simplifying the execute side while preserving access-unit capability.}
 \label{tab:tmu-specialized-core-specs}
 \begin{tabular}{|c|c|c|}
 \hline
