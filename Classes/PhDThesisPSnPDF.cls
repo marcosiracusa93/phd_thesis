@@ -1240,7 +1240,7 @@ wish to left align your text}
 \begin{minipage}{0.35\textwidth}
 \begin{flushleft}\large
 {\Large Advisors:\\}
-\large Adri\'a Armejach\\
+\large Adri\`a Armejach Sanosa\\
 \large Miquel Moret\'o  Planas\\
 \end{flushleft}
 \end{minipage}
